@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>650</width>
+    <width>680</width>
     <height>700</height>
    </size>
   </property>
@@ -53,7 +53,7 @@
          <locale language="Russian" country="Russia"/>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="documentMode">
          <bool>true</bool>
@@ -959,7 +959,13 @@
                   </property>
                   <layout class="QGridLayout" name="gridLayout_48">
                    <item row="0" column="0">
-                    <widget class="QTextBrowser" name="runParameters"/>
+                    <widget class="QTextBrowser" name="runParameters">
+                     <property name="font">
+                      <font>
+                       <pointsize>7</pointsize>
+                      </font>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -1254,7 +1260,7 @@
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="iconSize">
              <size>

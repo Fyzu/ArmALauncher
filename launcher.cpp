@@ -70,7 +70,7 @@ launcher::launcher(QWidget *parent) :
     ui->addonTree->header()->resizeSection(0, 220);
     ui->addonTree->header()->resizeSection(1, 150);
     //..размеры секций списка серверов
-    ui->serversTree->header()->resizeSection(0, 270);
+    ui->serversTree->header()->resizeSection(0, 250);
     ui->serversTree->header()->resizeSection(1, 100);
     ui->serversTree->header()->resizeSection(2, 50);
     ui->serversTree->header()->resizeSection(3, 70);
@@ -558,11 +558,18 @@ QStringList launcher::getLaunchParam() {
             launchParam.append("-password=" + ui->serverPassword->text());
     }
     // Выставляем параметры запуска в соответсвии с приоритетом запуска аддонов
+    QString path = pathFolder;
+    path.remove("/arma3.exe");
     for(int i = 0; i<listPriorityAddonsDirs.size();i++)
         for(int j = 0; j<ui->addonTree->topLevelItemCount();j++) {
             if(listPriorityAddonsDirs[i] == ui->addonTree->topLevelItem(j)->text(1) &&
-               ui->addonTree->topLevelItem(j)->checkState(0) == Qt::Checked)
-                launchParam.append("-mod=" + ui->addonTree->topLevelItem(j)->text(2)+"/" + ui->addonTree->topLevelItem(j)->text(1) + ";");
+               ui->addonTree->topLevelItem(j)->checkState(0) == Qt::Checked) {
+                if(path == ui->addonTree->topLevelItem(j)->text(2)) {
+                    launchParam.append("-mod=" + ui->addonTree->topLevelItem(j)->text(1) + ";");
+                } else {
+                    launchParam.append("-mod=" + ui->addonTree->topLevelItem(j)->text(2)+"/" + ui->addonTree->topLevelItem(j)->text(1) + ";");
+                }
+            }
         }
 
     qDebug() << "Debug-launcher: get launch param - succ";

@@ -173,7 +173,7 @@ void updateAddons::parseSyncInformation(QString path) {
         QProcess sync(this);
         sync.start("ArmALauncher-SyncParser.exe 0 \"" + path + "sync\"");
         //..ожидаем завершение парсера
-        sync.waitForFinished(999999);
+        sync.waitForFinished(-1);
         sync.deleteLater();
         // Читаем вывод парсера
         QStringList list;
@@ -749,7 +749,7 @@ bool updateAddons::unzipArchive(QString archive, QString extracting) {
         // e - параметр распковки, "путь к архиву",  -o"путь куда",  -mmt многопоточность, -y соглашаться на все
         QProcess unzip(this);
         unzip.start("\"" + QCoreApplication::applicationDirPath() + "/" + "7z.exe\" e \"" + archive + "\" -o\"" + extracting + "\" -mmt -y");
-        unzip.waitForFinished(99999);
+        unzip.waitForFinished(-1);
 
         // Получаем вывод 7z, для удобного дебага
         qDebug() << "Debug-updateAddons: 7z output: " << unzip.readAll();
