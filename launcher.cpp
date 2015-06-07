@@ -118,24 +118,33 @@ launcher::launcher(QWidget *parent) :
     qDebug() << "Debug-launcher: Form initialization - succ";
 
     // Коннект..
-    //..Вызова отправки данных по клику кнопку из главного окна в окно изменения настроек сервера
-    connect(ui->serversTree_edit,   SIGNAL( clicked()),                           this,   SLOT( Send()));
-    //..отправки данных в serverEdit
-    connect(this,                   SIGNAL( sendData(favServer, QList<addon>,bool,QStringList)),   edit,   SLOT( recieveData(favServer, QList<addon>,bool,QStringList)));
-    //..отправки данных в главное окно
-    connect(edit,                   SIGNAL( sendData(favServer,bool)),            this,   SLOT( recieveData(favServer,bool)));
-
-    connect(this, SIGNAL(addonsSettingsStart(Settings, QStringList,QStringList,QStringList)), AddonsSettings, SLOT(receiveData(Settings, QStringList,QStringList,QStringList)));
-    connect(AddonsSettings, SIGNAL(sendData(QStringList,QStringList)), this, SLOT(addonsSettingsFinish(QStringList,QStringList)));
-
-    connect(this, SIGNAL(launcherSettingsStart(Settings)), LauncherSettings, SLOT(reciveData(Settings)));
-    connect(LauncherSettings, SIGNAL(sendData(Settings)), this, SLOT(launcherSettingsFinish(Settings)));
-
-    connect(this, SIGNAL(repoEditStart(Repository,int,bool)), repositoryEdit, SLOT(recieveData(Repository,int,bool)));
-    connect(repositoryEdit, SIGNAL(sendData(Repository,int,bool)), this, SLOT(repoEditFinish(Repository,int,bool)));
-
-    connect(this, SIGNAL(newVersion(Settings,QString)), LauncherUpdate, SLOT(newVersion(Settings,QString)));
-    connect(LauncherUpdate, SIGNAL(result(int)), this, SLOT(launcherUpdateResult(int)));
+    //..Изменения настроек сервера
+    connect(ui->serversTree_edit,   SIGNAL( clicked()),
+            this,                   SLOT( Send()));
+    connect(this,                   SIGNAL( sendData(favServer, QList<addon>,bool,QStringList)),
+            edit,                   SLOT( recieveData(favServer, QList<addon>,bool,QStringList)));
+    connect(edit,                   SIGNAL( sendData(favServer,bool)),
+            this,                   SLOT( recieveData(favServer,bool)));
+    //..Изменения настроек аддонов
+    connect(this,                   SIGNAL(addonsSettingsStart(Settings, QStringList,QStringList,QStringList)),
+            AddonsSettings,         SLOT(receiveData(Settings, QStringList,QStringList,QStringList)));
+    connect(AddonsSettings,         SIGNAL(sendData(QStringList,QStringList)),
+            this,                   SLOT(addonsSettingsFinish(QStringList,QStringList)));
+    //..Изменения настроек лаунчера
+    connect(this,                   SIGNAL(launcherSettingsStart(Settings)),
+            LauncherSettings,       SLOT(reciveData(Settings)));
+    connect(LauncherSettings,       SIGNAL(sendData(Settings)),
+            this,                   SLOT(launcherSettingsFinish(Settings)));
+    //..Изменения настроек репозитория
+    connect(this,                   SIGNAL(repoEditStart(Repository,int,bool)),
+            repositoryEdit,         SLOT(recieveData(Repository,int,bool)));
+    connect(repositoryEdit,         SIGNAL(sendData(Repository,int,bool)),
+            this,                   SLOT(repoEditFinish(Repository,int,bool)));
+    //..Проверки новой версии
+    connect(this,                   SIGNAL(newVersion(Settings,QString)),
+            LauncherUpdate,         SLOT(newVersion(Settings,QString)));
+    connect(LauncherUpdate,         SIGNAL(result(int)),
+            this,                   SLOT(launcherUpdateResult(int)));
 
     // Получаем путь к документам системы
     DocumentsLocation = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
