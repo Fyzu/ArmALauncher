@@ -113,6 +113,70 @@ launcher::launcher(QWidget *parent) :
     connect(updater, SIGNAL(finished()),      updater, SLOT(deleteLater()));
     connect(thread,  SIGNAL(finished()),      thread,  SLOT(deleteLater()));
 
+    //..связываем updater с кнопками UI
+    //..связь кнопки дисконетка репозитория с апдейтером
+    connect(this,    SIGNAL(repositoryDisconnect()),
+            updater, SLOT(finish()) );
+    //..связь кнопки и проверки аддонов
+    connect(ui->checkAddons,    SIGNAL(clicked()),
+            this,               SLOT  (updaterCheckAddonsUI()) );
+    connect(this,               SIGNAL(updaterCheckAddons(QString)),
+            updater,            SLOT  (checkAddons(QString)) );
+    connect(updater,            SIGNAL(checkAddonsFinished(int,QList<QMap<QString,QString> >,QList<QMap<QString,QString> >,
+                                                           QList<QMap<QString,QString> >,QList<QMap<QString,QString> >)),
+            this,               SLOT  (checkAddonsFinishedUI(int,QList<QMap<QString,QString> >,QList<QMap<QString,QString> >,
+                                                             QList<QMap<QString,QString> >,QList<QMap<QString,QString> >)) );
+    connect(updater,            SIGNAL(checkAddonsProgressUI(int,const QList< QMap<QString, QString> >)),
+            this,               SLOT  (checkAddonsProgressUI(int,const QList< QMap<QString, QString> >)));
+    //..связь кнопки и метода старта загрузки UI
+    connect(ui->downloadUpdate, SIGNAL(clicked()),
+            this,               SLOT  (downloadUpdateStartUI()));
+    connect(this,               SIGNAL(downloadUpdateStart(QList<int>)),
+            updater,            SLOT  (downloadUpdate(QList<int>)));
+    connect(updater,            SIGNAL(downloadAddonStarted(QList<QMap<QString,QString> >,int)),
+            this,               SLOT  (downloadAddonStartedUI(QList<QMap<QString,QString> >,int)));
+    connect(updater,            SIGNAL(downloadAddonsFinished(bool)),
+            this,               SLOT  (downloadAddonsFinishUI(bool)));
+    //..связь кнопки и удаление лишних файлов
+    connect(ui->delOtherFiles,  SIGNAL(clicked()),
+            updater,            SLOT  (delOtherFiles()));
+    connect(updater,            SIGNAL(deleteOtherFiles(const QList< QMap<QString, QString> >, QString)),
+            delOtherFiles,      SLOT  (showDialog(const QList< QMap<QString,QString> >, QString)));
+    connect(delOtherFiles,      SIGNAL(filesDelete()),
+            this,               SLOT  (deleteOtherFilesFinish()));
+    //..связь кнопки и остановки загрузки\проверки
+    connect(ui->stopUpdater,    SIGNAL(clicked()),
+            this,               SLOT  (stopUpdaterUI()));
+    connect(this,               SIGNAL(stopUpdater()),
+            updater,            SLOT  (stopUpdater()));
+
+    //..регистрируем прогресс
+    //..загрузки файла
+    connect(updater, SIGNAL(updateDownloadProgress_UI(qint64,qint64,QString)),
+            this,    SLOT(updateDownloadProgress_UI(qint64,qint64,QString)));
+    //..начала загрузки файла
+    connect(updater, SIGNAL(downloadFile_UI(QString)),
+            this,    SLOT(downloadFile_UI(QString)));
+    //..завершения загрузки файла
+    connect(updater, SIGNAL(downloadFinished(bool)),
+            this,    SLOT(downloadFinished(bool)));
+    //..начала распаковки файла
+    connect(updater, SIGNAL(unzipStart(QString)),
+            this,    SLOT(unzipStart(QString)));
+    //..завершения распаковки файла
+    connect(updater, SIGNAL(unzipFinished(QString)),
+            this,    SLOT(unzipFinished(QString)));
+    //..подключения репозитория
+    connect(updater, SIGNAL(started(const Repository, const QList< QMap<QString, QString> >, const QStringList)),
+            this,    SLOT(updaterStarted(const Repository, const QList< QMap<QString, QString> >, const QStringList)));
+    //..передача данных  после отрисовки подключенного репозитория
+    connect(this,    SIGNAL(updaterUIStarted(QStringList)),
+            updater, SLOT(updaterUIStarted(QStringList)));
+    //..завершение апдейтера
+    connect(updater, SIGNAL(finished()),
+            this,    SLOT(updaterFinished()));
+
+    // Запускаем поток для апдейтера
     thread->start();
 
     qDebug() << "Debug-launcher: Form initialization - succ";

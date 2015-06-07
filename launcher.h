@@ -156,6 +156,9 @@ private:
     bool dxDiagIsRunning;           // Тригер запущенного dxdiag'а
     int selectServer;               // Выбранный сервер в списке
 
+    // Пременные для контроля апдейтера
+
+
     // Функции обновления данных
     void updateInformationInWidget();       // Обновление информации в виджете
     void updateInformationInMem();          // Обновление информации в памяти

@@ -61,7 +61,3 @@ RESOURCES += pictures.qrc \
     style.qrc
 
 LIBS +=libversion
-
-DISTFILES += \
-    ftpInformation/patchnotes \
-    ftpInformation/version
