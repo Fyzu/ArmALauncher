@@ -72,6 +72,7 @@ $RECYCLE.BIN/
 *.msp
 
 # Windows shortcuts
+*.class
 *.lnk
 *.tlog
 *.cache
