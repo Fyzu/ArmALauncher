@@ -574,7 +574,7 @@ QStringList launcher::getLaunchParam() {
 // Обновлении параметров при клике на настройки
 void launcher::on_tabWidget_tabBarClicked(int index) {
     // Обновление информации в виджете параметров
-    if(index == 2)
+    if(index == 1)
         updateInfoParametersInMem();
 }
 

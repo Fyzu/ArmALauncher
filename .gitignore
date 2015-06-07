@@ -73,3 +73,22 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.tlog
+*.cache
+*.pdb
+*.log
+*.ipch
+*.suo
+*.sdf
+*.sln
+*.metagen
+*.classpath
+*.vcxproj
+*.exp
+*.user
+*.filters
+Dll/ArmaLauncher/ReadMe.txt
+*.project
+Dll/ArmaLauncher/stdafx.cpp
+Dll/ArmaLauncher/stdafx.h
+Dll/ArmaLauncher/targetver.h
