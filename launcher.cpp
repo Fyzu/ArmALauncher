@@ -377,12 +377,14 @@ void launcher::on_play_clicked() {
     qDebug() << "Debug-launcher: Start launch game";
 
     QStringList args = getLaunchParam();        // Получаем параметры запуска
-    if(parameters.check_name) {
-        if(favServers[ui->selectServer->currentIndex()-1].check_name == true)
-            args[0] = "-name="+favServers[ui->selectServer->currentIndex()-1].name;
-    } else {
-        if(favServers[ui->selectServer->currentIndex()-1].check_name == true)
-            args.append("-name="+favServers[ui->selectServer->currentIndex()-1].name);
+    if(ui->selectServer->currentIndex() != 0) {
+        if(parameters.check_name) {
+            if(favServers[ui->selectServer->currentIndex()-1].check_name == true)
+                args[0] = "-name="+favServers[ui->selectServer->currentIndex()-1].name;
+        } else {
+            if(favServers[ui->selectServer->currentIndex()-1].check_name == true)
+                args.append("-name="+favServers[ui->selectServer->currentIndex()-1].name);
+        }
     }
     QProcess process(this);                     // Создаем процесс армы
     qint64 ProcessId;                           // Пид армы
