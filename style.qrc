@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/qdarkstyle">
+        <file>style.qss</file>
+    </qresource>
+    <qresource prefix="/qss_icons">
+        <file>IMG/darkstyle/rc/branch_closed.png</file>
+        <file>IMG/darkstyle/rc/branch_closed-on.png</file>
+        <file>IMG/darkstyle/rc/branch_open.png</file>
+        <file>IMG/darkstyle/rc/branch_open-on.png</file>
+        <file>IMG/darkstyle/rc/checkbox.png</file>
+        <file>IMG/darkstyle/rc/checkbox_indeterminate.png</file>
+        <file>IMG/darkstyle/rc/close.png</file>
+        <file>IMG/darkstyle/rc/close-hover.png</file>
+        <file>IMG/darkstyle/rc/close-pressed.png</file>
+        <file>IMG/darkstyle/rc/down_arrow.png</file>
+        <file>IMG/darkstyle/rc/down_arrow_disabled.png</file>
+        <file>IMG/darkstyle/rc/Hmovetoolbar.png</file>
+        <file>IMG/darkstyle/rc/Hsepartoolbar.png</file>
+        <file>IMG/darkstyle/rc/left_arrow.png</file>
+        <file>IMG/darkstyle/rc/left_arrow_disabled.png</file>
+        <file>IMG/darkstyle/rc/right_arrow.png</file>
+        <file>IMG/darkstyle/rc/right_arrow_disabled.png</file>
+        <file>IMG/darkstyle/rc/sizegrip.png</file>
+        <file>IMG/darkstyle/rc/stylesheet-branch-end.png</file>
+        <file>IMG/darkstyle/rc/stylesheet-branch-more.png</file>
+        <file>IMG/darkstyle/rc/stylesheet-vline.png</file>
+        <file>IMG/darkstyle/rc/transparent.png</file>
+        <file>IMG/darkstyle/rc/undock.png</file>
+        <file>IMG/darkstyle/rc/up_arrow.png</file>
+        <file>IMG/darkstyle/rc/up_arrow_disabled.png</file>
+        <file>IMG/darkstyle/rc/Vmovetoolbar.png</file>
+        <file>IMG/darkstyle/rc/Vsepartoolbar.png</file>
+    </qresource>
+</RCC>

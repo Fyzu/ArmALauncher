@@ -1,0 +1,72 @@
+<RCC>
+    <qresource prefix="/myresources">
+        <file alias="arma3.png">IMG/arma3.png</file>
+        <file alias="arma3down.png">IMG/arma3down.png</file>
+        <file alias="serverOn.png">IMG/serverOn.png</file>
+        <file alias="serverOff.png">IMG/serverOff.png</file>
+        <file>IMG/broken45.png</file>
+        <file>IMG/cloud126.png</file>
+        <file>IMG/cloud133.png</file>
+        <file>IMG/cloud149.png</file>
+        <file>IMG/cloud152.png</file>
+        <file>IMG/cloud198.png</file>
+        <file>IMG/clouds11.png</file>
+        <file>IMG/data104.png</file>
+        <file>IMG/delete82.png</file>
+        <file>IMG/down177.png</file>
+        <file>IMG/download61.png</file>
+        <file>IMG/favourites4.png</file>
+        <file>IMG/file96.png</file>
+        <file>IMG/hard drive.png</file>
+        <file>IMG/round60.png</file>
+        <file>IMG/settings59.png</file>
+        <file>IMG/up177.png</file>
+        <file>IMG/computer monitor1.png</file>
+        <file>IMG/file99.png</file>
+        <file>IMG/puzzle37.png</file>
+        <file>IMG/puzzleSetting37.png</file>
+        <file>IMG/add107.png</file>
+        <file>IMG/refresh57.png</file>
+        <file>IMG/statistics13.png</file>
+        <file>IMG/delete85.png</file>
+        <file>IMG/gear70.png</file>
+        <file>IMG/wrench10.png</file>
+        <file>IMG/darkstyle/add107.png</file>
+        <file>IMG/darkstyle/arma3.png</file>
+        <file>IMG/darkstyle/arma3down.png</file>
+        <file>IMG/darkstyle/broken45.png</file>
+        <file>IMG/darkstyle/cloud126.png</file>
+        <file>IMG/darkstyle/cloud133.png</file>
+        <file>IMG/darkstyle/cloud149.png</file>
+        <file>IMG/darkstyle/cloud152.png</file>
+        <file>IMG/darkstyle/cloud198.png</file>
+        <file>IMG/darkstyle/clouds11.png</file>
+        <file>IMG/darkstyle/computer monitor1.png</file>
+        <file>IMG/darkstyle/data104.png</file>
+        <file>IMG/darkstyle/delete82.png</file>
+        <file>IMG/darkstyle/delete85.png</file>
+        <file>IMG/darkstyle/down177.png</file>
+        <file>IMG/darkstyle/download61.png</file>
+        <file>IMG/darkstyle/favourites4.png</file>
+        <file>IMG/darkstyle/file96.png</file>
+        <file>IMG/darkstyle/file99.png</file>
+        <file>IMG/darkstyle/gear70.png</file>
+        <file>IMG/darkstyle/hard drive.png</file>
+        <file>IMG/darkstyle/puzzle37.png</file>
+        <file>IMG/darkstyle/puzzleSetting37.png</file>
+        <file>IMG/darkstyle/refresh57.png</file>
+        <file>IMG/darkstyle/round60.png</file>
+        <file>IMG/darkstyle/settings59.png</file>
+        <file>IMG/darkstyle/statistics13.png</file>
+        <file>IMG/darkstyle/up177.png</file>
+        <file>IMG/darkstyle/wrench10.png</file>
+        <file>IMG/power buttons1.png</file>
+        <file>IMG/update8.png</file>
+        <file>IMG/darkstyle/power buttons1.png</file>
+        <file>IMG/darkstyle/update8.png</file>
+    </qresource>
+    <qresource prefix="/repositories">
+        <file>IMG/yoma2009.ico</file>
+        <file>IMG/arma3sync.ico</file>
+    </qresource>
+</RCC>
