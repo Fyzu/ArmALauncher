@@ -7,50 +7,35 @@ launcher::launcher(QWidget *parent) :
     ui(new Ui::launcher) {
 
     // Подключаю вспомогательную Dll "ArmaLauncher.dll"
-    /*! Список функций ArmaLauncher.dll
-     ***********************************************************************************
-     *  1: Функция возвращающая подробную информацию о сервере
-     * unsigned char* exchangeDataWithServer(const char* host, int port, const int timeout, const unsigned char* str, const int len, int &ping);
-     *---------------------------------------------------------------------------------------------
-     * in:	const char* h				- Адресс сервера
-     *		int port					- Порт сервера
-     *		const int timeout			- Максимальное время ответа от сервера (в милисекундах)
-     *		const unsigned char* str	- Отправляемая строка
-     *		const int len				- Длина отправляемой строки
-     *---------------------------------------------------------------------------------------------
-     * out:	unsigned char*				- Принятая строка от сервера
-     *		int &ping					- Время ответа от сервера
-     ***********************************************************************************
-     */
     qDebug() << "Debug-launcher: Dll initialization";
     //..устанавливаем название длл
     library.setFileName("ArmaLauncher.dll");
     //..проверяем, загрузилась ли длл
     if(!library.load()) {
         QMessageBox::critical(this,"Критическая ошибка", "Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
-        parent->close();
-    }
-    //..проверяем, есть ли 7z.exe в папке с программой
-    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/7z.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
-        parent->close();
-    }
-    //..проверяем, есть ли ArmALauncher-SyncParser.exe в папке с программой
-    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-SyncParser.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
-        parent->close();
-    }
-    //..проверяем, есть ли ArmALauncher-Updater.exe в папке с программой
-    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-Updater.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
-        parent->close();
+        this->close();
     }
     //..иницилизируем функции длл
     exchangeDataWithServer = (ExchangeDataWithServer)library.resolve("exchangeDataWithServer");
     //..проверяем инцилизированы ли функции
     if(!exchangeDataWithServer) {
         QMessageBox::critical(this,"Критическая ошибка", "Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
-        parent->close();
+        this->close();
+    }
+    //..проверяем, есть ли 7z.exe в папке с программой
+    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/7z.exe")){
+        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        this->close();
+    }
+    //..проверяем, есть ли ArmALauncher-SyncParser.exe в папке с программой
+    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-SyncParser.exe")){
+        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        this->close();
+    }
+    //..проверяем, есть ли ArmALauncher-Updater.exe в папке с программой
+    if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-Updater.exe")){
+        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        this->close();
     }
 
     // Иницилизируем форму окна и его переменные
@@ -105,7 +90,7 @@ launcher::launcher(QWidget *parent) :
     thread = new QThread;
     updater->moveToThread(thread);
 
-    qDebug() << "Debug-updateAddons_UI: Updater move to thread" << thread;
+    qDebug() << "Debug-updateAddons_UI: Updater move to " << thread;
 
     //..связываем updater с потоком
     connect(this,    SIGNAL(showUpdater()),   updater, SLOT(start()), Qt::DirectConnection);
@@ -446,6 +431,8 @@ void launcher::on_play_clicked() {
     qDebug() << "Debug-launcher: Start launch game";
 
     QStringList args = getLaunchParam();        // Получаем параметры запуска
+
+    // Устанавливаем профиль выбранный в сервере
     if(ui->selectServer->currentIndex() != 0) {
         if(parameters.check_name) {
             if(favServers[ui->selectServer->currentIndex()-1].check_name == true)
@@ -455,10 +442,12 @@ void launcher::on_play_clicked() {
                 args.append("-name="+favServers[ui->selectServer->currentIndex()-1].name);
         }
     }
+
     QProcess process(this);                     // Создаем процесс армы
     qint64 ProcessId;                           // Пид армы
     HANDLE hProcess;                            // Хандл процесса
 
+    // Проверяем, запущен ли стим, если нет, предлагаем
     if(!getHandle("Steam", false)) {
         qDebug() << "Debug-launcher: Start launch fail - steam no found";
         if(QMessageBox::Yes == QMessageBox::question(this, tr("Внимание!"), tr("Игра требует запустить Steam.\nЗапустить Steam?"))) {
@@ -468,13 +457,13 @@ void launcher::on_play_clicked() {
         return;
     }
 
-    // Получаем путь к be *1.44 patch*
-    QString pathBattleye = pathFolder;
-    pathBattleye.replace("arma3.exe","arma3battleye.exe");
-
     // Запускаем игру с параметрами
     // Запускае Arma 3 с BE Service
     if(ui->battleEye->checkState() == Qt::Checked) {
+        // Получаем путь к be *1.44 patch*
+        QString pathBattleye = pathFolder;
+        pathBattleye.replace("arma3.exe","arma3battleye.exe");
+        // Запускаем игру с battleye
         process.startDetached("\"" + pathBattleye + "\"" + " 0 1 " + parameters.addParam, args, QString(), &ProcessId);
         process.waitForStarted();
         hProcess = getHandle ("Arma 3", true);
@@ -497,11 +486,17 @@ void launcher::on_play_clicked() {
 
     // Сохранение настроек после запуска игры
     updateInformationInCfg();
+
+    // Решение после запуска игры
+    if(settings.launch == 1)        // Сворачиваем лаунчер
+        this->showMinimized();
+    else if(settings.launch == 2)   // Закрываем лаунчер
+        this->close();
+
 }
 
 // Получение handle процесса по заголовку
 HANDLE launcher::getHandle (QString titleName, bool wait) {
-
 
         qDebug() << "Debug-launcher: start find HANDLE";
         DWORD ProcessId;        // Пид процесса

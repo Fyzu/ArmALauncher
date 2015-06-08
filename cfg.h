@@ -165,16 +165,10 @@ struct Settings {
     // Запуск
     int launch;
 
-    // Сервера
-    bool updServers;
-    int secTime;
-
     Settings() {
         style = 0;
         documentMode = false;
         launch = 0;
-        updServers = false;
-        secTime = 0;
     }
 };
 
@@ -248,13 +242,13 @@ inline QDataStream & operator >> (QDataStream &in, Repository &info) {
 }
 inline QDataStream & operator << ( QDataStream & out, const Settings & info ) {
 
-    out << info.style << info.documentMode << info.launch << info.updServers << info.secTime;
+    out << info.style << info.documentMode << info.launch;
 
     return out;
 }
 inline QDataStream & operator >> (QDataStream &in, Settings &info) {
 
-    in >> info.style >> info.documentMode >> info.launch >> info.updServers >> info.secTime;
+    in >> info.style >> info.documentMode >> info.launch;
 
     return in;
 }
