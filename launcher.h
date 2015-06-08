@@ -157,7 +157,9 @@ private:
     int selectServer;               // Выбранный сервер в списке
 
     // Пременные для контроля апдейтера
-
+    bool updaterIsRunning;
+    bool checkAddonsIsRunning;
+    bool downloadAddonsIsRunning;
 
     // Функции обновления данных
     void updateInformationInWidget();       // Обновление информации в виджете

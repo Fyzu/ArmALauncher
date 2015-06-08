@@ -85,7 +85,7 @@ void launcher::on_repoConnect_clicked() {
     int currentRow = ui->repoList->currentRow();
 
     // Проверяем, выбран ли элемент и не пустой ли Url
-    if(currentRow != -1 && !repositories[currentRow].url.isEmpty() && ui->repositoryList->tabText(1) == "Не подключен") {
+    if(!updaterIsRunning && currentRow != -1 && !repositories[currentRow].url.isEmpty() && ui->repositoryList->tabText(1) == "Не подключен") {
 
         // Проверяем, есть директории для поиска аддонов
         if(ui->addonsFolders->count() == 0) {
@@ -127,6 +127,7 @@ void launcher::on_repoConnect_clicked() {
 
         // Иницилизируем updater
         updater->setRepository(repositories[currentRow]);
+        updaterIsRunning = true;
 
         //..запускаем апдейтер
         emit showUpdater();
@@ -143,6 +144,7 @@ void launcher::on_repoDisconnect_clicked() {
     updaterFinished();
     emit repositoryDisconnect();
 
+    updaterIsRunning = false;
     ui->repoConnect->setEnabled(true);
     ui->repositoryList->setCurrentIndex(0);
 }
@@ -271,6 +273,9 @@ void launcher::updaterFinished() {
     ui->progressBar_all->setValue(0);
     ui->progressBar_current->setValue(0);
 
+    disconnect(ui->addonsTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this,           SLOT(addonsTreeCheck(QTreeWidgetItem*)));
+
     // Отвязываем слоты\сигналы
     /*disconnect(ui->checkAddons,SIGNAL(clicked()),this,SLOT(updaterCheckAddonsUI()));
     disconnect(this,SIGNAL(updaterCheckAddons(QString)),updater,SLOT(checkAddons(QString)));
@@ -293,6 +298,9 @@ void launcher::updaterFinished() {
 
 // Слот при нажатии на кнопку проверить аддоны
 void launcher::updaterCheckAddonsUI() {
+
+    if(checkAddonsIsRunning)
+        return;
 
     qDebug() << "Debug-updateAddons_UI: pushButton clicked - updaterCheckAddonsUI - start";
 
@@ -317,14 +325,15 @@ void launcher::updaterCheckAddonsUI() {
     ui->repoDisconnect->setEnabled(true);
 
     // Сообщаем апдейтеру, что UI готов
+    checkAddonsIsRunning = true;
     emit updaterCheckAddons(ui->addonsFolders->currentText());
 
     qDebug() << "Debug-updateAddons_UI: updaterCheckAddonsUI - succ";
 }
 
 // Слот UI - когда дочерний поток завершил проверку файлов
-void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QString> > otherF, const QList< QMap<QString, QString> > newF,
-                                     const QList< QMap<QString, QString> > correctF, const QList< QMap<QString, QString> > notCorrectF) {
+void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QString> > otherF,   const QList< QMap<QString, QString> > newF,
+                                               const QList< QMap<QString, QString> > correctF, const QList< QMap<QString, QString> > notCorrectF) {
 
     qDebug() << "Debug-updateAddons_UI: check Addons Finished UI - start";
 
@@ -416,6 +425,8 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
     connect(ui->addonsTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this,           SLOT(addonsTreeCheck(QTreeWidgetItem*)));
 
+    checkAddonsIsRunning = false;
+
     qDebug() << "Debug-updateAddons_UI: check Addons Finished UI - succ";
 }
 
@@ -457,6 +468,8 @@ void launcher::downloadUpdateStartUI() {
     ui->progressBar_all->setMaximum(fileID.size());
     ui->progressBar_all->setValue(0);
 
+    downloadAddonsIsRunning = true;
+
     emit downloadUpdateStart(fileID);
 }
 
@@ -478,8 +491,8 @@ void launcher::downloadAddonStartedUI(const QList< QMap<QString, QString> > down
     }
 
     // Регистрируем прогресс в прогресс баре
-    ui->progressBar_all->setMaximum(downloadFiles.size());
-    ui->progressBar_all->setValue(index+1);
+    ui->progressBar_all->setMaximum(totalSize);
+    ui->progressBar_all->setValue(currentSize);
 
     // Описываем сколько осталось до конца загрузки из скольки, приводя к разумным типам исчесления данных
     // Если байты не больше..
@@ -503,6 +516,7 @@ void launcher::downloadAddonStartedUI(const QList< QMap<QString, QString> > down
 
 // Завершена загрузка файлов - оповещаем UI
 void launcher::downloadAddonsFinishUI(bool success) {
+
     // Заполняем UI в соответсвии с успешностью загрузки
     ui->progressBar_all->setMaximum(1);
     ui->progressBar_all->setValue(1);
@@ -524,6 +538,8 @@ void launcher::downloadAddonsFinishUI(bool success) {
         ui->delOtherFiles->setEnabled(false);
     else
         ui->delOtherFiles->setEnabled(true);
+
+    downloadAddonsIsRunning = false;
 }
 
 // Слот завершения удаления лишних файлов

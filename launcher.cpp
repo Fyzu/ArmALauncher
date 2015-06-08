@@ -176,6 +176,11 @@ launcher::launcher(QWidget *parent) :
     connect(updater, SIGNAL(finished()),
             this,    SLOT(updaterFinished()));
 
+    // Объявление переменных апдейтера
+    updaterIsRunning = false;
+    checkAddonsIsRunning = false;
+    downloadAddonsIsRunning = false;
+
     // Запускаем поток для апдейтера
     thread->start();
 
