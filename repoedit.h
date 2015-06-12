@@ -20,15 +20,10 @@ public:
     ~repoEdit();
 signals:
     void sendData(Repository repo, int currentRow, bool newRepo);
-public slots:
-    void recieveData(Repository repo, int currentRow, bool newRepo);
-
 private slots:
-
+    void recieveData(Repository repo, int currentRow, bool newRepo);
     void on_repoType_currentIndexChanged(int index);
-
     void on_saveButton_clicked();
-
 private:
     Ui::repoEdit *ui;
     bool newR;

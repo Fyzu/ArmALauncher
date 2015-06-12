@@ -23,18 +23,12 @@ public:
     ~launcherUpdate();
 signals:
     void result(int res);
-
 private slots:
     void newVersion(Settings settings, QString version);
-
     void downloadPatchnotesFinished(QNetworkReply *reply);
-
     void on_updateNow_clicked();
-
     void on_updateAfter_clicked();
-
     void on_updateLater_clicked();
-
 private:
     Ui::launcherUpdate *ui;
     QNetworkAccessManager *manager;

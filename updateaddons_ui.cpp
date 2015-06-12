@@ -7,7 +7,9 @@
 // Слот смены выбранного элемента списка репозиториев
 void launcher::on_repoList_currentRowChanged(int currentRow) {
 
-    if(ui->repositoryList->tabText(1) == "Не подключен" && currentRow != -1) {
+    qDebug() << "launcher::on_repoList_currentRowChanged: row -" << currentRow;
+
+    if(ui->repositoryList->tabText(1) == tr("Не подключен") && currentRow != -1) {
         ui->repoConnect->setEnabled(true);
     } else {
         ui->repoConnect->setEnabled(false);
@@ -24,7 +26,8 @@ void launcher::on_repoList_currentRowChanged(int currentRow) {
 // Слот кнопки "добавить репозиторий"
 void launcher::on_repoAdd_clicked() {
 
-    qDebug() << "Debug-updateAddons_UI: repository Add";
+    qDebug() << "launcher::on_repoAdd_clicked: new repo add";
+
     emit repoEditStart(Repository(), -1, true);
 }
 
@@ -37,7 +40,7 @@ void launcher::on_repoDel_clicked() {
     // Удаляем выбранный элемент
     if(currentRow != -1) {          // Если выбран элемент
 
-        qDebug() << "Debug-updateAddons_UI: repository Del";
+        qDebug() << "launcher::on_repoDel_clicked: repository del -" << currentRow;
 
         //..удаление в списке репозиториев
         repositories.takeAt(currentRow);
@@ -57,15 +60,17 @@ void launcher::on_repoEdit_clicked() {
     // Проверяем выбран ли элемент
     if(currentRow != -1) {          // Если выбран элемент
 
-        qDebug() << "Debug-updateAddons_UI: repository Edit";
+        qDebug() << "launcher::updaterCheckAddonsUI: repository edit -" << currentRow;
 
         //..вносим данные в память
         emit repoEditStart(repositories[currentRow], currentRow, false);
     }
 }
 
+// Репозиторий изменен\добавлен и обновляем информацию в списке
 void launcher::repoEditFinish(Repository repo, int currentRow, bool newRepo) {
 
+    // Выбор, добавлен новый репозиторий или изменен старый
     if(newRepo) {
         repositories.append(repo);
         currentRow = repositories.size();
@@ -73,8 +78,10 @@ void launcher::repoEditFinish(Repository repo, int currentRow, bool newRepo) {
         repositories[currentRow] = repo;
     }
 
+    // Обновляем информации в виджетах
     updateInformationInWidget();
 
+    // Выделяем измененный виджет
     ui->repoList->setCurrentRow(currentRow);
 }
 
@@ -85,15 +92,16 @@ void launcher::on_repoConnect_clicked() {
     int currentRow = ui->repoList->currentRow();
 
     // Проверяем, выбран ли элемент и не пустой ли Url
-    if(!updaterIsRunning && currentRow != -1 && !repositories[currentRow].url.isEmpty() && ui->repositoryList->tabText(1) == "Не подключен") {
+    if(!updaterIsRunning && currentRow != -1 && !repositories[currentRow].url.isEmpty() && ui->repositoryList->tabText(1) == tr("Не подключен")) {
 
         // Проверяем, есть директории для поиска аддонов
         if(ui->addonsFolders->count() == 0) {
-            QMessageBox::warning(this,"Внимание!", "Не найдены директории для поиска аддонов.\nДобавьте директории для поиска аддонов или укажите исполняемый файлы Arma 3.", QMessageBox::Ok);
+            QMessageBox::warning(this,tr("Внимание!"), tr("Не найдены директории для поиска аддонов.\nДобавьте директории для поиска аддонов или укажите исполняемый файлы Arma 3."), QMessageBox::Ok);
+            qWarning() << "launcher::on_repoConnect_clicked: connect fail - addons folders - empty";
             return;
         }
 
-        qDebug() << "Debug-updateAddons_UI: repository Connect";
+        qDebug() << "launcher::on_repoConnect_clicked: repository connecting";
 
         // Переходим во вкладку репозитория
         ui->repositoryList->setCurrentIndex(1);
@@ -111,9 +119,9 @@ void launcher::on_repoConnect_clicked() {
         ui->progressBar_all->setValue(0);
         ui->progressBar_current->setMaximum(1);
         ui->progressBar_current->setValue(0);
-        ui->progressBar_all_label->setText("Всего: ");
+        ui->progressBar_all_label->setText(tr("Всего: "));
         ui->progressBar_all_label2->setText("0/0");
-        ui->progressBar_current_label->setText("Текущий: ");
+        ui->progressBar_current_label->setText(tr("Текущий: "));
         ui->progressBar_current_label2->setText("0/0");
         ui->progressBar_current_label3->setText("");
         ui->addonsTree->clear();
@@ -131,19 +139,16 @@ void launcher::on_repoConnect_clicked() {
 
         //..запускаем апдейтер
         emit showUpdater();
-
-        qDebug() << "Debug-updateAddons_UI: Updater thread - start";
     }
 }
 
 // Отключаем репозиторий
 void launcher::on_repoDisconnect_clicked() {
 
-    qDebug() << "Debug-updateAddons_UI: repository Disconnect";
+    qDebug() << "launcher::on_repoDisconnect_clicked: repo: " << ui->repositoryList->tabText(1);
 
     updaterFinished();
     emit repositoryDisconnect();
-
     updaterIsRunning = false;
     ui->repoConnect->setEnabled(true);
     ui->repositoryList->setCurrentIndex(0);
@@ -153,85 +158,103 @@ void launcher::on_repoDisconnect_clicked() {
  * СЛОТЫ ИНТЕРФЕЙСА
  */
 // Заполнение UI после успешного запуска апдейтера
-void launcher::updaterStarted(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList) {
+void launcher::updaterStarted(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList, bool success, QString defaultAddonsPath) {
 
-    qDebug() << "Debug-updateAddons_UI: updater Started UI - start";
+    // Проверяем на успешность запуска
+    if (success) {         // Если запуск прошел успешно
 
-    modsL = modsList;
+        qDebug() << "launcher::updaterStarted: repo start - succ";
 
-    // Оповещаем пользователя, что подключение к репозиторию прошло успешно
-    ui->repositoryList->setTabText(1, repository.name);
-    ui->str1->setText("Подключение прошло успешно!");
-    ui->str2->setText("Всего    файлов: " + QString::number(addonsList.count()));
-    ui->str3->setText("Нужных файлов: -");
-    //..включаем доступный функционал
-    ui->checkAddons->setEnabled     (true);
-    ui->repoDisconnect->setEnabled  (true);
-    ui->md5check->setEnabled        (true);
-    ui->addonsFolders->setEnabled   (true);
+        // Устанавливаем папку для проверки аддонов
+        if(!defaultAddonsPath.isEmpty())
+            ui->addonsFolders->setCurrentText(defaultAddonsPath);
 
-    // Заполняем дерево аддонов
-    //..очищаем дерево аддонов
-    ui->addonsTree->clear();
-    //..временные переменные
-    QTreeWidgetItem *item;
-    QStringList addonsFolders;
-    bool userconfigExists = false;
-    //..цикл поиска нужных элементов, для добавления их в список
-    if(repository.type == 0)
-        for(int i = 0; i<modsList.count();i++) {
-            // Добавляем userconfig
-            if(modsList[i].contains("userconfig") && !modsList[i].contains("\\userconfig")
-               && !userconfigExists) { // Если строка содержит юзерконфиг и не является дочерней папкой и в список не добавлялась
-                userconfigExists = true;                // Сигнализируем, что Userconfig есть и мы его добавили
-                // Добавляем элемент и прописываем его параметры
-                addonsFolders.append("userconfig");
-                item = new QTreeWidgetItem(ui->addonsTree);
-                item->setText(0, "userconfig");
-                item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-                item->setCheckState(0, Qt::Unchecked);    // Заранее делаем выбранным, ибо это важный раздел
-            } else
-            // Добавляем основной аддон
-            if(i+1 < modsList.count() && modsList[i] == modsList[i+1]) { // Если это не последний элемент списка и текущий элемент равен следующему
+        // Оповещаем пользователя, что подключение к репозиторию прошло успешно
+        modsL = modsList;
+        ui->repositoryList->setTabText(1, repository.name);
+        ui->str1->setText(tr("Подключение прошло успешно!"));
+        ui->str2->setText(tr("Всего    файлов: ") + QString::number(addonsList.count()));
+        ui->str3->setText(tr("Нужных файлов: -"));
+        //..включаем доступный функционал
+        ui->checkAddons->setEnabled     (true);
+        ui->repoDisconnect->setEnabled  (true);
+        ui->checksum->setEnabled        (true);
+        ui->addonsFolders->setEnabled   (true);
+
+        // Заполняем дерево аддонов
+        //..очищаем дерево аддонов
+        ui->addonsTree->clear();
+        //..временные переменные
+        QTreeWidgetItem *item;
+        QStringList addonsFolders;
+        bool userconfigExists = false;
+        //..цикл поиска нужных элементов, для добавления их в список
+        if(repository.type == 0) { // Если репозиторий Yoma Addon Sync 2009
+            for(int i = 0; i<modsList.count();i++) {
+                // Добавляем userconfig
+                if(modsList[i].contains("userconfig") && !modsList[i].contains("\\userconfig")
+                   && !userconfigExists) { // Если строка содержит юзерконфиг и не является дочерней папкой и в список не добавлялась
+                    userconfigExists = true;                // Сигнализируем, что Userconfig есть и мы его добавили
+                    // Добавляем элемент и прописываем его параметры
+                    addonsFolders.append("userconfig");
+                    item = new QTreeWidgetItem(ui->addonsTree);
+                    item->setText(0, "userconfig");
+                    item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
+                    item->setCheckState(0, Qt::Unchecked);    // Заранее делаем выбранным, ибо это важный раздел
+                } else
+                // Добавляем основной аддон
+                if(i+1 < modsList.count() && modsList[i] == modsList[i+1]) { // Если это не последний элемент списка и текущий элемент равен следующему
+                    // Добавляем элемент и прописываем его параметры
+                    addonsFolders.append(modsList[i]);
+                    item = new QTreeWidgetItem(ui->addonsTree);
+                    item->setText(0, modsList[i]);
+                    item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
+                    item->setCheckState(0, Qt::Checked);    // Заранее делаем выбранным, ибо это важный раздел
+                    i++;                                    // Перескакиваем элемент, т.к. элементы одинаковые
+                } else
+                // Добавляем не основной раздел
+                if (i != 0 && modsList[i] != modsList[i-1] && !modsList[i].contains('\\')) { // Если это не первый элемент и предыдущий элемент не является таким же,
+                                                                                            //  так же элемент не содержит '\'
+                    // Добавляем элемент и прописываем его параметры
+                    addonsFolders.append(modsList[i]);
+                    item = new QTreeWidgetItem(ui->addonsTree);
+                    item->setText(0, modsList[i]);
+                    item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
+                    item->setCheckState(0, Qt::Unchecked);    // Делаем раздел не выбранным, т.к. этот раздел не относится к важным
+                }
+            }
+        } else { // Если репозиторий типа - Arma3Sync
+
+            for(int i = 0; i<modsList.count();i++) {
                 // Добавляем элемент и прописываем его параметры
                 addonsFolders.append(modsList[i]);
                 item = new QTreeWidgetItem(ui->addonsTree);
                 item->setText(0, modsList[i]);
                 item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-                item->setCheckState(0, Qt::Checked);    // Заранее делаем выбранным, ибо это важный раздел
-                i++;                                    // Перескакиваем элемент, т.к. элементы одинаковые
-            } else
-            // Добавляем не основной раздел
-            if (i != 0 && modsList[i] != modsList[i-1] && !modsList[i].contains('\\')) { // Если это не первый элемент и предыдущий элемент не является таким же,
-                                                                                        //  так же элемент не содержит '\'
-                // Добавляем элемент и прописываем его параметры
-                addonsFolders.append(modsList[i]);
-                item = new QTreeWidgetItem(ui->addonsTree);
-                item->setText(0, modsList[i]);
-                item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-                item->setCheckState(0, Qt::Unchecked);    // Делаем раздел не выбранным, т.к. этот раздел не относится к важным
+                if(modsList[i].startsWith('@'))
+                    item->setCheckState(0, Qt::Checked);
+                else
+                    item->setCheckState(0, Qt::Unchecked);
             }
         }
-    else
-        for(int i = 0; i<modsList.count();i++) {
-            // Добавляем элемент и прописываем его параметры
-            addonsFolders.append(modsList[i]);
-            item = new QTreeWidgetItem(ui->addonsTree);
-            item->setText(0, modsList[i]);
-            item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-            if(modsList[i].startsWith('@'))
-                item->setCheckState(0, Qt::Checked);
-            else
-                item->setCheckState(0, Qt::Unchecked);
-        }
 
-    emit updaterUIStarted(addonsFolders);
-    qDebug() << "Debug-updateAddons_UI: updater Started UI - succ";
+        // Сообщаем апдейтеру что запуск прошел успешно
+        emit updaterUIStarted(addonsFolders);
+
+    } else { // Если запуск прошел не успешно
+        qWarning() << "launcher::updaterStarted: repo start - fail";
+        on_repoDisconnect_clicked();
+        QMessageBox::warning(this,tr("Внимание!"), tr("Неудалось подключится к репозиторию,\nв процессе возникли ошибки."), QMessageBox::Ok);
+    }
 
 }
 
+// Отановка апдейтера - слот UI
 void launcher::stopUpdaterUI() {
+
+    // Сигнализируем что бы апдейтер остановился
     if(stopUpdaterInProcess) {
+        qDebug() << "launcher::stopUpdaterUI: stop";
         stopUpdaterInProcess = false;
         emit stopUpdater();
     }
@@ -240,20 +263,20 @@ void launcher::stopUpdaterUI() {
 // Заполнение UI после завершения работы апдейтера (отключение или ошибка в подключении)
 void launcher::updaterFinished() {
 
-    qDebug() << "Debug-updateAddons_UI: updater Finished UI - start";
+    qDebug() << "launcher::updaterFinished: finish";
 
     // Оповещаем пользователя, что апдейтер завершился
-    ui->repositoryList->setTabText(1, "Не подключен");
-    ui->str1->setText(" - Репозиторий не подключен -");
-    ui->str2->setText("Для подключения, зайдийте во");
-    ui->str3->setText("вкладку репозитории.");
+    ui->repositoryList->setTabText(1, tr("Не подключен"));
+    ui->str1->setText(tr(" - Репозиторий не подключен -"));
+    ui->str2->setText(tr("Для подключения, зайдийте во"));
+    ui->str3->setText(tr("вкладку репозитории."));
     ui->progressBar_all->setMaximum(1);
     ui->progressBar_all->setValue(0);
     ui->progressBar_current->setMaximum(1);
     ui->progressBar_current->setValue(0);
-    ui->progressBar_all_label->setText("Всего: ");
+    ui->progressBar_all_label->setText(tr("Всего: "));
     ui->progressBar_all_label2->setText("0/0");
-    ui->progressBar_current_label->setText("Текущий: ");
+    ui->progressBar_current_label->setText(tr("Текущий: "));
     ui->progressBar_current_label2->setText("0/0");
     ui->progressBar_current_label3->setText("");
 
@@ -264,7 +287,7 @@ void launcher::updaterFinished() {
     ui->stopUpdater->setEnabled     (false);
     ui->addonsFolders->setEnabled   (false);
     ui->repoDisconnect->setEnabled  (false);
-    ui->md5check->setEnabled        (false);
+    ui->checksum->setEnabled        (false);
     ui->addonsFolders->setEnabled   (false);
 
     // Очищаем ненужные поля
@@ -275,67 +298,47 @@ void launcher::updaterFinished() {
 
     disconnect(ui->addonsTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this,           SLOT(addonsTreeCheck(QTreeWidgetItem*)));
-
-    // Отвязываем слоты\сигналы
-    /*disconnect(ui->checkAddons,SIGNAL(clicked()),this,SLOT(updaterCheckAddonsUI()));
-    disconnect(this,SIGNAL(updaterCheckAddons(QString)),updater,SLOT(checkAddons(QString)));
-    disconnect(updater,SIGNAL(checkAddonsFinished(int,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>)),this,SLOT(checkAddonsFinishedUI(int,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>,QList<QMap<QString,QString>>)));
-    disconnect(this,SIGNAL(downloadUpdateStart(QList<int>)),updater,SLOT(downloadUpdate(QList<int>)));
-    disconnect(updater,SIGNAL(downloadAddonStarted(QList<QMap<QString,QString>>,int)),this,SLOT(downloadAddonStartedUI(QList<QMap<QString,QString>>,int)));
-    disconnect(updater,SIGNAL(downloadAddonsFinished(bool)),this,SLOT(downloadAddonsFinishUI(bool)));
-    disconnect(ui->delOtherFiles,SIGNAL(clicked()),updater,SLOT(delOtherFiles()));
-    disconnect(ui->stopUpdater,SIGNAL(clicked()),this,SLOT(stopUpdaterUI()));
-    disconnect(this,SIGNAL(stopUpdater()),updater,SLOT(stopUpdater()));
-    disconnect(updater,SIGNAL(updateDownloadProgress_UI(qint64,qint64,QString)),this,SLOT(updateDownloadProgress_UI(qint64,qint64,QString)));
-    disconnect(updater,SIGNAL(downloadFile_UI(QString)),this,SLOT(downloadFile_UI(QString)));
-    disconnect(updater,SIGNAL(downloadFinished(bool)),this,SLOT(downloadFinished(bool)));
-    disconnect(updater,SIGNAL(unzipStart(QString)),this,SLOT(unzipStart(QString)));
-    disconnect(updater,SIGNAL(unzipFinished(QString)),this,SLOT(unzipFinished(QString)));
-    disconnect(updater,SIGNAL(finished()),this,SLOT(updaterFinished()));*/
-
-    qDebug() << "Debug-updateAddons_UI: updater Finished UI - succ";
 }
 
 // Слот при нажатии на кнопку проверить аддоны
 void launcher::updaterCheckAddonsUI() {
 
-    if(checkAddonsIsRunning)
-        return;
+    // Подготавливаем UI и сигнализируем апдейтеру о проверке
+    if(!checkAddonsIsRunning) {
 
-    qDebug() << "Debug-updateAddons_UI: pushButton clicked - updaterCheckAddonsUI - start";
+        qDebug() << "launcher::updaterCheckAddonsUI: checkaddons button clicked";
 
-    // Оповещаем пользователя, что начата проверка файлов
-    ui->str1->setText("Проверка аддонов начата");
-    ui->progressBar_all_label->setText("Всего: Проверка файлов начата");
-    ui->progressBar_all_label2->setText("0/1");
-    ui->progressBar_current->setMaximum(0);
-    ui->progressBar_current->setValue(0);
-    ui->progressBar_current_label2->clear();
-    ui->progressBar_current_label3->clear();
+        // Оповещаем пользователя, что начата проверка файлов
+        ui->str1->setText("Проверка аддонов начата");
+        ui->progressBar_all_label->setText(tr("Всего: Проверка файлов начата"));
+        ui->progressBar_all_label2->setText("0/1");
+        ui->progressBar_current->setMaximum(0);
+        ui->progressBar_current->setValue(0);
+        ui->progressBar_current_label2->clear();
+        ui->progressBar_current_label3->clear();
 
-    // Отключаем функционал который невозможно вызвать
-    ui->checkAddons->setEnabled   (false);
-    ui->downloadUpdate->setEnabled(false);
-    ui->delOtherFiles->setEnabled (false);
-    ui->addonsFolders->setEnabled (false);
+        // Отключаем функционал который невозможно вызвать
+        ui->checkAddons->setEnabled   (false);
+        ui->downloadUpdate->setEnabled(false);
+        ui->delOtherFiles->setEnabled (false);
+        ui->addonsFolders->setEnabled (false);
 
-    // Активируем кнопку остановки процесса
-    ui->stopUpdater->setEnabled(true);
-    stopUpdaterInProcess = true;
-    ui->repoDisconnect->setEnabled(true);
+        // Активируем кнопку остановки процесса
+        ui->stopUpdater->setEnabled(true);
+        stopUpdaterInProcess = true;
+        ui->repoDisconnect->setEnabled(true);
 
-    // Сообщаем апдейтеру, что UI готов
-    checkAddonsIsRunning = true;
-    emit updaterCheckAddons(ui->addonsFolders->currentText());
-
-    qDebug() << "Debug-updateAddons_UI: updaterCheckAddonsUI - succ";
+        // Сообщаем апдейтеру, что UI готов
+        checkAddonsIsRunning = true;
+        emit updaterCheckAddons(ui->addonsFolders->currentText());
+    }
 }
 
 // Слот UI - когда дочерний поток завершил проверку файлов
 void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QString> > otherF,   const QList< QMap<QString, QString> > newF,
                                                const QList< QMap<QString, QString> > correctF, const QList< QMap<QString, QString> > notCorrectF) {
 
-    qDebug() << "Debug-updateAddons_UI: check Addons Finished UI - start";
+    qDebug() << "launcher::checkAddonsFinishedUI: finish";
 
     // Получаем список файлов для UI
     otherFiles = otherF;
@@ -354,9 +357,9 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
         ui->delOtherFiles->setEnabled(true);
 
     // Заполняем строки информацией
-    ui->str1->setText("Проверка прошла успешно!");
-    ui->str3->setText("Нужных файлов: " + QString::number(newFiles.size()+notCorrectFiles.size()));
-    ui->progressBar_all_label->setText("Всего: Проверка файлов прошла успешно");
+    ui->str1->setText(tr("Проверка прошла успешно!"));
+    ui->str3->setText(tr("Нужных файлов: ") + QString::number(newFiles.size()+notCorrectFiles.size()));
+    ui->progressBar_all_label->setText(tr("Всего: Проверка файлов прошла успешно"));
     ui->progressBar_all->setMaximum(1);
     ui->progressBar_all->setValue(1);
     ui->progressBar_current->setMaximum(1);
@@ -426,8 +429,6 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
             this,           SLOT(addonsTreeCheck(QTreeWidgetItem*)));
 
     checkAddonsIsRunning = false;
-
-    qDebug() << "Debug-updateAddons_UI: check Addons Finished UI - succ";
 }
 
 // Обновление прогресса проверки аддонов в UI
@@ -436,20 +437,11 @@ void launcher::checkAddonsProgressUI(int index, const QList< QMap<QString, QStri
     ui->progressBar_all_label2->setText(QString::number(index+1) + "/" + QString::number(existsFiles.size()));
     ui->progressBar_all->setMaximum(existsFiles.size());
     ui->progressBar_all->setValue(index+1);
-    ui->progressBar_current_label->setText("Текущий: Проверяем " + existsFiles[index]["Pbo"]);
+    ui->progressBar_current_label->setText(tr("Текущий: Проверяем ") + existsFiles[index]["Pbo"]);
 }
 
 // Начата загрузка обновления - оповещаем UI
 void launcher::downloadUpdateStartUI() {
-
-    qDebug() << "Debug-updateAddons_UI: download Update Start - UI";
-
-    // Отключаем/включаем функционал
-    ui->stopUpdater->setEnabled(true);
-    stopUpdaterInProcess = true;
-    ui->repoDisconnect->setEnabled(false);
-    ui->downloadUpdate->setEnabled(false);
-    ui->delOtherFiles->setEnabled(false);
 
     // Получаем список ID файлов которые выбраны для скачивания
     QList<int> fileID;
@@ -461,22 +453,38 @@ void launcher::downloadUpdateStartUI() {
         }
     }
 
-    // Оповещаем UI, что загрузка начата
-    ui->str1->setText("Загрузка аддонов начата");
-    ui->progressBar_all_label->setText("Всего: Скачиваем аддоны");
-    ui->progressBar_all_label2->setText("0/" + QString::number(fileID.size()));
-    ui->progressBar_all->setMaximum(fileID.size());
-    ui->progressBar_all->setValue(0);
+    // Проверяем, есть ли файлы на скачивание
+    if(fileID.size() > 0) {
 
-    downloadAddonsIsRunning = true;
+        qDebug() << "launcher::downloadUpdateStartUI: download -" << fileID.size() << "files";
 
-    emit downloadUpdateStart(fileID);
+        // Отключаем/включаем функционал
+        ui->stopUpdater->setEnabled(true);
+        stopUpdaterInProcess = true;
+        ui->repoDisconnect->setEnabled(false);
+        ui->downloadUpdate->setEnabled(false);
+        ui->delOtherFiles->setEnabled(false);
+
+        // Оповещаем UI, что загрузка начата
+        ui->str1->setText("Загрузка аддонов начата");
+        ui->progressBar_all_label->setText(tr("Всего: Скачиваем аддоны"));
+        ui->progressBar_all_label2->setText("0/" + QString::number(fileID.size()));
+        ui->progressBar_all->setMaximum(fileID.size());
+        ui->progressBar_all->setValue(0);
+
+        downloadAddonsIsRunning = true;
+
+        emit downloadUpdateStart(fileID);
+    } else {
+        qWarning() << "launcher::downloadUpdateStartUI: not found download files";
+        QMessageBox::warning(this,tr("Внимание!"), tr("Нет файлов для загрузки с репозитория.\nВы ничего не выбрали для загрузки или все файлы скачены."), QMessageBox::Ok);
+    }
 }
 
 // Начата загрузка нового файла - оповещаем UI
 void launcher::downloadAddonStartedUI(const QList< QMap<QString, QString> > downloadFiles, int index) {
 
-    qDebug() << "Debug-updateAddons_UI: download Addon Started - UI";
+    qDebug() << "launcher::downloadAddonStartedUI: file -" << downloadFiles[index];
 
     // Считаем сколько всего нужно скачать и сколько скачали
     qlonglong totalSize = 0;
@@ -499,33 +507,35 @@ void launcher::downloadAddonStartedUI(const QList< QMap<QString, QString> > down
     //..1 КБ
     if(totalSize < 1024)
         ui->progressBar_all_label2->setText(QString::number(currentSize)  + "/"
-                                          + QString::number(totalSize) + " байт");
+                                          + QString::number(totalSize) + tr(" байт"));
     //..1 МБ
     else if (totalSize < 1048576)
         ui->progressBar_all_label2->setText(QString::number((int)(currentSize/1024))  + "/"
-                                          + QString::number((int)(totalSize/1024)) + " КБ");
+                                          + QString::number((int)(totalSize/1024)) + tr(" КБ"));
     //..ГБ
     else if (totalSize < 4294967296)
         ui->progressBar_all_label2->setText(QString::number((int)(currentSize/1048576))  + "/"
-                                          + QString::number((int)(totalSize/1048576)) + " МБ");
+                                          + QString::number((int)(totalSize/1048576)) + tr(" МБ"));
     // Если больше или равны 4 ГБ
     else
-        ui->progressBar_all_label2->setText(QString::number((int)(currentSize/1048576))  + " МБ/"
-                                          + QString::number((int)(totalSize/4294967296)) + " ГБ");
+        ui->progressBar_all_label2->setText(QString::number((int)(currentSize/1048576))  + tr(" МБ/")
+                                          + QString::number((int)(totalSize/4294967296)) + tr(" ГБ"));
 }
 
 // Завершена загрузка файлов - оповещаем UI
 void launcher::downloadAddonsFinishUI(bool success) {
+
+    qDebug() << "launcher::downloadAddonsFinishUI: addons download succ -" << success;
 
     // Заполняем UI в соответсвии с успешностью загрузки
     ui->progressBar_all->setMaximum(1);
     ui->progressBar_all->setValue(1);
     if(!success) {
         ui->str1->setText("Загрузка аддонов остановлена");
-        ui->progressBar_all_label->setText("Всего: Загрузка аддонов остановлена");
+        ui->progressBar_all_label->setText(tr("Всего: Загрузка аддонов не закончена"));
     } else {
         ui->str1->setText("Загрузка аддонов успешна");
-        ui->progressBar_all_label->setText("Всего: Загрузка аддонов прошла успешно");
+        ui->progressBar_all_label->setText(tr("Всего: Загрузка аддонов прошла успешно"));
     }
 
     // Отключаем/включаем ненужный функционал
@@ -544,6 +554,9 @@ void launcher::downloadAddonsFinishUI(bool success) {
 
 // Слот завершения удаления лишних файлов
 void launcher::deleteOtherFilesFinish() {
+
+    qDebug() << "launcher::deleteOtherFilesFinish: finish";
+
     ui->delOtherFiles->setEnabled(false);
     ui->checkAddons->setEnabled(true);
 }
@@ -551,7 +564,7 @@ void launcher::deleteOtherFilesFinish() {
 // Меняем checkState цепочки файлов
 void launcher::addonsTreeCheck(QTreeWidgetItem *item) {
 
-    qDebug() << "Debug-updateAddons_UI: addonsTree - item changed " << item->text(0);
+    qDebug() << "launcher::addonsTreeCheck: addonsTree - item changed " << item->text(0);
 
     // Получаем имя аддона, checkState которого изменился
     QString addon = item->text(0);
@@ -570,14 +583,18 @@ void launcher::addonsTreeCheck(QTreeWidgetItem *item) {
 }
 
 // Меняем отображение информации в filesTree
-void launcher::on_md5check_stateChanged(int stateCheck) {
-
-    qDebug() << "Debug-updateAddons_UI: MD5 show/hide";
+void launcher::on_checksum_stateChanged(int stateCheck) {
 
     // Если checkState = Uncheked, то отображаем лишь файлы
-    if(stateCheck == Qt::Unchecked)
+    if(stateCheck == Qt::Unchecked) {
+
+        qDebug() << "launcher::on_checksum_stateChanged: checksum hide";
+
         ui->filesTree->setColumnCount(1);
-    else {// Иначе, то отображаем и МД5
+    } else {// Иначе, то отображаем и МД5
+
+        qDebug() << "launcher::on_checksum_stateChanged: checksum show";
+
         ui->filesTree->setColumnCount(3);
         //..размер секций filesTree
         ui->filesTree->header()->resizeSection(0, 200);
@@ -592,16 +609,14 @@ void launcher::on_md5check_stateChanged(int stateCheck) {
 // Обновление данных в UI о старте загрузки файла
 void launcher::downloadFile_UI(QString fileName) {
 
-    qDebug() << "Debug-updateAddons_UI: download File UI - start";
+    qDebug() << "launcher::downloadFile_UI: file download -" << fileName;
 
     // Оповещаем UI какой файл мы скачиваем
-    ui->progressBar_current_label->setText("Текущий: Скачиваем " + fileName);
+    ui->progressBar_current_label->setText(tr("Текущий: Скачиваем ") + fileName);
 
     // Включаем кнопку остановк загрузки
     ui->stopUpdater->setEnabled(true);
     stopUpdaterInProcess = true;
-
-    qDebug() << "Debug-updateAddons_UI: download File UI - succ";
 }
 
 // Обновление данных в UI о прогрессе загрузки файла
@@ -620,36 +635,39 @@ void launcher::updateDownloadProgress_UI(qint64 bytesRead, qint64 totalBytes, QS
     //..1 КБ
     if(totalBytes < 1024)
         ui->progressBar_current_label2->setText(QString::number(bytesRead)  + "/"
-                                              + QString::number(totalBytes) + " байт");
+                                              + QString::number(totalBytes) + tr(" байт"));
     //..1 МБ
     else if (totalBytes < 1048576)
         ui->progressBar_current_label2->setText(QString::number((int)(bytesRead/1024))  + "/"
-                                              + QString::number((int)(totalBytes/1024)) + " КБ");
+                                              + QString::number((int)(totalBytes/1024)) + tr(" КБ"));
     //..ГБ
     else if (totalBytes < 1073741824)
         ui->progressBar_current_label2->setText(QString::number((int)(bytesRead/1048576))  + "/"
-                                              + QString::number((int)(totalBytes/1048576)) + " МБ");
+                                              + QString::number((int)(totalBytes/1048576)) + tr(" МБ"));
     // Если больше или равны 1 ГБ
     else
-        ui->progressBar_current_label2->setText(QString::number((int)(bytesRead/1048576))  + " МБ/"
-                                              + QString::number((int)(totalBytes/1073741824)) + " ГБ");
+        ui->progressBar_current_label2->setText(QString::number((int)(bytesRead/1048576))  + tr(" МБ/")
+                                              + QString::number((int)(totalBytes/1073741824)) + tr(" ГБ"));
 }
 
 // Обновлении данных в UI о завершении загрузки файла
 void launcher::downloadFinished(bool success) {
 
-    qDebug() << "Debug-updateAddons_UI: download Finished UI - start";
-
     // Отключаем кнопку остановки
     ui->stopUpdater->setEnabled(false);
 
     // Проверка успешной загрузки файла
-    if(success)             // Если файл скачен успешно
-        ui->progressBar_current_label->setText(ui->progressBar_current_label->text().replace("Скачиваем", "Скачен"));
-    else                    // Если нет
-        ui->progressBar_current_label->setText("Текущий: Скачивание остановлено");
+    if(success) {             // Если файл скачен успешно
 
-    qDebug() << "Debug-updateAddons_UI: download Finished UI - succ";
+        qDebug() << "launcher::downloadFinished: success";
+
+        ui->progressBar_current_label->setText(ui->progressBar_current_label->text().replace(tr("Скачиваем"), tr("Скачен")));
+    } else {                    // Если нет
+
+        qDebug() << "launcher::downloadFinished: fail";
+
+        ui->progressBar_current_label->setText(tr("Текущий: Скачивание остановлено"));
+    }
 }
 
 /*
@@ -658,25 +676,21 @@ void launcher::downloadFinished(bool success) {
 // Обновлении данных в UI о начале распаковки
 void launcher::unzipStart(QString fileName) {
 
-    qDebug() << "Debug-updateAddons_UI: unzip Start UI - start";
+    qDebug() << "launcher::unzipStart: start";
 
     // Оповещаем пользователя, что началась распаковка
-    ui->progressBar_current_label->setText("Текущий: Распаковываем " + fileName);
+    ui->progressBar_current_label->setText(tr("Текущий: Распаковываем ") + fileName);
     ui->progressBar_current->setValue(0);
     ui->progressBar_current->setMaximum(1);
-
-    qDebug() << "Debug-updateAddons_UI: unzip Start UI - succ";
 }
 
 // Обновлении данных в UI о завершении распаковки
 void launcher::unzipFinished(QString fileName) {
 
-    qDebug() << "Debug-updateAddons_UI: unzip Finished UI - start";
+    qDebug() << "launcher::unzipFinished: finish";
 
     // Оповещаем пользователя, что распаковка закончилась
-    ui->progressBar_current_label->setText("Текущий: Распаковали " + fileName);
+    ui->progressBar_current_label->setText(tr("Текущий: Распаковали ") + fileName);
     ui->progressBar_current->setValue(1);
     ui->progressBar_current->setMaximum(1);
-
-    qDebug() << "Debug-updateAddons_UI: unzip Finished UI - succ";
 }

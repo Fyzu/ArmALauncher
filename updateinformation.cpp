@@ -8,7 +8,7 @@
 //...в списке аддонов
 void launcher::updateInformationInAddonList() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. In Adoon List";
+    qDebug() << "launcher::updateInformationInAddonList: start";
 
     int addonIndex = 0;                                 // Объявляем счетчик аддонов
     QList<QStringList> listDir;                         // Объявляем 2мерный массив папок аддонов
@@ -58,7 +58,7 @@ void launcher::updateInformationInAddonList() {
             // Добавление информации в виджет
             Items.append( new QTreeWidgetItem(ui->addonTree));
             Items.at(addonIndex)->setCheckState(0, Qt::Unchecked);
-            Items.at(addonIndex)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+            Items.at(addonIndex)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
             Items.at(addonIndex)->setText(0, addonsNames[addonIndex]);
             Items.at(addonIndex)->setText(1, listDir[i][j]);
             Items.at(addonIndex)->setText(2,listDirs[i]);
@@ -69,8 +69,6 @@ void launcher::updateInformationInAddonList() {
             addonIndex++;
          }
     }
-
-    qDebug() << "Debug-updInf: Upd. Inf. In Adoon List - succ";
 }
 
 // Обновление информации в памяти
@@ -79,7 +77,7 @@ void launcher::updateInformationInAddonList() {
 //.. | список активированных аддонов ;
 void launcher::updateInformationInMem() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. In Mem";
+    qDebug() << "launcher::updateInformationInMem: start";
     // Получаем путь исполняемого файла
     pathFolder = ui->pathFolder->text();
 
@@ -91,16 +89,10 @@ void launcher::updateInformationInMem() {
         if(ui->addonTree->topLevelItem(i)->checkState(0) == Qt::Checked)
             checkAddons.append(ui->addonTree->topLevelItem(i)->text(2)+"/"+ui->addonTree->topLevelItem(i)->text(1));
     }
-    qDebug() << "Debug-updInf: Upd. Inf. In Mem - succ";
 }
 
 // Обновление информации в конфиге
-// Перенос всей нужной информации из виджетов в файл конфига:
-// Список: pathFolder, listDirs, listPriorityAddonsDirs, listPriorityAddonsFolders, favServers, parameters, checkAddons
-// Примечание: Некоторые структуру имеют перегруженые операции ввода\вывода потока - все в cfg.h
 void launcher::updateInformationInCfg() {
-
-    qDebug() << "Debug-updInf: Upd. Inf. In Cfg";
 
     // Предварительно соберем нужную информацию
     updateInfoParametersInMem();
@@ -109,17 +101,16 @@ void launcher::updateInformationInCfg() {
     QFile file(DocumentsLocation + "/Arma 3 - Other Profiles/armalauncher.cfg");
     if(file.open(QIODevice::WriteOnly))     //Если файл открыт успешно
     {
-        qDebug() << "Debug-updInf: Save inf. in cfg - " << file.fileName();
+        qDebug() << "launcher::updateInformationInCfg: save inf. in cfg -" << file.fileName();
         QDataStream out(&file);             //Создаем поток для записи данных в файл
 
         //В поток
-         out << pathFolder << listDirs << listPriorityAddonsDirs
-             << favServers << parameters
-             << checkAddons << this->size() << repositories << settings;
+        out << pathFolder << listDirs << listPriorityAddonsDirs
+            << favServers << parameters
+            << checkAddons << this->size() << repositories << settings;
 
-         qDebug() << "Debug-updInf: Upd. Inf. In Cfg - succ";
     } else {
-        qDebug() << "Debug-updInf: Upd. Inf. In Cfg - fail";
+        qDebug() << "launcher::updateInformationInCfg: save inf. in cfg - fail";
     }
 }
 
@@ -127,7 +118,7 @@ void launcher::updateInformationInCfg() {
 // Перенос имеющийся информации в памяти, заполняем виджеты, без дополнений
 void launcher::updateInformationInWidget() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. In Widget";
+    qDebug() << "launcher::updateInformationInWidget: start";
 
     // Тригер, что обновление информции в процессе
     // (нужно что бы не срабатывали ненужные сигналы)
@@ -182,7 +173,7 @@ void launcher::updateInformationInWidget() {
     }
     //..комбо-бокса, избранными серверами
     // Нулевой элемент, означает не выбранность сервера
-    ui->selectServer->addItem(QString("- Сервер не выбран -"),-1);
+    ui->selectServer->addItem(QString(tr("- Сервер не выбран -")),-1);
     //Заполняем комбо-бокс вариантами серверов
     for (int i = 0;i<favServers.count();i++) {
         // Заполняем по возможности онлайн информацией
@@ -224,15 +215,13 @@ void launcher::updateInformationInWidget() {
 
     // Говорим сигналам, что мы закончили изменения
     updateInfoInWidget = false;
-
-    // Радуемся, что не словили ошибку сегментации
-    qDebug() << "Debug-updInf: Upd. Inf. In Widget - Succ";
 }
 
 // Обновление информации параметров в памяти
 void launcher::updateInfoParametersInMem() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. Param. In Mem";
+    qDebug() << "launcher::updateInfoParametersInMem: start";
+
     // Получаем информацию с бокса  - Настройки игры
     parameters.check_name = ui->check_name->isChecked();
     parameters.name = ui->name->currentText();
@@ -263,8 +252,7 @@ void launcher::updateInfoParametersInMem() {
     // Получаем строку с дополнительными параметрами
     parameters.addParam = ui->addParameters->text();
 
-    qDebug() << "Debug-updInf: Upd. Inf. Param. In Mem - succ";
-    // Заполняем виджет с запускаемыми параметрами (просто потому, что я могу)
+    // Заполняем виджет с запускаемыми параметрами
     updateInfoInRunParametersWidget();
 }
 
@@ -272,7 +260,7 @@ void launcher::updateInfoParametersInMem() {
 // Заполняем виджеты параметров информацие из памяти
 void launcher::updateInfoParametersInWidget() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. Param. In Widget";
+    qDebug() << "launcher::updateInfoParametersInWidget: start";
 
     // Заполняем информацией блок - Настроек игры
     ui->check_name->setChecked(parameters.check_name);
@@ -304,15 +292,14 @@ void launcher::updateInfoParametersInWidget() {
     // Заполнен строку дополнительных параметров
     ui->addParameters->setText(parameters.addParam);
 
-    qDebug() << "Debug-updInf: Upd. Inf. Param. In Widget - succ";
-    // Заполняем виджет с запускаемыми параметрами (просто потому, что я могу)
+    // Заполняем виджет с запускаемыми параметрами
     updateInfoInRunParametersWidget();
 }
 
 // Обновление информации запускаемых параметров в виджете
 void launcher::updateInfoInRunParametersWidget() {
 
-    qDebug() << "Debug-updInf: Upd. Inf. In Ru Param. Widget";
+    qDebug() << "launcher::updateInfoInRunParametersWidget: start";
 
     // Получения списка параметров запуска
     QStringList args = getLaunchParam();
@@ -321,5 +308,4 @@ void launcher::updateInfoInRunParametersWidget() {
     // Заполняем виджет
     for(int i = 0; i<args.count();i++)
       ui->runParameters->append(args[i]);
-    qDebug() << "Debug-updInf: Upd. Inf. In Ru Param. Widget - succ";
 }

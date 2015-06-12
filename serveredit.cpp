@@ -4,9 +4,9 @@
 serverEdit::serverEdit(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::serverEdit) {
-    qDebug() << "Debug-serverEdit: Form initialization";
+    qDebug() << "serverEdit::serverEdit: constructor";
     ui->setupUi(this);
-    qDebug() << "Debug-serverEdit: Form initialization - succ";
+    this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
 
 }
 
@@ -18,14 +18,14 @@ serverEdit::~serverEdit() {
 // и заполнение виджетов новой информацией
 void serverEdit::recieveData(favServer server, QList<addon> addonsList, bool newServer, QStringList names) {
 
-    qDebug() << "Debug-serverEdit: Recieve start";
+    qDebug() << "serverEdit::recieveData: start";
 
     newServ = newServer;
     // Настройка сервера
     //..при добавлении
     if(newServer) {
         // Установка параметров сервера
-        ui->serverName->setText("Новый сервер");
+        ui->serverName->setText(tr("Новый сервер"));
         if(server.serverIP == "...")
             ui->serverIP->clear();
         else
@@ -52,18 +52,19 @@ void serverEdit::recieveData(favServer server, QList<addon> addonsList, bool new
         item->setText(0, addonsList[i].addonName);
         item->setText(1, addonsList[i].addonDir);
         item->setText(2, addonsList[i].addonPath);
-        item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
         // Проверка, активен ли этот аддон на сервере
         QString fullPath = addonsList[i].addonPath + QString("/") +
                 addonsList[i].addonDir;
-        if(server.serverAddons.count()>0)
+        if(server.serverAddons.count()>0) {
             // Если содержит, то активируем
             if(server.serverAddons.contains(fullPath))
                 item->setCheckState(0, Qt::Checked);
             else // Иначе. деактивируем
                 item->setCheckState(0, Qt::Unchecked);
-        else // Если у сервера нет подключенных аддонов, то сразу деактивируем
+        } else { // Если у сервера нет подключенных аддонов, то сразу деактивируем
             item->setCheckState(0, Qt::Unchecked);
+        }
     }
 
     // Выбранный профиль сервера
@@ -72,13 +73,12 @@ void serverEdit::recieveData(favServer server, QList<addon> addonsList, bool new
     ui->name->setCurrentText(server.name);
 
     this->open();
-    qDebug() << "Debug-serverEdit: Recieve succ";
 }
 
 // Отправка измененных данных в главное окно
-void serverEdit::on_save_clicked()
-{
-    qDebug() << "Debug-serverEdit: Send start";
+void serverEdit::on_save_clicked() {
+    qDebug() << "serverEdit::on_save_clicked: Send start";
+
     // Создаем экземпляр класса favServer
     favServer server;
     // Заполняем его информацией из виджетов..
@@ -110,8 +110,8 @@ void serverEdit::on_save_clicked()
     // Если это IP - проверяем его корректность
     if(isIP) { //127.0.0.1
         if(pointCount < 3 || numberCount <4 || numberCount > 12) {
-            QMessageBox::warning(this,"Внимание!", "Некорректный IP адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: IP Adress INCORRECT", QMessageBox::Ok);
-            qDebug() << "Debug-serverEdit: IP Adress INCORRECT";
+            QMessageBox::warning(this,tr("Внимание!"), tr("Некорректный IP адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: IP Adress INCORRECT"), QMessageBox::Ok);
+            qDebug() << "serverEdit::on_save_clicked: IP Adress INCORRECT";
             return;
         }
     // Если это Url - конвертируем в IP
@@ -120,8 +120,8 @@ void serverEdit::on_save_clicked()
         if(info.errorString() == "Unknown error") {
             server.serverIP = info.addresses()[0].toString();
         } else {
-            QMessageBox::warning(this,"Внимание!", "Некорректный адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: "+info.errorString(), QMessageBox::Ok);
-            qDebug() << "Debug-serverEdit: " << info.errorString();
+            QMessageBox::warning(this,tr("Внимание!"), tr("Некорректный адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: ")+info.errorString(), QMessageBox::Ok);
+            qDebug() << "serverEdit::on_save_clicked: " << info.errorString();
             return;
         }
     }
@@ -134,14 +134,18 @@ void serverEdit::on_save_clicked()
     // Передаем экземпляр в сигнал
     emit sendData(server, newServ);
     this->close();
-
-    qDebug() << "Debug-serverEdit: Send succ";
 }
 
+// Активирование аддонов по клику
 void serverEdit::on_addonTree_itemClicked(QTreeWidgetItem *item) {
 
-    if(item->checkState(0) ==  Qt::Unchecked)
-        item->setCheckState(0, Qt::Checked);
-    else
-        item->setCheckState(0, Qt::Unchecked);
+    if(addonTreeRow == ui->addonTree->currentIndex().row()) {
+        if(item->isSelected()) {
+            if(item->checkState(0) ==  Qt::Unchecked)
+                item->setCheckState(0, Qt::Checked);
+            else
+                item->setCheckState(0, Qt::Unchecked);
+        }
+    }
+    addonTreeRow = ui->addonTree->currentIndex().row();
 }

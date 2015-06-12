@@ -6,43 +6,50 @@ launcher::launcher(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::launcher) {
 
+    qDebug() << "launcher::launcher: constructor";
+
+    qDebug() << "launcher::launcher: Tools initialization";
+
     // Подключаю вспомогательную Dll "ArmaLauncher.dll"
-    qDebug() << "Debug-launcher: Dll initialization";
     //..устанавливаем название длл
     library.setFileName("ArmaLauncher.dll");
     //..проверяем, загрузилась ли длл
     if(!library.load()) {
-        QMessageBox::critical(this,"Критическая ошибка", "Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        qCritical() << "launcher::launcher: Dll initialization fail - load error or ArmaLauncher.dll not found";
         this->close();
     }
     //..иницилизируем функции длл
     exchangeDataWithServer = (ExchangeDataWithServer)library.resolve("exchangeDataWithServer");
     //..проверяем инцилизированы ли функции
     if(!exchangeDataWithServer) {
-        QMessageBox::critical(this,"Критическая ошибка", "Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        qCritical() << "launcher::launcher: Dll initialization fail - load error or ArmaLauncher.dll not found";
         this->close();
     }
     //..проверяем, есть ли 7z.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/7z.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        qCritical() << "launcher::launcher: 7z initialization fail - 7z.exe not found";
         this->close();
     }
     //..проверяем, есть ли ArmALauncher-SyncParser.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-SyncParser.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        qCritical() << "launcher::launcher: SyncParser initialization fail - ArmALauncher-SyncParser.exe not found";
         this->close();
     }
     //..проверяем, есть ли ArmALauncher-Updater.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-Updater.exe")){
-        QMessageBox::critical(this,"Критическая ошибка", "Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su", QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        qCritical() << "launcher::launcher: Updater initialization fail - ArmALauncher-Updater.exe not found";
         this->close();
     }
 
     // Иницилизируем форму окна и его переменные
-    qDebug() << "Debug-launcher: Form initialization";
-
+    qDebug() << "launcher::launcher: launcher form initialization";
     ui->setupUi(this);
-    this->setWindowTitle("ArmA 3 Launcher by Fyzu | ver. " + QString(VER_FILEVERSION_STR));
+    this->setWindowTitle(tr("ArmA 3 Launcher by Fyzu | ver. ") + QString(VER_FILEVERSION_STR));
     dxDiagIsRunning = false;
     updateAfterClose = false;
     updater = 0;
@@ -66,6 +73,8 @@ launcher::launcher(QWidget *parent) :
     ui->filesTree->header()->resizeSection(1, 90);
     ui->filesTree->header()->resizeSection(2, 80);
 
+    qDebug() << "launcher::launcher: other form initialization";
+
     // Инициализация формы serverEdit
     edit = new serverEdit(this);
     // Инициализация формы addonsSettings
@@ -84,24 +93,31 @@ launcher::launcher(QWidget *parent) :
     LauncherUpdate = new launcherUpdate(this);
 
     // Иницилизируем updater
+    qDebug() << "launcher::launcher: updater initialization";
     updater = new updateAddons;
 
     //..переносим его в новый поток
     thread = new QThread;
     updater->moveToThread(thread);
 
-    qDebug() << "Debug-updateAddons_UI: Updater move to " << thread;
+    qDebug() << "launcher::launcher: Updater move to " << thread;
 
     //..связываем updater с потоком
-    connect(this,    SIGNAL(showUpdater()),   updater, SLOT(start()), Qt::DirectConnection);
     connect(updater, SIGNAL(finished()),      thread,  SLOT(quit()));
     connect(updater, SIGNAL(finished()),      updater, SLOT(deleteLater()));
     connect(thread,  SIGNAL(finished()),      thread,  SLOT(deleteLater()));
 
+    //..связь с запуском потока
+    connect(this,    SIGNAL(showUpdater()),   updater, SLOT(start()), Qt::DirectConnection);
+
+    //..подключения репозитория
+    connect(updater, SIGNAL(started(const Repository, const QList< QMap<QString, QString> >, const QStringList, bool, QString)),
+            this,    SLOT(updaterStarted(const Repository, const QList< QMap<QString, QString> >, const QStringList, bool, QString)));
+
     //..связываем updater с кнопками UI
     //..связь кнопки дисконетка репозитория с апдейтером
     connect(this,    SIGNAL(repositoryDisconnect()),
-            updater, SLOT(finish()) );
+            updater, SLOT(finish()));
     //..связь кнопки и проверки аддонов
     connect(ui->checkAddons,    SIGNAL(clicked()),
             this,               SLOT  (updaterCheckAddonsUI()) );
@@ -151,15 +167,9 @@ launcher::launcher(QWidget *parent) :
     //..завершения распаковки файла
     connect(updater, SIGNAL(unzipFinished(QString)),
             this,    SLOT(unzipFinished(QString)));
-    //..подключения репозитория
-    connect(updater, SIGNAL(started(const Repository, const QList< QMap<QString, QString> >, const QStringList)),
-            this,    SLOT(updaterStarted(const Repository, const QList< QMap<QString, QString> >, const QStringList)));
     //..передача данных  после отрисовки подключенного репозитория
     connect(this,    SIGNAL(updaterUIStarted(QStringList)),
             updater, SLOT(updaterUIStarted(QStringList)));
-    //..завершение апдейтера
-    connect(updater, SIGNAL(finished()),
-            this,    SLOT(updaterFinished()));
 
     // Объявление переменных апдейтера
     updaterIsRunning = false;
@@ -167,9 +177,8 @@ launcher::launcher(QWidget *parent) :
     downloadAddonsIsRunning = false;
 
     // Запускаем поток для апдейтера
+    qDebug() << "launcher::launcher: " << thread << " start";
     thread->start();
-
-    qDebug() << "Debug-launcher: Form initialization - succ";
 
     // Коннект..
     //..Изменения настроек сервера
@@ -206,6 +215,7 @@ launcher::launcher(QWidget *parent) :
     // Считываем cfg (настройки лаунчера)
     QFile file(DocumentsLocation + "/Arma 3 - Other Profiles/armalauncher.cfg");
     if(file.open(QIODevice::ReadOnly)) {
+        qDebug() << "launcher::launcher: launcher config - read";
 
         //открываем поток ввода
         QDataStream in(&file);
@@ -255,13 +265,12 @@ launcher::launcher(QWidget *parent) :
             favServers.append(favServ2);
         }
 
-        // Установить главному окну Size
-        if (!widgetSize.isEmpty()) {
-            this->resize(widgetSize);
-            qDebug() << "Debug-launcher: Resize main widget - succ";
-        }
+    } else
+        qDebug() << "launcher::launcher: launcher config - read fail";
 
-        updateInformationInWidget();
+    // Установить главному окну Size
+    if (!widgetSize.isEmpty()) {
+        this->resize(widgetSize);
     }
 
     // Настройки лаунчера
@@ -293,17 +302,18 @@ launcher::launcher(QWidget *parent) :
             if(checkAddons[i] == ui->addonTree->topLevelItem(j)->text(2)+"/"+ui->addonTree->topLevelItem(j)->text(1))
                 ui->addonTree->topLevelItem(j)->setCheckState(0,Qt::Checked);
 
-    // Обновляю информацию..
-    //..виджетах
-    updateInfoParametersInWidget();
-    //..информация о серверах
-    on_serversTree_update_clicked();
+    // Отключаем отображение чек сумм в апдейтере
     ui->filesTree->setColumnCount(1);
 
     // Получаем версию игры
-    ui->gameVersionlabel->setText("Версия игры: " + getFileVersion(pathFolder));
+    ui->gameVersionlabel->setText(tr("Версия игры: ") + getFileVersion(pathFolder));
 
-    qDebug() << "Debug-launcher: Widgets initialization - succ";
+    // Обновляю информацию..
+    //..виджетах
+    updateInformationInWidget();
+    updateInfoParametersInWidget();
+    //..информация о серверах
+    on_serversTree_update_clicked();
 
     // Проверка на обновления
     checkForUpdates();
@@ -326,12 +336,13 @@ launcher::~launcher() {
     delete edit;
     delete ui;
 
-    qDebug() << "Debug-launcher: Widgets destruction - succ";
+    qDebug() << "launcher::~launcher: destruct";
 }
 
+// Получение версии файла
 QString launcher::getFileVersion(QString path) {
 
-    qDebug() << "Debug-launcher: get File Version - start";
+    qDebug() << "launcher::getFileVersion: get File Version";
 
     // Получаем версию установленной игры
     if(!pathFolder.isEmpty()) {
@@ -341,8 +352,8 @@ QString launcher::getFileVersion(QString path) {
         // Получаем размер версии файла
         DWORD dwFVISize = GetFileVersionInfoSize(lpszFilePath , &dwDummy );
         if(dwFVISize == 0) {
-            qDebug() << "Debug-launcher: get File Version - error: dwFVISize = 0";
-            return QString("неизвестно");
+            qDebug() << "launcher::getFileVersion: get File Version - error: dwFVISize = 0";
+            return QString(tr("неизвестно"));
         }
         // Создаем байтовый массив с этим размером
         BYTE *lpVersionInfo = new BYTE[dwFVISize];
@@ -350,8 +361,8 @@ QString launcher::getFileVersion(QString path) {
         // Получаем информацию о версии файла
         if(!GetFileVersionInfo( lpszFilePath , 0 , dwFVISize , lpVersionInfo )) {
             delete[] lpVersionInfo;
-            qDebug() << "Debug-launcher: get File Version - error: get file version info";
-            return QString("неизвестно");
+            qDebug() << "launcher::getFileVersion: get File Version - error: get file version info";
+            return QString(tr("неизвестно"));
         }
 
         // Получаем собственно версию
@@ -371,13 +382,15 @@ QString launcher::getFileVersion(QString path) {
         // Преобразуем в строку
         return QString::number(dwLeftMost) + '.' + QString::number(dwSecondLeft) + '.' + QString::number(dwSecondRight) + '.' + QString::number(dwRightMost);
     } else {
-        return QString("Неизвестно");
+        qDebug() << "launcher::getFileVersion: get File Version - error: path empty";
+        return QString(tr("Неизвестно"));
     }
 }
 
+// Проверяем версию программы
 void launcher::checkForUpdates() {
 
-    qDebug() << "Debug-launcher: check For Updates - start";
+    qDebug() << "launcher::checkForUpdates: start download version";
 
     manager = new QNetworkAccessManager(this);
 
@@ -385,42 +398,52 @@ void launcher::checkForUpdates() {
     manager->get(QNetworkRequest(QUrl("http://launcher.our-army.su/download/updater/version")));
 }
 
+// Действия после загрузки версии программы
 void launcher::downloadVersionFinished(QNetworkReply *reply) {
+
+    qDebug() << "launcher::downloadVersionFinished: download version finished";
 
     QString version;
 
+    // Проверяем, правильно ли загрузилась версия
     if(reply->error()) {
-        qDebug() << "Debug-launcher: Error Check Updates" << reply->errorString();
-    }
-    else {
+        qDebug() << "launcher::downloadVersionFinished: Error Check Updates: " << reply->errorString();
+        reply->deleteLater();
+        manager->deleteLater();
+        return;
+    } else {
         version = QString(reply->readAll());
-        qDebug() << "Debug-launcher: Version on server - " << version;
+        qDebug() << "launcher::downloadVersionFinished: Version on server -" << version;
     }
     reply->deleteLater();
     manager->deleteLater();
 
+    // Провверяем, актуальная ли версия программы
     if(version == QString(VER_FILEVERSION_STR)) {
-
-        qDebug() << "Debug-launcher: Launcher has latest version";
-
+        qDebug() << "launcher::downloadVersionFinished: Launcher has latest version";
     } else {
-
-        qDebug() << "Debug-launcher: Launcher need to be updated";
+        qDebug() << "launcher::downloadVersionFinished: Launcher need to be updated";
         emit newVersion(settings, version);
     }
 }
 
+// Обработка решения пользоателя, после закрытия окна обновления
 void launcher::launcherUpdateResult(int result) {
 
-    if(result == 0) {
+    qDebug() << "launcher::launcherUpdateResult: result -" << result;
+
+    if(result == 0) {   // если нужно обновится сразу
         UpdateLauncher();
         this->close();
-    } else {
+    } else {            // если нужно обновится после выхода из программы
         updateAfterClose = true;
     }
 }
 
+// Вызов апдейтера
 void launcher::UpdateLauncher() {
+    qDebug() << "launcher::UpdateLauncher: launch";
+
     QProcess process;
     process.startDetached("ArmALauncher-Updater.exe");
 }
@@ -428,7 +451,7 @@ void launcher::UpdateLauncher() {
 // Запуск Arma 3
 void launcher::on_play_clicked() {
 
-    qDebug() << "Debug-launcher: Start launch game";
+    qDebug() << "launcher::on_play_clicked: launch game";
 
     QStringList args = getLaunchParam();        // Получаем параметры запуска
 
@@ -449,10 +472,10 @@ void launcher::on_play_clicked() {
 
     // Проверяем, запущен ли стим, если нет, предлагаем
     if(!getHandle("Steam", false)) {
-        qDebug() << "Debug-launcher: Start launch fail - steam no found";
+        qDebug() << "launcher::launcher: Start launch fail - steam no found";
         if(QMessageBox::Yes == QMessageBox::question(this, tr("Внимание!"), tr("Игра требует запустить Steam.\nЗапустить Steam?"))) {
             QDesktopServices::openUrl(QUrl("steam://", QUrl::TolerantMode));
-            qDebug() << "Debug-launcher: Start launch fail - steam running";
+            qDebug() << "launcher::launcher: Start launch fail - steam running";
         }
         return;
     }
@@ -467,12 +490,14 @@ void launcher::on_play_clicked() {
         process.startDetached("\"" + pathBattleye + "\"" + " 0 1 " + parameters.addParam, args, QString(), &ProcessId);
         process.waitForStarted();
         hProcess = getHandle ("Arma 3", true);
+        qDebug() << "launcher::on_play_clicked: arma3battley launch";
     } else {
         // Запускае арму Arma 3 без BE
         process.startDetached("\"" + pathFolder + "\"" + parameters.addParam, args, QString(), &ProcessId);
         process.waitForStarted();
         // Получаем hProcess армы
         hProcess = OpenProcess(PROCESS_SET_INFORMATION, false, ProcessId);
+        qDebug() << "launcher::on_play_clicked: arma3 launch";
     }
     // Даем приоритет Арме
     if(hProcess && ui->priorityLaunch->currentIndex() != 3) {
@@ -480,9 +505,8 @@ void launcher::on_play_clicked() {
         Priority_class << REALTIME_PRIORITY_CLASS   << HIGH_PRIORITY_CLASS          << ABOVE_NORMAL_PRIORITY_CLASS <<
                           NORMAL_PRIORITY_CLASS     << BELOW_NORMAL_PRIORITY_CLASS  << IDLE_PRIORITY_CLASS;
         SetPriorityClass(hProcess, Priority_class[ui->priorityLaunch->currentIndex()]);
+        qDebug() << "launcher::on_play_clicked: arma3 set priority";
     }
-
-    qDebug() << "Debug-launcher: launch game - succ";
 
     // Сохранение настроек после запуска игры
     updateInformationInCfg();
@@ -498,7 +522,8 @@ void launcher::on_play_clicked() {
 // Получение handle процесса по заголовку
 HANDLE launcher::getHandle (QString titleName, bool wait) {
 
-        qDebug() << "Debug-launcher: start find HANDLE";
+        qDebug() << "launcher::getHandle: find HANDLE" << titleName;
+
         DWORD ProcessId;        // Пид процесса
         HWND hWnd = NULL;       // Хандл окна
 
@@ -522,7 +547,6 @@ HANDLE launcher::getHandle (QString titleName, bool wait) {
         if (!(GetWindowThreadProcessId(hWnd, &ProcessId)))
             return NULL;
 
-        qDebug() << "Debug-launcher: find HANDLE - succ";
         // Возвращаем нужный нам хендл
         return OpenProcess(PROCESS_SET_INFORMATION, false, ProcessId);
 }
@@ -530,9 +554,10 @@ HANDLE launcher::getHandle (QString titleName, bool wait) {
 // Обзор исполняемого файла игры Arma 3
 void launcher::on_pathBrowse_clicked() {
 
-    qDebug() << "Debug-launcher: Start Browse path game";
+    qDebug() << "launcher::on_pathBrowse_clicked: Start";
+
     // Получение нового path исполняемого файла игры
-    QString tempPathGame = QFileDialog::getOpenFileName(this, QString(trUtf8("Открыть исполняемый файл ArmA 3")), QString(), QString(trUtf8("arma3.exe;;")));
+    QString tempPathGame = QFileDialog::getOpenFileName(this, QString(tr("Открыть исполняемый файл ArmA 3")), QString(), QString(tr("arma3.exe;;")));
 
     // Проверяем, является ли это путь к арма 3
     if (tempPathGame.endsWith(QString("arma3.exe"))) {
@@ -561,20 +586,30 @@ void launcher::on_pathBrowse_clicked() {
             // Обновляем информацию в памяти программы
             updateInformationInMem();
 
+            // Добавление доступных распределителей памяти в настройки (храняться там же где и исполняемый файл игры)
+            QString temp = pathFolder;
+            QStringList mallocs = QDir(temp.replace("arma3.exe","Dll")).entryList(QDir::Files);
+            for(int j=0;j<mallocs.size();j++)
+                if(mallocs[j].contains(".dll"))
+                    mallocs[j].remove(".dll");
+                else
+                    mallocs.removeAt(j--);
+            ui->malloc->addItems(mallocs);
+
             // Получаем версию игры
-            ui->gameVersionlabel->setText("Версия игры: " + getFileVersion(pathFolder));
+            ui->gameVersionlabel->setText(tr("Версия игры: ") + getFileVersion(pathFolder));
 
             // и в виджетах заполняем информацию
             updateInformationInWidget();
 
-            qDebug() << "Debug-launcher: Start Browse path game - succ";
-    } else QMessageBox::warning(this,"Ошибка!", "Указан неверный путь к исполняемому файлу arma3.exe");
+    } else
+        QMessageBox::warning(this,tr("Ошибка!"), tr("Указан неверный путь к исполняемому файлу arma3.exe"));
 }
 
 // Получение параметров запуска игры
 QStringList launcher::getLaunchParam() {
 
-    qDebug() << "Debug-launcher: get launch param";
+    qDebug() << "launcher::getLaunchParam: start";
 
     // Объявляем возвращаемый список строк
     QStringList launchParam;
@@ -638,7 +673,6 @@ QStringList launcher::getLaunchParam() {
             }
         }
 
-    qDebug() << "Debug-launcher: get launch param - succ";
     // Возвращаем параметры запуска в виде списка строк
     return launchParam;
 
@@ -646,6 +680,7 @@ QStringList launcher::getLaunchParam() {
 
 // Обновлении параметров при клике на настройки
 void launcher::on_tabWidget_tabBarClicked(int index) {
+
     // Обновление информации в виджете параметров
     if(index == 1)
         updateInfoParametersInMem();
@@ -653,6 +688,7 @@ void launcher::on_tabWidget_tabBarClicked(int index) {
 
 // Слот при котором вызваем оптимизацию настроек
 void launcher::on_optimize_clicked() {
+
     // Вызываем Dx diag
     if(!dxDiagIsRunning) {      // Проверяем, не обрабатывает ли DX diag
         dxDiagIsRunning = true;
@@ -660,14 +696,13 @@ void launcher::on_optimize_clicked() {
         dx = new QProcess(this);
         connect(dx, SIGNAL(finished(int)), this, SLOT(optimizeSettings()));
         dx->start("dxdiag /x dxdiag.xml");
-        qDebug() << "Debug-launcher: Optimize Settings - DXDiag Start";
+        qDebug() << "launcher::on_optimize_clicked: DXDiag Start";
     }
 }
 
 // Слот после получения данных от DX diag
 void launcher::optimizeSettings() {
-
-    qDebug() << "Debug-launcher: Optimize Settings - DXDiag finish";
+    qDebug() << "launcher::optimizeSettings: DXDiag finish";
 
     // Проверяем наличие выходных данных от dxdiag'а
     QFile file("dxdiag.xml");
@@ -677,7 +712,7 @@ void launcher::optimizeSettings() {
         XMLParser xml("dxdiag.xml");
         dxdiag diag = xml.getDxdiag();
         //..и удаляем выходные данные
-        qDebug() << "Debug-launcher: File removes - " << file.fileName();
+        qDebug() << "launcher::launcher: File removes -" << file.fileName();
         file.remove();
 
         // Стандартные параметры
@@ -758,45 +793,63 @@ void launcher::optimizeSettings() {
     delete dx;
     dx = 0;
     dxDiagIsRunning = false;
-    qDebug() << "Debug-launcher: Optimize Settings - succ";
+    qDebug() << "launcher::optimizeSettings: succ";
 
     // Обновление параметров запуска новой информацией
     updateInfoParametersInMem();
 }
 
+// Кнопка настроек аддонов
 void launcher::on_AddonsSettings_clicked() {
+    qDebug() << "launcher::on_AddonsSettings_clicked: start";
 
+    // Сбор данных о аддонах
     QStringList addons;
     for(int i = 0; i < ui->addonTree->topLevelItemCount();i++) {
         addons.append(ui->addonTree->topLevelItem(i)->text(1));
     }
 
+    // Отправляем данные в форму
     emit addonsSettingsStart(settings, listDirs, listPriorityAddonsDirs, addons);
 
 }
 
+// Настройка аддонов завершена, применение изменений
 void launcher::addonsSettingsFinish(QStringList listD, QStringList listPriorityAddonsD) {
+    qDebug() << "launcher::addonsSettingsFinish: finish";
+
+    // Применение изменений
     listDirs = listD;
     listPriorityAddonsDirs = listPriorityAddonsD;
 
+    // Обновление информации в виджете
     updateInformationInAddonList();
 }
 
+// Кнопка настроек лаунчера
 void launcher::on_launcherSettings_clicked() {
+    qDebug() << "launcher::on_launcherSettings_clicked: start";
+
+    // Отправляем данные в форму
     emit launcherSettingsStart(settings);
 }
 
+// Настройка лаунчера завершена, применение изменений
 void launcher::launcherSettingsFinish(Settings launcherS) {
+    qDebug() << "launcher::launcherSettingsFinish: finish";
 
+    // Применение изменений
     settings = launcherS;
-
     changeStyleSheet(settings.style);
-
     ui->tabWidget->setDocumentMode(!settings.documentMode);
 }
 
+// Установка стиля форме launcher
 void launcher::changeStyleSheet(int style) {
-    if(style == 0) {
+    qDebug() << "launcher::changeStyleSheet: apply style =" << style;
+
+    if(style == 0) {        // Применяем стандартный стиль
+
         qApp->setStyleSheet("");
         QIcon icon;
         icon.addFile(QStringLiteral(":/myresources/IMG/puzzleSetting37.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -872,7 +925,9 @@ void launcher::changeStyleSheet(int style) {
         ui->serversTree_edit->setIcon(icon23);
         ui->play->setStyleSheet(QLatin1String("QPushButton { border-image: url(:/myresources/arma3.png); }\n"
         "QPushButton::pressed { border-image: url(:/myresources/arma3down.png); }"));
-    } else {
+
+    } else {                // Применяем темный стиль
+
         QFile f(":qdarkstyle/style.qss");
         if (f.open(QFile::ReadOnly | QFile::Text)) {
             QTextStream ts(&f);
@@ -957,18 +1012,25 @@ void launcher::changeStyleSheet(int style) {
     }
 }
 
+// Переопределение метода закрытия главного окна
 void launcher::closeEvent(QCloseEvent * event) {
-
+    // Проверяем, нужно ли обновление после выхода
     if(updateAfterClose) {
         UpdateLauncher();
     }
     event->accept();
 }
 
+// Отмечаем выбранный аддон
 void launcher::on_addonTree_itemClicked(QTreeWidgetItem *item) {
 
-    if(item->checkState(0) ==  Qt::Unchecked)
-        item->setCheckState(0, Qt::Checked);
-    else
-        item->setCheckState(0, Qt::Unchecked);
+    if(addonTreeRow == ui->addonTree->currentIndex().row()) {
+        if(item->isSelected()) {
+            if(item->checkState(0) ==  Qt::Unchecked)
+                item->setCheckState(0, Qt::Checked);
+            else
+                item->setCheckState(0, Qt::Unchecked);
+        }
+    }
+    addonTreeRow = ui->addonTree->currentIndex().row();
 }

@@ -75,12 +75,13 @@ private slots:
     void on_repoDel_clicked();
     void on_repoEdit_clicked();
     void on_repoConnect_clicked();
+    void repoEditFinish(Repository repo, int currentRow, bool newRepo);
     //..изменения состояний
     void on_repoList_currentRowChanged(int currentRow);
 
     // Слоты интерфейса апдейтера
     //..слоты основных функций апдейтера
-    void updaterStarted(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList);
+    void updaterStarted(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList, bool success, QString defaultAddonsPath);
     void updaterFinished();
     //..слот отключения репозитория
     void on_repoDisconnect_clicked();
@@ -104,33 +105,30 @@ private slots:
     void downloadAddonsFinishUI(bool success);
     //..слоты изменения состояния элементов апдейтера
     void addonsTreeCheck(QTreeWidgetItem *item);
-    void on_md5check_stateChanged(int stateCheck);
+    void on_checksum_stateChanged(int stateCheck);
     //..слот завершения удаления лишних файлов
     void deleteOtherFilesFinish();
-
+    //..слоты настроек аддонов
     void on_AddonsSettings_clicked();
     void addonsSettingsFinish(QStringList listD, QStringList listPriorityAddonsD);
+    //..слоты настроек лаунчера
     void on_launcherSettings_clicked();
-
     void launcherSettingsFinish(Settings launcherS);
-
-    void repoEditFinish(Repository repo, int currentRow, bool newRepo);
-
+    //..слоты обновления версии
     void downloadVersionFinished(QNetworkReply *reply);
     void launcherUpdateResult(int result);
-
+    // Слот активирования аддона по клику
     void on_addonTree_itemClicked(QTreeWidgetItem *item);
 
 private:
     Ui::launcher *ui;
-    serverEdit *edit;               // Указатель на class диалога изменения данных сервера
+    // Указатели на классы доп. форм
+    serverEdit *edit;
     addonsSettings *AddonsSettings;
     launcherSettings *LauncherSettings;
     deleteOtherFiles *delOtherFiles;
     repoEdit *repositoryEdit;
     launcherUpdate *LauncherUpdate;
-    QProcess *dx;                   // Указатель на процесс, запускаемый для оптимизации настроек
-    QNetworkAccessManager *manager;
 
     // UPDATER
     updateAddons *updater;
@@ -151,10 +149,13 @@ private:
     ExchangeDataWithServer exchangeDataWithServer;
 
     // Временные переменные
+    QProcess *dx;
+    QNetworkAccessManager *manager;
     bool updateAfterClose;
     bool updateInfoInWidget;        // Тригер обновления данных (дабы не задеть сигналы смены row)
     bool dxDiagIsRunning;           // Тригер запущенного dxdiag'а
     int selectServer;               // Выбранный сервер в списке
+    int addonTreeRow;
 
     // Пременные для контроля апдейтера
     bool updaterIsRunning;
@@ -180,8 +181,11 @@ private:
     QString getFileVersion(QString path);
     // Выделение подстрок в байтовом массиве
     QByteArray GetNextPart(int &pos, BYTE* response);
+    // Применение другого стиля
     void changeStyleSheet(int style);
+    // Проверка версий лаунчера
     void checkForUpdates();
+    // Запуск обновления лаунчера
     void UpdateLauncher();
 
     // Переменные конфига

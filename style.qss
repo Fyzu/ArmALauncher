@@ -1,4 +1,4 @@
-﻿/*
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) <2013-2014> <Colin Duquesnoy>
@@ -133,7 +133,7 @@ QWidget:focus, QMenuBar:focus
     border: 1px solid #78879b;
 }
 
-QTabWidget:focus, QRadioButton:focus
+QTabWidget:focus, QCheckBox:focus, QRadioButton:focus
 {
     border: none;
 }
@@ -325,6 +325,11 @@ QHeaderView::section
     border: 1px solid #6c6c6c;
 }
 
+QCheckBox:disabled
+{
+    color: #404040;
+}
+
 QSizeGrip {
     image: url(:/qss_icons/IMG/darkstyle/rc/sizegrip.png);
     width: 12px;
@@ -376,14 +381,19 @@ QRadioButton::indicator:checked
     border-radius: 5px;
 }
 
+QCheckBox, QRadioButton
+{
+    padding: 3px;
+    outline: none;
+}
 
-QGroupBox::indicator, QMenu::indicator:non-exclusive{
+QCheckBox::indicator, QGroupBox::indicator, QMenu::indicator:non-exclusive{
     color: #b1b1b1;
     background-color: #302F2F;
     border: 1px solid silver;
 }
 
-QMenu::indicator:non-exclusive{
+QCheckBox::indicator, QMenu::indicator:non-exclusive{
     width: 9px;
     height: 9px;
 }
@@ -395,15 +405,28 @@ QRadioButton::indicator
     height: 9px;
 }
 
-
-QRadioButton::indicator:hover
+QCheckBox::indicator:pressed
 {
     border: 1px solid #78879b;
 }
 
-QRadioButton::indicator:disabled
+QRadioButton::indicator:hover, QCheckBox::indicator:hover
+{
+    border: 1px solid #78879b;
+}
+
+QCheckBox::indicator:checked, QGroupBox::indicator:checked, QMenu::indicator:non-exclusive:checked
+{
+    image:url(:/qss_icons/IMG/darkstyle/rc/checkbox.png);
+}
+
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
 {
     border: 1px solid #444;
+}
+
+QCheckBox::indicator:indeterminate {
+    image: url(:/qss_icons/IMG/darkstyle/rc/checkbox_indeterminate.png);
 }
 
 QFrame

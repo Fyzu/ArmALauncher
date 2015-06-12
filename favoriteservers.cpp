@@ -7,7 +7,7 @@
 // Добавить новый сервер
 void launcher::on_serversTree_add_clicked() {
 
-    qDebug() << "Debug-favServers: Add new server";
+    qDebug() << "launcher::on_serversTree_add_clicked: Add new server";
 
     // Получаем список аддонов
     addonsList.clear();
@@ -34,10 +34,11 @@ void launcher::on_serversTree_add_clicked() {
 
 // Удалить выбранный сервер
 void launcher::on_serversTree_del_clicked() {
+
     if(favServers.count()>0) {  // Если нет элементов - нет смысла удалять
         int row = ui->serversTree->indexOfTopLevelItem(ui->serversTree->currentItem());
         if (row != -1) {   // Проверяем, выбран ли элемент
-            qDebug() << "Debug-favServers: Del server - " << row;
+            qDebug() << "launcher::on_serversTree_del_clicked: Del server -" << row;
             // Удаление сервера из памяти
             favServers.removeAt(ui->serversTree->currentItem()->data(0,Qt::UserRole).toUInt());
             // Обновляем информацию в виджетах после удаления в памяти
@@ -49,9 +50,10 @@ void launcher::on_serversTree_del_clicked() {
 // Отправка информации о выбранном сервере
 // в виджет окна редактирования и инициализация окна
 void launcher::Send() {
+
     if(favServers.count()>0 && ui->serversTree->currentIndex().row() != -1) {   // Проверка, можно ли вызвать редактирование окна
 
-        qDebug() << "Debug-favServers: Send data to serverEdit and Show Form";
+        qDebug() << "launcher::Send: Send data to serverEdit and Show Form";
 
         // Получаем список аддонов
         addonsList.clear();
@@ -65,12 +67,13 @@ void launcher::Send() {
         selectServer = ui->serversTree->currentItem()->data(0,Qt::UserRole).toUInt();
         emit sendData(favServers[selectServer], addonsList, false, names);
 
-        qDebug() << "Debug-favServers: Send data to serverEdit and Show Form - succ";
     }
 }
 
 // Получение данных из окна редактирования сервера
 void launcher::recieveData(favServer server, bool newServer) {
+
+    qDebug() << "launcher::recieveData: Recieve data from serverEdit";
 
     if(newServer) {
         // Добавляеем новый сервер в память
@@ -81,7 +84,6 @@ void launcher::recieveData(favServer server, bool newServer) {
     }
     // Обновляем данные о серверах в виджете
     updateInformationInWidget();
-    qDebug() << "Debug-favServers: Recieve data from serverEdit - succ";
 }
 
 // При смене сервера для запуска
@@ -91,7 +93,7 @@ void launcher::on_selectServer_currentIndexChanged(int index) {
     if (!updateInfoInWidget) {  // Для исключения вызова слота при обновлении информации в виджетах
         if(index != 0) {          // Исключить выбор несуществующего элемента
 
-            qDebug() << "Debug-favServers: Upd. Inf. in Addon Tree, Server select - " << index;
+            qDebug() << "launcher::on_selectServer_currentIndexChanged: Upd. Inf. in Addon Tree, Server select -" << index;
             //Итерируем список аддонов, где i - индекс аддона в списке
             for (int i = 0; i<ui->addonTree->topLevelItemCount();i++) {
                 QString fullPath = ui->addonTree->topLevelItem(i)->text(2) + QString("/") +
@@ -132,7 +134,7 @@ void launcher::on_serversTree_update_clicked() {
 
     // Начинаем обновление данных серверов
     if(favServers.count() == 0) return;     // Если серверов нет
-    qDebug() << "Debug-favServers: Upd. Online server Infomation";
+    qDebug() << "launcher::on_serversTree_update_clicked: Upd. Online server Infomation";
 
     // Переменные для работы
     int server;                 // Индекс сервера, о котором получают информацию
@@ -151,7 +153,7 @@ void launcher::on_serversTree_update_clicked() {
 
         // Получаем индекс информации сервера в БД
         server = ui->serversTree->topLevelItem(i)->data(0,Qt::UserRole).toUInt();
-        qDebug() << "Debug-favServers: Upd. Server - index - " << server;
+        qDebug() << "launcher::on_serversTree_update_clicked: Upd. Server - index -" << server;
 
         // Проверяем IP и Port на корректность
         bool correct=true;
@@ -162,26 +164,10 @@ void launcher::on_serversTree_update_clicked() {
             if(!favServers[server].serverPort[index].isNumber())
                 correct=false;
         if(favServers[server].serverIP.isEmpty() || favServers[server].serverPort.isEmpty() || !correct) {
-            qDebug() << "Debug-favServers: Upd. Server - fail - index - " << server;
+            qDebug() << "launcher::favServers: Upd. Server - fail - index -" << server;
             continue;
         }
-        /*
-        unsigned char testMess[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0x4B, 0xA1, 0xD5, 0x22};
-        qDebug() << testMess;
-        //{0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0x4B, 0xA1, 0xD5, 0x22};
-        //{0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0xFF, 0xFF, 0xFF, 0xFF};
-        BYTE* test = exchangeDataWithServer(QString("37.187.170.178").toLatin1().data(), QString("2302").toInt()+1, 400, testMess,9, ping);
-        int inde = 0;
-        qDebug() << test;
-        testMess[5] = test[5];
-        testMess[6] = test[6];
-        testMess[7] = test[7];
-        testMess[8] = test[8];
-        qDebug() << testMess;
-        test = exchangeDataWithServer(QString("37.187.170.178").toLatin1().data(), QString("2302").toInt()+1, 400, testMess,9, ping);
-        qDebug() << test;
-        for(int b = 0;b<200;b++)
-        qDebug() << GetNextPart(inde, test);*/
+
         // Запуск инструмента получения информации о сервере
         BYTE* response = exchangeDataWithServer(favServers[server].serverIP.toLatin1().data(), favServers[server].serverPort.toInt()+1, 400, message, length, ping);
         // Парсим ответ сервера
@@ -232,8 +218,6 @@ void launcher::on_serversTree_update_clicked() {
             ui->selectServer->setItemIcon(server+1, icon);
         }
     }
-
-    qDebug() << "Debug-favServers: Upd. Online server Infomation - succ";
     // Возвращаем сортировку серверов
     ui->serversTree->setSortingEnabled(true);
 }

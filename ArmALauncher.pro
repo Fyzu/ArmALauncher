@@ -20,7 +20,7 @@ CONFIG(release, debug|release) {
     OUT_PWD_WIN = $$replace(OUT_PWD, /, \\)
     QMAKE_POST_LINK = \"$$WINSDK_DIR\\mt.exe\" -manifest \"$$WIN_PWD\\$$basename(TARGET).manifest\" -outputresource:\"$$OUT_PWD_WIN\\${DESTDIR_TARGET}\"\;1 # вызов программы mt.exe после компиляции приложения
     QMAKE_LFLAGS += -static -static-libgcc
-    DEFINES += QT_NO_DEBUG_OUTPUT
+    #DEFINES += QT_NO_DEBUG_OUTPUT
 }
 
 SOURCES += main.cpp\
@@ -58,6 +58,9 @@ FORMS    += launcher.ui \
     launcherupdate.ui
 
 RESOURCES += pictures.qrc \
-    style.qrc
+    style.qrc \
+    lang.qrc
 
 LIBS +=libversion
+
+TRANSLATIONS += launcher_eu.ts

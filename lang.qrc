@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/eu">
+        <file>launcher_eu.qm</file>
+    </qresource>
+</RCC>

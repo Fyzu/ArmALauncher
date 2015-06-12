@@ -24,10 +24,8 @@ public:
 signals:
     void sendData(QStringList listD, QStringList listPriorityAddonsD);
 
-public slots:
-    void receiveData(Settings settings, QStringList listD, QStringList listPriorityAddonsD, QStringList addons);
-
 private slots:
+    void receiveData(Settings settings, QStringList listD, QStringList listPriorityAddonsD, QStringList addons);
     void on_addonSearchDirectories_add_clicked();
     void on_addonSearchDirectories_del_clicked();
     void on_addonsPriorities_up_clicked();
@@ -36,11 +34,10 @@ private slots:
 
 private:
     Ui::addonsSettings *ui;
-
-    bool ListWidgetContains(QListWidget * widget, QString str);
-
     QStringList listDirs;
     QStringList listPriorityAddonsDirs;
+
+    bool ListWidgetContains(QListWidget * widget, QString str);
 };
 
 #endif // ADDONSSETTINGS_H

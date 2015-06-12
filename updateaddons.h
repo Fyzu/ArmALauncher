@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 
 #include <QCryptographicHash>
+#include <QMessageBox>
 
 #include <QTime>
 #include <QTimer>
@@ -28,7 +29,8 @@ public:
     void setRepository(Repository repo);
 signals:
     // Сигналы основного класса
-    void started(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList);
+    void started(const Repository repository, const QList< QMap<QString, QString> > addonsList,
+                 const QStringList modsList, bool succes, QString defaultAddonsPath);
     void finished();
 
     // Проверка аддонов
@@ -56,7 +58,7 @@ signals:
 public slots:
     // Запуск апдейтера
     void start();
-    void startFinished(bool success);
+    void startFinished(bool downloadSuccess);
     void updaterUIStarted(QStringList folders);
 
     // Завершение апдейтера
@@ -70,7 +72,7 @@ public slots:
 
     // Слоты обновления файлов
     void downloadAddonStart();
-    void downloadAddonFinish(bool succ);
+    void downloadAddonFinish(bool downloadSuccess);
     void downloadAddonsFinish();
 
     // Слоты загрузки
@@ -110,8 +112,8 @@ private:
     //
     void getAllFilesInDir(const QString path, QList< QMap<QString, QString> > &allFiles);
     //
-    void parseYomaInformation(QString path, QString fileName);
-    void parseSyncInformation(QString path);
+    bool parseYomaInformation(QString path, QString fileName);
+    bool parseSyncInformation(QString path);
 
     // Репозиторий
     Repository repository;
@@ -120,8 +122,9 @@ private:
     QStringList modsList;
     QStringList addonsFolders;
     QString addonsPath;
+    QString defaultAddonsPath;
 
-    //
+    // Информация о апдейтере
     QList< QMap<QString, QString> > otherFiles;
     QList< QMap<QString, QString> > newFiles;
     QList< QMap<QString, QString> > correctFiles;
@@ -132,11 +135,11 @@ private:
     QString pathUrl;
     int downloadFilesIndex;
 
+    // Список собранной информации
     QList<YomaFileInfo> yomaFileInfo;
     QList<SyncFileInfo> syncFileInfo;
-
+    // сохранить данные о файлах в файл
     void saveTempFileInfo();
-
 };
 
 #endif // UPDATEADDONS_H

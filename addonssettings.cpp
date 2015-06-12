@@ -2,19 +2,22 @@
 #include "ui_addonssettings.h"
 
 addonsSettings::addonsSettings(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::addonsSettings)
-{
+    QDialog(parent), ui(new Ui::addonsSettings) {
+
+    qDebug() << "addonsSettings::addonsSettings: constructor";
     ui->setupUi(this);
+    this->setWindowFlags((this->windowFlags()^Qt::WindowContextHelpButtonHint));
 }
 
-addonsSettings::~addonsSettings()
-{
+addonsSettings::~addonsSettings() {
+
     delete ui;
 }
 
+// Получение данных из главного окна
 void addonsSettings::receiveData(Settings settings, QStringList listD, QStringList listPriorityAddonsD, QStringList addons) {
 
+    qDebug() << "addonsSettings::receiveData: show";
     // Применение стиля
     if(settings.style == 0) {
 
@@ -87,27 +90,31 @@ bool addonsSettings::ListWidgetContains(QListWidget * widget, QString str) {
 // Добавление и удаление директорий
 void addonsSettings::on_addonSearchDirectories_add_clicked() {
 
-    qDebug() << "Debug-launcher: Start Browse path addon";
+    qDebug() << "addonsSettings::on_addonSearchDirectories_add_clicked: Browse path addon";
 
     // Запрос директории
     QString tempPathAddons = QFileDialog::getExistingDirectory (0,QObject::tr("Укажите путь к директории аддонов"), QDir::homePath(), QFileDialog::ShowDirsOnly );
 
-    // Проверка на дубликаты
-    if (ListWidgetContains(ui->addonSearchDirectories, tempPathAddons)) {
-        QMessageBox::warning(this,"Ошибка!", "Такая директория уже существует.");
-        return;
+    // Добавляем путь в список
+    if(!tempPathAddons.isEmpty()) { // проверяем, выбран ли путь
+        // Проверка на дубликаты
+        if (ListWidgetContains(ui->addonSearchDirectories, tempPathAddons)) {
+            QMessageBox::warning(this, tr("Ошибка!"), tr("Такая директория уже существует."));
+            qWarning() << "addonsSettings::on_addonSearchDirectories_add_clicked: error: " << tempPathAddons << "- exists in list";
+            return;
+        }
+
+        qDebug() << "addonsSettings::on_addonSearchDirectories_add_clicked: " << tempPathAddons << "- add in list";
+
+        // Добавление в список виджета
+        ui->addonSearchDirectories->addItem(tempPathAddons);
     }
-
-    // Добавление в список
-    ui->addonSearchDirectories->addItem(tempPathAddons);
-
-    qDebug() << "Debug-launcher: Browse path addon - succ";
 }
 
 //..удаление выбранной директории
 void addonsSettings::on_addonSearchDirectories_del_clicked() {
 
-    qDebug() << "Debug-launcher: Start del Directories";
+    qDebug() << "addonsSettings::on_addonSearchDirectories_del_clicked: del Directories";
 
     // Получаем текущение положение row
     int row = ui->addonSearchDirectories->currentRow();
@@ -115,8 +122,6 @@ void addonsSettings::on_addonSearchDirectories_del_clicked() {
     // Удаляем итеи и обновляем список аддонов
     if(row != -1) { // Проверяем, выбран ли итем
         ui->addonSearchDirectories->removeItemWidget(ui->addonSearchDirectories->takeItem(row));
-
-        qDebug() << "Debug-launcher: del Directories - succ";
     }
 }
 
@@ -124,45 +129,43 @@ void addonsSettings::on_addonSearchDirectories_del_clicked() {
 //..передвинуть выбранный итем вверх
 void addonsSettings::on_addonsPriorities_up_clicked() {
 
-    qDebug() << "Debug-launcher: Start move addon UP";
+    qDebug() << "addonsSettings::on_addonsPriorities_up_clicked: move addon UP";
 
     // Получаем текущение положение row
     int row = ui->addonsPriorities->currentRow();
 
     // Перемещаем итем вверх
     if(row != 0 && row != -1) { // Проверяем, выбран ли итем и не является ли он самым верхним
-
         QListWidgetItem *item = ui->addonsPriorities->takeItem(row);
         ui->addonsPriorities->removeItemWidget(item);
         ui->addonsPriorities->insertItem(row-1, item);
         ui->addonsPriorities->setCurrentRow(row-1);
-
-        qDebug() << "Debug-launcher: move addon UP - succ";
     }
 }
 
 //..передвинуть выбранный итем вниз
 void addonsSettings::on_addonsPriorities_down_clicked() {
 
-    qDebug() << "Debug-launcher: Start move addon Down";
+    qDebug() << "addonsSettings::on_addonsPriorities_down_clicked: move addon Down";
+
     // Получаем текущение положение row
     int row = ui->addonsPriorities->currentRow();
 
     // Перемещаем итем вниз
     if(row != ui->addonsPriorities->count()-1 && row != -1) { // Проверяем, выбран ли итем и не является ли он самым нижним
-
         QListWidgetItem *item = ui->addonsPriorities->takeItem(row);
         ui->addonsPriorities->removeItemWidget(item);
         ui->addonsPriorities->insertItem(row+1, item);
         ui->addonsPriorities->setCurrentRow(row+1);
-
-        qDebug() << "Debug-launcher: move addon Down - succ";
     }
 }
 
-
+// Применение изменений, отправка изменений в главное окно
 void addonsSettings::on_buttonBox_accepted() {
 
+    qDebug() << "addonsSettings::on_buttonBox_accepted: accpeted - send data";
+
+    // Обнуляем переменные перед дополнением данными
     listDirs.clear();
     listPriorityAddonsDirs.clear();
 
@@ -175,5 +178,6 @@ void addonsSettings::on_buttonBox_accepted() {
         listPriorityAddonsDirs.append(ui->addonsPriorities->item(i)->text());
     }
 
+    // отправляем данные в главное окно
     emit sendData(listDirs, listPriorityAddonsDirs);
 }

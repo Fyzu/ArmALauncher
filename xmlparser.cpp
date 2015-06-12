@@ -2,40 +2,45 @@
 
 XMLParser::XMLParser(QString XMLPath) {
 
+    // Считываем данные XML файла
     QFile file(XMLPath);
     if(file.open(QIODevice::ReadOnly)) {
         xmlReader.addData(file.readAll());
+        qDebug() << "XMLParser::XMLParser: xml open succ";
     } else {
-        qDebug() << "Debug-fileRepo: XML Open Error - file: " << file.fileName();
+        qDebug() << "XMLParser::XMLParser: xml open error - file: " << file.fileName();
     }
-
+    file.close();
 }
 
-XMLParser::~XMLParser() {
+XMLParser::~XMLParser() { /* empty */}
 
-}
-
+// Загружаем новый файл в парсер
 void XMLParser::setPath(QString path) {
 
+    // Считываем данные XML файла
     QFile file(path);
     if(file.open(QIODevice::ReadOnly)) {
         xmlReader.clear();
         xmlReader.addData(file.readAll());
-        file.close();
+        qDebug() << "XMLParser::setPath: xml open succ";
     } else {
-        qDebug() << "Debug-fileRepo: XML Open Error - file: " << file.fileName();
+        qDebug() << "XMLParser::setPath: xml open error - file: " << file.fileName();
     }
-
+    file.close();
 }
 
-// Получить
+// Получить информацию из ХМЛки dxdiag'а
 dxdiag XMLParser::getDxdiag() {
+
+    qDebug() << "XMLParser::getDxdiag: xml parse start";
+
     dxdiag diag;
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
         if (xmlReader.hasError()) {
-            qDebug() << "Debug-fileRepo: Parse error. " << xmlReader.errorString() << xmlReader.text();
+            qWarning() << "XMLParser::getDxdiag: Parse error. " << xmlReader.errorString() << xmlReader.text();
             return diag;
         } else {
             switch (xmlReader.tokenType()) {
@@ -98,19 +103,20 @@ dxdiag XMLParser::getDxdiag() {
             }
         }
     }
-
     return diag;
 }
 
-//
+// Получаем информацию из ХМЛки Yoma config mods
 QStringList XMLParser::getMods() {
+
+    qDebug() << "XMLParser::getMods: xml parse start";
 
     QStringList Mods;
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
         if (xmlReader.hasError()) {
-            qDebug() << "Debug-fileRepo: Parse error. " << xmlReader.errorString() << xmlReader.text();
+            qWarning() << "XMLParser::getMods: Parse error. " << xmlReader.errorString() << xmlReader.text();
             return Mods;
         } else {
             switch (xmlReader.tokenType()) {
@@ -143,19 +149,20 @@ QStringList XMLParser::getMods() {
             }
         }
     }
-
     return Mods;
 }
 
 // Парсим XMLку Addon'ов
 QList< QMap<QString, QString> > XMLParser::getAddons() {
 
+    qDebug() << "XMLParser::getAddons: xml parse start";
+
     QList< QMap<QString, QString> > Addons;
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
         if (xmlReader.hasError()) {
-            qDebug() << "Debug-fileRepo: Parse error. " << xmlReader.errorString() << xmlReader.text();
+            qWarning() << "XMLParser::getAddons: Parse error. " << xmlReader.errorString() << xmlReader.text();
             return Addons;
         } else {
             switch (xmlReader.tokenType()) {
@@ -190,7 +197,6 @@ QList< QMap<QString, QString> > XMLParser::getAddons() {
             }
         }
     }
-
     return Addons;
 }
 
