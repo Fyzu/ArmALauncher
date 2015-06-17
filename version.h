@@ -8,9 +8,9 @@
 #define VER_PRODUCTVERSION_STR      "0.7\0"
 
 #define VER_COMPANYNAME_STR         "Fyzu"
-#define VER_FILEDESCRIPTION_STR     "Arma 3 Launcher by Fyzu"
+#define VER_FILEDESCRIPTION_STR     "Arma 3 Launcher - Fyzu"
 #define VER_INTERNALNAME_STR        "ArmALauncher"
-#define VER_LEGALCOPYRIGHT_STR      "Copyright © 2015 Petrov D.V."
+#define VER_LEGALCOPYRIGHT_STR      "2015 Petrov D.V."
 #define VER_LEGALTRADEMARKS1_STR    "All Rights Reserved"
 #define VER_LEGALTRADEMARKS2_STR    VER_LEGALTRADEMARKS1_STR
 #define VER_ORIGINALFILENAME_STR    "ArmALauncher.exe"

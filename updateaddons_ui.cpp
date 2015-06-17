@@ -212,7 +212,7 @@ void launcher::updaterStarted(const Repository repository, const QList< QMap<QSt
                     item->setCheckState(0, Qt::Unchecked);    // Заранее делаем выбранным, ибо это важный раздел
                 } else
                 // Добавляем основной аддон
-                if(itMod != endMod && (*itMod) == (*(itMod+1))) { // Если это не последний элемент списка и текущий элемент равен следующему
+                if((itMod+1) != endMod && (*itMod) == (*(itMod+1))) { // Если это не последний элемент списка и текущий элемент равен следующему
                     // Добавляем элемент и прописываем его параметры
                     addonsFolders.append((*itMod));
                     item = new QTreeWidgetItem(ui->addonsTree);
@@ -223,7 +223,7 @@ void launcher::updaterStarted(const Repository repository, const QList< QMap<QSt
                     ++itMod;                                    // Перескакиваем элемент, т.к. элементы одинаковые
                 } else
                 // Добавляем не основной раздел
-                if (itMod != modsList.begin() && (*itMod) != (*(itMod-1)) && !(*itMod).contains('\\')) { // Если это не первый элемент и предыдущий элемент не является таким же,
+                if (itMod != modsList.constBegin() && (*itMod) != (*(itMod-1)) && !(*itMod).contains('\\')) { // Если это не первый элемент и предыдущий элемент не является таким же,
                                                                                             //  так же элемент не содержит '\'
                     // Добавляем элемент и прописываем его параметры
                     addonsFolders.append((*itMod));
@@ -413,8 +413,9 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
         item->setBackground(1, QBrush(Qt::yellow));
         item->setBackground(2, QBrush(Qt::yellow));
         // Создаем список корректных аддонов
-        for(auto itMod = modsList.begin(); itMod != modsList.end(); ++itMod) {
-            if((*itFile)["Path"].contains((*itMod)+'\\') && !(*itFile)["Path"].contains('\\' + (*itMod)+'\\')) {
+        for(auto itMod = modsList.constBegin(); itMod != modsList.constEnd(); ++itMod) {
+            if((*itFile)["Path"].contains((*itMod))
+              && !(*itFile)["Path"].contains('\\' + (*itMod) +'\\') && !(*itFile)["Path"].contains('\\' + (*itMod))) {
                 modsList.erase(itMod);
                 break;
             }
@@ -431,8 +432,9 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
         item->setBackground(1, QBrush(Qt::cyan));
         item->setBackground(2, QBrush(Qt::cyan));
         // Создаем список корректных аддонов
-        for(auto itMod = modsList.begin(); itMod != modsList.end(); ++itMod) {
-            if((*itFile)["Path"].contains((*itMod)+'\\') && !(*itFile)["Path"].contains('\\' + (*itMod)+'\\')) {
+        for(auto itMod = modsList.constBegin(); itMod != modsList.constEnd(); ++itMod) {
+            if((*itFile)["Path"].contains((*itMod))
+              && !(*itFile)["Path"].contains('\\' + (*itMod) +'\\') && !(*itFile)["Path"].contains('\\' + (*itMod))) {
                 modsList.erase(itMod);
                 break;
             }
