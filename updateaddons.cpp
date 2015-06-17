@@ -5,7 +5,7 @@
 // Конструктор
 updateAddons::updateAddons(QWidget *parent) : QObject(parent) {
 
-    qDebug() << "updateAddons::updateAddons: constructor";
+    qInfo() << "updateAddons::updateAddons: constructor";
 
     // Объявление мета типов
     qRegisterMetaType<Repository>("Repository");
@@ -17,7 +17,7 @@ updateAddons::updateAddons(QWidget *parent) : QObject(parent) {
 // Диструктор
 updateAddons::~updateAddons() {
 
-    qDebug() << "updateAddons::~updateAddons: destructor";
+    qInfo() << "updateAddons::~updateAddons: destructor";
 
     emit finished();
 }
@@ -32,16 +32,17 @@ void updateAddons::saveTempFileInfo() {
         //В поток
         out << yomaFileInfo << syncFileInfo << addonsPath;
 
-        qDebug() << "updateAddons::saveTempFileInfo: Save File Info in file - succ";
+        qInfo() << "updateAddons::saveTempFileInfo: Save File Info in file - succ";
     } else {
-        qDebug() << "updateAddons::saveTempFileInfo: Save File Info in file - fail";
+        qInfo() << "updateAddons::saveTempFileInfo: Save File Info in file - fail";
     }
+    file.close();
 }
 
 // Прописываем данные репозитория
 void updateAddons::setRepository(Repository repo) {
 
-    qDebug() << "updateAddons::setRepository: repo type -" << repo.type;
+    qInfo() << "updateAddons::setRepository: repo type -" << repo.type;
 
     // Получаем параметры репозитория
     repository = repo;
@@ -89,18 +90,19 @@ void updateAddons::setRepository(Repository repo) {
         in >> yomaFileInfo >> syncFileInfo >> defaultAddonsPath;
         file.close();
 
-        qDebug() << "updateAddons::setRepository: load file info - succ";
+        qInfo() << "updateAddons::setRepository: load file info - succ";
     } else {
         yomaFileInfo.clear();
         syncFileInfo.clear();
-        qDebug() << "updateAddons::setRepository: load file info - fail";
+        qInfo() << "updateAddons::setRepository: load file info - fail";
     }
+    file.close();
 }
 
 // Старт класса updateAddons
 void updateAddons::start() {
 
-    qDebug() << "updateAddons::start: download config";
+    qInfo() << "updateAddons::start: download config";
 
     // Подключаем слот  к сигналу завершения загрузки, который вызовит метод завершающий запус класса
     connect(this, SIGNAL(downloadFinished(bool)), this, SLOT(startFinished(bool)), Qt::DirectConnection);
@@ -112,7 +114,7 @@ void updateAddons::start() {
 // Завершающий этап запуска программы
 void updateAddons::startFinished(bool downloadSuccess) {
 
-    qDebug() << "updateAddons::startFinished: download config succ -" << downloadSuccess;
+    qInfo() << "updateAddons::startFinished: download config succ -" << downloadSuccess;
 
     bool success = false;
 
@@ -132,7 +134,7 @@ void updateAddons::startFinished(bool downloadSuccess) {
         }
     }
 
-    qDebug() << "updateAddons::startFinished: parse config succ -" << success;
+    qInfo() << "updateAddons::startFinished: parse config succ -" << success;
 
     // Операции после успешной
     emit started(repository, addonsList, modsList, success && downloadSuccess, defaultAddonsPath);
@@ -144,11 +146,11 @@ bool updateAddons::parseYomaInformation(QString path, QString fileName) {
     // Распаковка архива
     bool success = unzipArchive(path+fileName, path);
 
-    qDebug() << "updateAddons::parseYomaInformation: config unzip succ -" << success;
+    qInfo() << "updateAddons::parseYomaInformation: config unzip succ -" << success;
 
     // Парсим информацю
     if(success) { // Если распаковка прошла успешно
-        qDebug() << "updateAddons::parseYomaInformation: parsing - start";
+        qInfo() << "updateAddons::parseYomaInformation: parsing - start";
 
         XMLParser parser(path + "Addons.xml");
         addonsList = parser.getAddons();
@@ -172,7 +174,7 @@ bool updateAddons::parseYomaInformation(QString path, QString fileName) {
     QFileInfo folder(path+name);
     folder.dir().rmdir(folder.absoluteFilePath());
 
-    qDebug() << "updateAddons::parseYomaInformation: parsing succ -" << success;
+    qInfo() << "updateAddons::parseYomaInformation: parsing succ -" << success;
 
     return success;
 }
@@ -185,7 +187,7 @@ bool updateAddons::parseSyncInformation(QString path) {
     // Парсим инфу аддон синка
     if(QFile::exists(path+"sync")) {
 
-        qDebug() << "updateAddons::parseSyncInformation: config exists";
+        qInfo() << "updateAddons::parseSyncInformation: config exists";
 
         // Запускаем парсер
         QProcess sync;
@@ -196,7 +198,7 @@ bool updateAddons::parseSyncInformation(QString path) {
         QString output = sync.readAll();
         sync.deleteLater();
 
-        qDebug() << "updateAddons::parseSyncInformation: SyncParser output: " << output;
+        qInfo() << "updateAddons::parseSyncInformation: SyncParser output: " << output;
 
         if(output.contains("Successfully", Qt::CaseInsensitive)) {
 
@@ -217,25 +219,34 @@ bool updateAddons::parseSyncInformation(QString path) {
             modsList.clear();
 
             // Получаем список модов
-            int index;
-            for(index = 0; index<list.size() && list[index] != " - - sha1 - - ";index++) {
-                modsList.append(list[index]);
+            QList<QString>::const_iterator it;
+            auto end = list.constEnd();
+            for(it = list.constBegin(); it != end && (*it) != " - - sha1 - - ";++it) {
+                modsList.append(*it);
             }
             // Получаем список файлов и их атрибуты
-            index++;
-            while(index<list.size()) {
+            ++it;
+            while(it != end) {
                 QMap<QString, QString> file;
-                file.insert("Path", list[index]);
-                file.insert("Pbo",  list[index+1]);
-                file.insert("Sha1", list[index+2]);
-                file.insert("Size", list[index+3]);
+                file.insert("Path", (*it));
+                ++it;
+                file.insert("Pbo",  (*it));
+                ++it;
+                file.insert("Sha1", (*it));
+                ++it;
+                file.insert("Size", (*it));
+                ++it;
                 addonsList.append(file);
-                index+=4;
             }
 
             // Проверяем успешность парсинга
-            if(modsList.size() == 0 && addonsList.size() == 0)
+            if(modsList.isEmpty() && addonsList.isEmpty())
                 succ = false;
+        }
+
+        // Если JRE не установлен, сообщаем пользователю
+        if(output.contains("Java not found", Qt::CaseInsensitive)) {
+            emit error(1, "Java not found");
         }
 
         // Удаляем считанные файлы
@@ -243,7 +254,7 @@ bool updateAddons::parseSyncInformation(QString path) {
         QFile::remove(path + "sync.txt");
     }
 
-    qDebug() << "updateAddons::parseSyncInformation: parse succ -" << succ;
+    qInfo() << "updateAddons::parseSyncInformation: parse succ -" << succ;
 
     return succ;
 }
@@ -282,7 +293,7 @@ void updateAddons::finish() {
     yomaFileInfo.clear();
     syncFileInfo.clear();
 
-    qDebug() << "updateAddons::finish: clear";
+    qInfo() << "updateAddons::finish: clear";
 }
 
 /*
@@ -291,7 +302,7 @@ void updateAddons::finish() {
 // Проверить аддоны
 void updateAddons::checkAddons(QString path) {
 
-    qDebug() << "updateAddons::checkAddons: addons path: " << path;
+    qInfo() << "updateAddons::checkAddons: addons path: " << path;
 
     // Получаем путь к аддонам
     addonsPath = path;
@@ -307,60 +318,64 @@ void updateAddons::checkAddons(QString path) {
     notCorrectFiles.clear();
 
     // Получаем список всех файлов которые находятся в аддонах
-    for(int folder = 0; folder<addonsFolders.count(); folder++) {
-        getAllFilesInDir(addonsPath+"/"+addonsFolders[folder], allFiles);
+    for(auto itFolder = addonsFolders.constBegin(); itFolder != addonsFolders.constEnd(); ++itFolder) {
+        getAllFilesInDir(addonsPath+"/"+(*itFolder), allFiles);
     }
 
-    qDebug() << "updateAddons::checkAddons: all files size -" << allFiles.size();
+    qInfo() << "updateAddons::checkAddons: all files size -" << allFiles.size();
 
     // Получаем списки файлов которые есть в списке сервера и те которые являются лишними
-    for(int i = 0; i < allFiles.size();i++) {
-        int j;
-        for(j = 0; j < addonsList.size(); j++) {
-            if(QString::compare(allFiles[i]["Pbo"],  addonsList[j]["Pbo"], Qt::CaseInsensitive) == 0 &&
-               QString::compare(allFiles[i]["Path"], addonsList[j]["Path"], Qt::CaseInsensitive) == 0) {
-                existsFiles.append(addonsList[j]);
+    auto endFile = allFiles.constEnd();
+    for(auto itFile = allFiles.constBegin(); itFile != endFile; ++itFile) {
+        auto itAddon = addonsList.constBegin();
+        auto endAddon = addonsList.constEnd();
+        for(;itAddon != endAddon;++itAddon) {
+            if(QString::compare((*itFile)["Pbo"],  (*itAddon)["Pbo"],  Qt::CaseInsensitive) == 0 &&
+               QString::compare((*itFile)["Path"], (*itAddon)["Path"], Qt::CaseInsensitive) == 0) {
+                existsFiles.append(*itAddon);
                 break;
             }
         }
-        if(j == addonsList.size()                   && !allFiles[i]["Pbo"].contains(".wav") &&
-           !allFiles[i]["Pbo"].contains(".dll")     && !allFiles[i]["Pbo"].contains(".txt") &&
-           !allFiles[i]["Pbo"].contains(".bikey")   && !allFiles[i]["Pbo"].contains(".bisign") &&
-           !allFiles[i]["Pbo"].contains(".cpp")     && !allFiles[i]["Pbo"].contains(".paa") &&
-           !allFiles[i]["Pbo"].contains(".exe")     && !allFiles[i]["Pbo"].contains(".bat"))
+        if(itAddon == endAddon                    && !(*itFile)["Pbo"].contains(".wav") &&
+           !(*itFile)["Pbo"].contains(".dll")     && !(*itFile)["Pbo"].contains(".txt") &&
+           !(*itFile)["Pbo"].contains(".bikey")   && !(*itFile)["Pbo"].contains(".bisign") &&
+           !(*itFile)["Pbo"].contains(".cpp")     && !(*itFile)["Pbo"].contains(".paa") &&
+           !(*itFile)["Pbo"].contains(".exe")     && !(*itFile)["Pbo"].contains(".bat"))
             // добавляем файл на удаление
-            otherFiles.append(allFiles[i]);
+            otherFiles.append(*itFile);
     }
 
-    qDebug() << "updateAddons::checkAddons: exists files size -" << existsFiles.size();
+    qInfo() << "updateAddons::checkAddons: exists files size -" << existsFiles.size();
 
     // Получаем список новых файлов
     newFiles = addonsList;
-    for(int index = 0; index < existsFiles.size(); index++) {
-        newFiles.removeAll(existsFiles[index]);
+    auto endNewFile = existsFiles.constEnd();
+    for(auto itNewFile = existsFiles.constBegin(); itNewFile != endNewFile; ++itNewFile) {
+        newFiles.removeAll(*itNewFile);
     }
 
     // Получаем списки корректных файлов и нет
-    if(repository.type == 0)
+    if(repository.type == 0) {
     // Yoma Addon Sync 2009
-        for(int index = 0; index<existsFiles.size(); index++) {
+        auto existsFileEnd = existsFiles.constEnd();
+        for(auto itExistsFile = existsFiles.constBegin(); itExistsFile != existsFileEnd; ++itExistsFile) {
             // Регистрируем прогресс в UI
-            emit checkAddonsProgressUI(index, existsFiles);
+            emit checkAddonsProgressUI(itExistsFile-existsFiles.constBegin(), existsFiles);
 
             // Получаем информацию о файле
-            QFileInfo info(addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"]);
+            QFileInfo info(addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"]);
 
             // Проверяем, есть ли файл в заранее собранном файле
             YomaFileInfo temp;
-            temp.fileName = addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"];
+            temp.fileName = addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"];
             int tempIndex = yomaFileInfo.indexOf(temp);
 
 
             // Проверяем, схожа ли заранее подготовленая информация о файле с действительностью
             if(tempIndex != -1) {           // Если файл найден
                 if(info.lastModified() == yomaFileInfo[tempIndex].fileEditDate && info.size() == yomaFileInfo[tempIndex].fileSize
-                  && QString::compare(yomaFileInfo[tempIndex].fileMD5, existsFiles[index]["Md5"], Qt::CaseInsensitive) == 0) {             // Проверяем, действительная ли информация о файле
-                    correctFiles.append(existsFiles[index]);
+                  && QString::compare(yomaFileInfo[tempIndex].fileMD5, (*itExistsFile)["Md5"], Qt::CaseInsensitive) == 0) {             // Проверяем, действительная ли информация о файле
+                    correctFiles.append((*itExistsFile));
                     continue;
                 } else {        // Если информация не действительна
                     yomaFileInfo.removeAt(tempIndex);
@@ -368,41 +383,42 @@ void updateAddons::checkAddons(QString path) {
             }
 
             // Получаем MD5 сумму файла
-            QString md5 = getChecksum(addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"], QCryptographicHash::Md5);
+            QString md5 = getChecksum(addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"], QCryptographicHash::Md5);
             // Проверяем, соответсвует ли сумма на сервере, сумме локальной
-            if(QString::compare(md5, existsFiles[index]["Md5"], Qt::CaseInsensitive) == 0) {
+            if(QString::compare(md5, (*itExistsFile)["Md5"], Qt::CaseInsensitive) == 0) {
                 YomaFileInfo fileInfo;
-                fileInfo.fileName = (addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"]);
-                fileInfo.fileMD5 = (existsFiles[index]["Md5"]);
+                fileInfo.fileName = (addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"]);
+                fileInfo.fileMD5 = ((*itExistsFile)["Md5"]);
                 fileInfo.fileEditDate = (info.lastModified());
                 fileInfo.fileSize = (info.size());
                 yomaFileInfo.append(fileInfo);
-                correctFiles.append(existsFiles[index]);
+                correctFiles.append((*itExistsFile));
             } else {
-                notCorrectFiles.append(existsFiles[index]);
+                notCorrectFiles.append((*itExistsFile));
                 notCorrectFiles.last().insert("Md5local", md5.toUpper());
             }
         }
-    else
+    } else {
     // Arma3 Sync
-        for(int index = 0; index<existsFiles.size(); index++) {
+        auto existsFileEnd = existsFiles.constEnd();
+        for(auto itExistsFile = existsFiles.constBegin(); itExistsFile != existsFileEnd; ++itExistsFile) {
             // Регистрируем прогресс в UI
-            emit checkAddonsProgressUI(index, existsFiles);
+            emit checkAddonsProgressUI(itExistsFile-existsFiles.constBegin(), existsFiles);
 
             // Получаем информацию о файле
-            QFileInfo info(addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"]);
+            QFileInfo info(addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"]);
 
             // Проверяем, есть ли файл в заранее собранном файле
             SyncFileInfo temp;
-            temp.fileName = addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"];
+            temp.fileName = addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"];
             int tempIndex = syncFileInfo.indexOf(temp);
 
 
             // Проверяем, схожа ли заранее подготовленая информация о файле с действительностью
             if(tempIndex != -1) {           // Если файл найден
                 if(info.lastModified() == syncFileInfo[tempIndex].fileEditDate && info.size() == syncFileInfo[tempIndex].fileSize
-                  && QString::compare(syncFileInfo[tempIndex].fileSHA1, existsFiles[index]["Sha1"], Qt::CaseInsensitive) == 0) {             // Проверяем, действительная ли информация о файле
-                    correctFiles.append(existsFiles[index]);
+                  && QString::compare(syncFileInfo[tempIndex].fileSHA1, (*itExistsFile)["Sha1"], Qt::CaseInsensitive) == 0) {             // Проверяем, действительная ли информация о файле
+                    correctFiles.append((*itExistsFile));
                     continue;
                 } else {        // Если информация не действительна
                     syncFileInfo.removeAt(tempIndex);
@@ -410,25 +426,25 @@ void updateAddons::checkAddons(QString path) {
             }
 
             // Получаем MD5 сумму файла
-            QString sha1 = getChecksum(addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"], QCryptographicHash::Sha1);
-            if(sha1 == "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+            QString sha1 = getChecksum(addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"], QCryptographicHash::Sha1);
+            if(sha1 == "da39a3ee5e6b4b0d3255bfef95601890afd80709")      // Если sha1 пустого файла, то обнуляем
                 sha1 = "0";
             // Проверяем, соответсвует ли сумма на сервере, сумме локальной
-            if(QString::compare(sha1, existsFiles[index]["Sha1"], Qt::CaseInsensitive) == 0) {
+            if(QString::compare(sha1, (*itExistsFile)["Sha1"], Qt::CaseInsensitive) == 0) {
                 SyncFileInfo fileInfo;
-                fileInfo.fileName = (addonsPath+"/"+existsFiles[index]["Path"]+"/"+existsFiles[index]["Pbo"]);
-                fileInfo.fileSHA1 = (existsFiles[index]["Sha1"].toUpper());
+                fileInfo.fileName = (addonsPath+"/"+(*itExistsFile)["Path"]+"/"+(*itExistsFile)["Pbo"]);
+                fileInfo.fileSHA1 = ((*itExistsFile)["Sha1"].toUpper());
                 fileInfo.fileEditDate = (info.lastModified());
                 fileInfo.fileSize = (info.size());
                 syncFileInfo.append(fileInfo);
-                correctFiles.append(existsFiles[index]);
+                correctFiles.append((*itExistsFile));
             } else {
-                notCorrectFiles.append(existsFiles[index]);
+                notCorrectFiles.append((*itExistsFile));
                 notCorrectFiles.last().insert("Sha1local", sha1.toUpper());
             }
         }
-
-    qDebug() << "updateAddons::checkAddons: correct files -" << correctFiles.size() << "; not correct files -" << notCorrectFiles.size();
+    }
+    qInfo() << "updateAddons::checkAddons: correct files -" << correctFiles.size() << "; not correct files -" << notCorrectFiles.size();
 
     // Передаем данные UI
     emit checkAddonsFinished(repository.type, otherFiles, newFiles, correctFiles, notCorrectFiles);
@@ -442,50 +458,54 @@ void updateAddons::getAllFilesInDir(const QString path, QList< QMap<QString, QSt
 
     // Получаем файлы в текущей папке path
     QStringList files = QDir(path).entryList(QDir::Files);
-    for(int index = 0; index<files.size();index++) {
+    for(auto it = files.constBegin(); it != files.constEnd(); ++it) {
         QMap<QString, QString > file;
         QString addonPath = path;
         file.insert("Path", addonPath.remove(addonsPath+"/").replace('/', '\\'));
-        file.insert("Pbo", files[index]);
+        file.insert("Pbo", *it);
         allFiles.append(file);
     }
 
     // Получаем папки в текущей позиции Path и очищаем от мусора
     QStringList folders = QDir(path).entryList(QDir::Dirs);
-    for(int j=0;j<folders.size();j++) {
-        if(folders.at(j) == "." || folders.at(j) == "..") {
-            folders.removeAt(j);
-            j--;
+    for(auto it = folders.begin(); it != folders.end();) {
+        if((*it) == "." || (*it) == "..") {
+            it = folders.erase(it);
+        } else {
+            ++it;
         }
-     }
+    }
 
     // Вызываем этот же метод, на все папки в текущей позиции path
-    for(int index = 0;index<folders.size();index++) {
-        getAllFilesInDir(path+"/"+folders[index], allFiles);
+    auto end = folders.constEnd();
+    for(auto it = folders.constBegin(); it != end; ++it) {
+        getAllFilesInDir(path+"/"+(*it), allFiles);
     }
 }
 
 // Скачать/обновить аддоны
 void updateAddons::downloadUpdate(QList<int> fileID) {
 
-    qDebug() << "updateAddons::downloadUpdate: start";
-
-    // Собираем список скачиваемых файлов
-    downloadFiles.clear();
-    for(int id = 0;id<fileID.size();id++) {
-        if(fileID[id] >= notCorrectFiles.size()) {
-            downloadFiles.append(newFiles[fileID[id]-notCorrectFiles.size()]);
-        } else {
-            downloadFiles.append(notCorrectFiles[fileID[id]]);
-        }
-    }
+    qInfo() << "updateAddons::downloadUpdate: start";
 
     // Если нет файлов для скачивания
-    if(downloadFiles.size() == 0) {
+    if(fileID.size() == 0) {
         downloadAddonsFinish();
         emit downloadAddonsFinished(true);
         qWarning() << "updateAddons::downloadUpdate: downloadFiles = 0";
         return;
+    }
+
+    // Собираем список скачиваемых файлов
+    downloadFiles.clear();
+    auto end = fileID.constEnd();
+    int size = notCorrectFiles.size();
+    for(auto it = fileID.constBegin(); it != end; ++it) {
+        if((*it) >= size) {
+            downloadFiles.append(newFiles[(*it)-size]);
+        } else {
+            downloadFiles.append(notCorrectFiles[(*it)]);
+        }
     }
 
     // Переменные загрузки
@@ -503,7 +523,7 @@ void updateAddons::downloadUpdate(QList<int> fileID) {
 // Загрузка файла - первая стадия загрузки
 void updateAddons::downloadAddonStart() {
 
-    qDebug() << "updateAddons::downloadAddonStart: download file: " << downloadFiles[downloadFilesIndex];
+    qInfo() << "updateAddons::downloadAddonStart: download file: " << downloadFiles[downloadFilesIndex];
 
 
     // связываем след этап, с концом загрузки файла
@@ -523,7 +543,7 @@ void updateAddons::downloadAddonStart() {
 // Загрузка файла - финальная стадия загрузки
 void updateAddons::downloadAddonFinish(bool downloadSuccess) {
 
-    qDebug() << "updateAddons::downloadAddonFinish: download addon succ -" << downloadSuccess;
+    qInfo() << "updateAddons::downloadAddonFinish: download addon succ -" << downloadSuccess;
 
     bool success = downloadSuccess;
 
@@ -544,13 +564,13 @@ void updateAddons::downloadAddonFinish(bool downloadSuccess) {
     // Выбор решения по результатам загрузки
     //..если загрузка завершилась не успешно или она остановлена
     if((!success || downloadAddonsAbort) && downloadFilesIndex != downloadFiles.size()) {
-        qDebug() << "updateAddons::downloadAddonFinish: abort download addons";
+        qInfo() << "updateAddons::downloadAddonFinish: abort download addons";
         downloadAddonsFinish();
         emit downloadAddonsFinished(false);
     }
     //..если загрузка завершена успешно
     else if(success && downloadFilesIndex == downloadFiles.size()) {
-        qDebug() << "updateAddons::downloadAddonFinish: download addons finish";
+        qInfo() << "updateAddons::downloadAddonFinish: download addons finish";
         downloadAddonsFinish();
         emit downloadAddonsFinished(true);
     //..иначе, файл загружен успешно
@@ -563,7 +583,7 @@ void updateAddons::downloadAddonFinish(bool downloadSuccess) {
 // Завершение загрузки файлов
 void updateAddons::downloadAddonsFinish() {
 
-    qDebug() << "updateAddons::downloadAddonsFinish: finished download";
+    qInfo() << "updateAddons::downloadAddonsFinish: finished download";
 
     downloadAddonsInProgress = false;
 
@@ -574,7 +594,7 @@ void updateAddons::downloadAddonsFinish() {
 // Удалить лишние файлы
 void updateAddons::delOtherFiles() {
 
-    qDebug() << "updateAddons::delOtherFiles: start";
+    qInfo() << "updateAddons::delOtherFiles: start";
 
     emit deleteOtherFiles(otherFiles, addonsPath);
 }
@@ -582,7 +602,7 @@ void updateAddons::delOtherFiles() {
 // Остановить обновление аддонов
 void updateAddons::stopUpdater() {
 
-    qDebug() << "updateAddons::stopUpdater: Download stop";
+    qInfo() << "updateAddons::stopUpdater: Download stop";
 
     downloadAddonsAbort = true;
 
@@ -591,6 +611,29 @@ void updateAddons::stopUpdater() {
 
         // Заканчиваем загрузку
         httpRequestAborted = true;
+        // Отключаем сигнал и вызвапем метод вручную
+        disconnect(reply, SIGNAL(finished()),
+                   this,  SLOT  (httpDownloadFinished()));
+        disconnect(reply, SIGNAL(readyRead()),
+                   this,  SLOT  (httpReadyRead()));
+        disconnect(reply, SIGNAL(downloadProgress(qint64,qint64)),
+                   this,  SLOT  (updateDownloadProgress(qint64,qint64)));
+        //.. регистрируем завершение загрузки
+        reply->abort();
+        httpDownloadFinished();
+    }
+}
+
+// Истечения времени ответа от сервера
+void updateAddons::timeout() {
+
+    // Останавливаем загрузку
+    if(reply && !reply->isFinished()) { // Если процесс загрузки идет
+
+        qWarning() << "updateAddons::timeout: reply abort (timeout)";
+
+        downloadTimeout = true;
+
         // Отключаем сигнал и вызвапем метод вручную
         disconnect(reply, SIGNAL(finished()),
                    this,  SLOT  (httpDownloadFinished()));
@@ -624,9 +667,9 @@ void updateAddons::downloadFile(QString fileUrl, QString path) {
 
     // Прописываем полный путь файл
     filePath = new QFile(path+fileName);
-    qDebug() << "updateAddons::downloadFile: download in -" << path;
+    qInfo() << "updateAddons::downloadFile: download in -" << path;
     if (filePath->exists()) {
-        qDebug() << "updateAddons::downloadFile: file exists -" << filePath->fileName() << " - remove";
+        qInfo() << "updateAddons::downloadFile: file exists -" << filePath->fileName() << " - remove";
         filePath->remove();
     }
     if (!filePath->open(QIODevice::WriteOnly)) {
@@ -645,6 +688,12 @@ void updateAddons::downloadFile(QString fileUrl, QString path) {
     bytesBefore = 0;
     triger = 4;
 
+    // Объявляем timeout
+    timer = new QTimer;
+    timer->setSingleShot(true);
+    downloadTimeout = false;
+    timer->start(SOCKET_TIMEOUT);
+
     // Запускаем запрос загрузки
     startRequest(url);
 
@@ -655,7 +704,7 @@ void updateAddons::downloadFile(QString fileUrl, QString path) {
 // Запрос загрузки и подключение сигналов
 void updateAddons::startRequest(QUrl url) {
 
-    qDebug() << "updateAddons::startRequest: url -" << url.fileName();
+    qInfo() << "updateAddons::startRequest: url -" << url.fileName();
 
     // Посылаем запрос по URL
     reply = manager->get(QNetworkRequest(url));
@@ -669,6 +718,9 @@ void updateAddons::startRequest(QUrl url) {
     //..а по завершению загрузки, взываем метод httpDownloadFinished()
     connect(reply, SIGNAL(finished()),
             this,  SLOT  (httpDownloadFinished()), Qt::DirectConnection);
+    //..проверяем соеденение на timeout
+    connect(timer, SIGNAL(timeout()),
+            this,  SLOT  (timeout()), Qt::DirectConnection);
 
 }
 
@@ -676,12 +728,16 @@ void updateAddons::startRequest(QUrl url) {
 void updateAddons::httpReadyRead() {
 
     // Считываем входные данные в файл
-    if (filePath)
+    if(filePath)
         filePath->write(reply->readAll());
 }
 
 // Метод обновления данных загрузки
 void updateAddons::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
+
+    // Останавливаем таймер timeout'а
+    if(timer->isActive())
+        timer->stop();
 
     // Обновляем данные загрузки
     if (!httpRequestAborted) {
@@ -699,6 +755,9 @@ void updateAddons::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
         } else
             triger++;
 
+        // Запускаем отсчет timeout'а
+        timer->start(15000);
+
         // Передаем сигнал UI для обновление данных
         emit updateDownloadProgress_UI(bytesRead, totalBytes, speed);
     }
@@ -709,7 +768,7 @@ void updateAddons::httpDownloadFinished() {
 
     // Если нажали кнопку "Остановить загрузку"
     if (httpRequestAborted) {
-        qDebug() << "updateAddons::httpDownloadFinished: download aborted";
+        qInfo() << "updateAddons::httpDownloadFinished: download aborted";
 
         // Удаляем недокаченный файл
         if (filePath) {
@@ -719,6 +778,8 @@ void updateAddons::httpDownloadFinished() {
             filePath = 0;
         }
         // Собираем мусор
+        timer->deleteLater();
+        timer = 0;
         manager->deleteLater();
         manager = 0;
         reply->deleteLater();
@@ -729,15 +790,23 @@ void updateAddons::httpDownloadFinished() {
         return;
     }
 
-    // Загрузка прошла успешно
-    filePath->flush();
-    filePath->close();
     // Проверка возникали ли проблемы в загрузке
     if (reply->error()) {
         filePath->remove();
-        qDebug() << "updateAddons::httpDownloadFinished: download failed: " << reply->errorString();
-    } else
-       qDebug() << "updateAddons::httpDownloadFinished: download succ -" << filePath->exists();
+        if(downloadTimeout) {
+            emit error(0, "Download timeout");
+            qWarning() << "updateAddons::httpDownloadFinished: download failed: download timeout";
+        } else {
+            emit error(0, reply->errorString());
+            qWarning() << "updateAddons::httpDownloadFinished: download failed: " << reply->errorString();
+        }
+    } else {
+       qInfo() << "updateAddons::httpDownloadFinished: download succ -" << filePath->exists();
+    }
+
+    // Загрузка прошла успешно
+    filePath->flush();
+    filePath->close();
 
     // Собираем мусор
     reply->deleteLater();
@@ -746,6 +815,8 @@ void updateAddons::httpDownloadFinished() {
     filePath = 0;
     manager->deleteLater();
     manager = 0;
+    timer->deleteLater();
+    timer = 0;
 
     // Передаем сигнал UI для обновление данных
     emit downloadFinished(true);
@@ -771,7 +842,7 @@ bool updateAddons::unzipArchive(QString archive, QString extracting) {
 
     if(!archive.isEmpty() && !extracting.isEmpty()) {
 
-        qDebug() << "updateAddons::unzipArchive: unzip -" << archive;
+        qInfo() << "updateAddons::unzipArchive: unzip -" << archive;
 
         // Оповещаем пользователя, что распаковка началась
         QFileInfo info(archive);
@@ -789,9 +860,14 @@ bool updateAddons::unzipArchive(QString archive, QString extracting) {
 
         // Получаем вывод 7z, для удобного дебага
         QString output = unzip.readAll();
-        qDebug() << "updateAddons::unzipArchive: 7z output: " << output;
+        qInfo() << "updateAddons::unzipArchive: 7z output: " << output;
         unzip.deleteLater();
         bool succ = output.contains("Everything is Ok", Qt::CaseInsensitive);
+
+        // Сообщаем об ошибках в распаковке
+        if(!succ) {
+            emit error(2, output);
+        }
 
         // Завершение распаковки
         //..удаление архива
@@ -799,7 +875,7 @@ bool updateAddons::unzipArchive(QString archive, QString extracting) {
         //..оповещаем пользователя, что распаковка удалась
         emit unzipFinished(info.fileName());
 
-        qDebug() << "updateAddons::unzipArchive: unzip succ -" << succ;
+        qInfo() << "updateAddons::unzipArchive: unzip succ -" << succ;
         return succ;
     } else
         qWarning() << "updateAddons::unzipArchive: unzip fail - archive or extracting path - empty";

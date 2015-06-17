@@ -6,9 +6,9 @@ XMLParser::XMLParser(QString XMLPath) {
     QFile file(XMLPath);
     if(file.open(QIODevice::ReadOnly)) {
         xmlReader.addData(file.readAll());
-        qDebug() << "XMLParser::XMLParser: xml open succ";
+        qInfo() << "XMLParser::XMLParser: xml open succ";
     } else {
-        qDebug() << "XMLParser::XMLParser: xml open error - file: " << file.fileName();
+        qInfo() << "XMLParser::XMLParser: xml open error - file: " << file.fileName();
     }
     file.close();
 }
@@ -23,9 +23,9 @@ void XMLParser::setPath(QString path) {
     if(file.open(QIODevice::ReadOnly)) {
         xmlReader.clear();
         xmlReader.addData(file.readAll());
-        qDebug() << "XMLParser::setPath: xml open succ";
+        qInfo() << "XMLParser::setPath: xml open succ";
     } else {
-        qDebug() << "XMLParser::setPath: xml open error - file: " << file.fileName();
+        qInfo() << "XMLParser::setPath: xml open error - file: " << file.fileName();
     }
     file.close();
 }
@@ -33,7 +33,7 @@ void XMLParser::setPath(QString path) {
 // Получить информацию из ХМЛки dxdiag'а
 dxdiag XMLParser::getDxdiag() {
 
-    qDebug() << "XMLParser::getDxdiag: xml parse start";
+    qInfo() << "XMLParser::getDxdiag: xml parse start";
 
     dxdiag diag;
 
@@ -109,7 +109,7 @@ dxdiag XMLParser::getDxdiag() {
 // Получаем информацию из ХМЛки Yoma config mods
 QStringList XMLParser::getMods() {
 
-    qDebug() << "XMLParser::getMods: xml parse start";
+    qInfo() << "XMLParser::getMods: xml parse start";
 
     QStringList Mods;
 
@@ -155,7 +155,7 @@ QStringList XMLParser::getMods() {
 // Парсим XMLку Addon'ов
 QList< QMap<QString, QString> > XMLParser::getAddons() {
 
-    qDebug() << "XMLParser::getAddons: xml parse start";
+    qInfo() << "XMLParser::getAddons: xml parse start";
 
     QList< QMap<QString, QString> > Addons;
 
@@ -199,4 +199,3 @@ QList< QMap<QString, QString> > XMLParser::getAddons() {
     }
     return Addons;
 }
-

@@ -5,7 +5,7 @@ launcherSettings::launcherSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::launcherSettings)
 {
-    qDebug() << "launcherSettings::launcherSettings: constructor";
+    qInfo() << "launcherSettings::launcherSettings: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
 }
@@ -17,7 +17,7 @@ launcherSettings::~launcherSettings()
 
 // Отправляем данные
 void launcherSettings::on_buttonBox_accepted() {
-    qDebug() << "launcherSettings::on_buttonBox_accepted: start";
+    qInfo() << "launcherSettings::on_buttonBox_accepted: start";
 
     // Собираем данные для отправки
     settings.style = ui->styleBox->currentIndex();
@@ -30,7 +30,7 @@ void launcherSettings::on_buttonBox_accepted() {
 
 // Принимаем данные
 void launcherSettings::reciveData(Settings launcherS) {
-    qDebug() << "launcherSettings::reciveData: start";
+    qInfo() << "launcherSettings::reciveData: start";
 
     // Применяем изменения
     settings = launcherS;

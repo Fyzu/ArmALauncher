@@ -1,4 +1,8 @@
-﻿#include <QStringList>
+﻿#ifndef CFG
+#define CFG
+
+#include <QStringList>
+#include <QDataStream>
 #include <QDateTime>
 
 namespace Ui {
@@ -277,3 +281,5 @@ inline QDataStream & operator >> (QDataStream &in, SyncFileInfo &info) {
     return in;
 }
 
+
+#endif // CFG

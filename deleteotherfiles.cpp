@@ -4,7 +4,7 @@
 deleteOtherFiles::deleteOtherFiles(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::deleteOtherFiles) {
-    qDebug() << "deleteOtherFiles::deleteOtherFiles: constructor";
+    qInfo() << "deleteOtherFiles::deleteOtherFiles: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
 }
@@ -15,7 +15,7 @@ deleteOtherFiles::~deleteOtherFiles() {
 
 // Получение данных о лишних файлах
 void deleteOtherFiles::showDialog(const QList< QMap<QString, QString> > otherF, QString addonsP) {
-    qDebug() << "deleteOtherFiles::showDialog: start";
+    qInfo() << "deleteOtherFiles::showDialog: start";
 
     otherFiles = otherF;
     addonsPath = addonsP;
@@ -32,7 +32,7 @@ void deleteOtherFiles::showDialog(const QList< QMap<QString, QString> > otherF, 
 
 // Слот удаления лишних файлов
 void deleteOtherFiles::on_deleteFiles_clicked() {
-    qDebug() << "deleteOtherFiles::on_deleteFiles_clicked: start";
+    qInfo() << "deleteOtherFiles::on_deleteFiles_clicked: start";
 
     for(int i = 0; i<ui->filesTree->topLevelItemCount();i++) {
         QTreeWidgetItem *item = ui->filesTree->topLevelItem(i);

@@ -20,6 +20,8 @@
 
 #include "deleteotherfiles.h"
 
+#define SOCKET_TIMEOUT 15000
+
 class updateAddons : public QObject {
     Q_OBJECT
 public:
@@ -28,6 +30,9 @@ public:
     // Установка репозитория
     void setRepository(Repository repo);
 signals:
+    // Сигнал ошибки
+    void error(int type, QString msg);
+
     // Сигналы основного класса
     void started(const Repository repository, const QList< QMap<QString, QString> > addonsList,
                  const QStringList modsList, bool succes, QString defaultAddonsPath);
@@ -60,6 +65,7 @@ public slots:
     void start();
     void startFinished(bool downloadSuccess);
     void updaterUIStarted(QStringList folders);
+    void timeout();
 
     // Завершение апдейтера
     void finish();
@@ -83,6 +89,10 @@ public slots:
 private:
 
     // Работа с httpDownload
+    //..таймер таймаута
+    QTimer *timer;
+    //..тригер что время истекло
+    bool downloadTimeout;
     //..время для расчета промежутка обновления загрузки
     qint64 downloadTime;
     //..кол-во байт на момент прошлого обновления

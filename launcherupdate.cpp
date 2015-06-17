@@ -4,7 +4,7 @@
 launcherUpdate::launcherUpdate(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::launcherUpdate) {
-    qDebug() << "launcherUpdate::launcherUpdate: constructor";
+    qInfo() << "launcherUpdate::launcherUpdate: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() ^ Qt::WindowContextHelpButtonHint ^ Qt::WindowCloseButtonHint);
 }
@@ -15,7 +15,7 @@ launcherUpdate::~launcherUpdate() {
 
 // Новая версия
 void launcherUpdate::newVersion(Settings settings, QString version) {
-    qDebug() << "launcherUpdate::newVersion: start select";
+    qInfo() << "launcherUpdate::newVersion: start select";
 
     // Применение стиля
     if(settings.style == 0) {
@@ -50,10 +50,10 @@ void launcherUpdate::newVersion(Settings settings, QString version) {
 // Конец загрузки патч нотов
 void launcherUpdate::downloadPatchnotesFinished(QNetworkReply *reply) {
     if(reply->error()) {
-        qDebug() << "launcherUpdate::downloadPatchnotesFinished: reply error" << reply->errorString();
+        qInfo() << "launcherUpdate::downloadPatchnotesFinished: reply error" << reply->errorString();
         ui->textBrowser->setText(reply->errorString());
     } else {
-        qDebug() << "launcherUpdate::downloadPatchnotesFinished: download succ";
+        qInfo() << "launcherUpdate::downloadPatchnotesFinished: download succ";
         ui->textBrowser->setText(reply->readAll());
     }
     this->show();
@@ -61,7 +61,7 @@ void launcherUpdate::downloadPatchnotesFinished(QNetworkReply *reply) {
 
 // Обновится сейчас
 void launcherUpdate::on_updateNow_clicked() {
-    qDebug() << "launcherUpdate::on_updateNow_clicked: update now";
+    qInfo() << "launcherUpdate::on_updateNow_clicked: update now";
 
     emit result(0);
     this->close();
@@ -69,7 +69,7 @@ void launcherUpdate::on_updateNow_clicked() {
 
 // Обновится позже
 void launcherUpdate::on_updateAfter_clicked() {
-    qDebug() << "launcherUpdate::on_updateAfter_clicked: update after";
+    qInfo() << "launcherUpdate::on_updateAfter_clicked: update after";
 
     emit result(1);
     this->close();
@@ -77,7 +77,7 @@ void launcherUpdate::on_updateAfter_clicked() {
 
 // Не обновлятся
 void launcherUpdate::on_updateLater_clicked() {
-    qDebug() << "launcherUpdate::on_updateLater_clicked: update later";
+    qInfo() << "launcherUpdate::on_updateLater_clicked: update later";
 
     this->close();
 }

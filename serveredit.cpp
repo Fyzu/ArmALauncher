@@ -4,7 +4,7 @@
 serverEdit::serverEdit(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::serverEdit) {
-    qDebug() << "serverEdit::serverEdit: constructor";
+    qInfo() << "serverEdit::serverEdit: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
 
@@ -18,7 +18,7 @@ serverEdit::~serverEdit() {
 // и заполнение виджетов новой информацией
 void serverEdit::recieveData(favServer server, QList<addon> addonsList, bool newServer, QStringList names) {
 
-    qDebug() << "serverEdit::recieveData: start";
+    qInfo() << "serverEdit::recieveData: start";
 
     newServ = newServer;
     // Настройка сервера
@@ -77,7 +77,7 @@ void serverEdit::recieveData(favServer server, QList<addon> addonsList, bool new
 
 // Отправка измененных данных в главное окно
 void serverEdit::on_save_clicked() {
-    qDebug() << "serverEdit::on_save_clicked: Send start";
+    qInfo() << "serverEdit::on_save_clicked: Send start";
 
     // Создаем экземпляр класса favServer
     favServer server;
@@ -111,7 +111,7 @@ void serverEdit::on_save_clicked() {
     if(isIP) { //127.0.0.1
         if(pointCount < 3 || numberCount <4 || numberCount > 12) {
             QMessageBox::warning(this,tr("Внимание!"), tr("Некорректный IP адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: IP Adress INCORRECT"), QMessageBox::Ok);
-            qDebug() << "serverEdit::on_save_clicked: IP Adress INCORRECT";
+            qInfo() << "serverEdit::on_save_clicked: IP Adress INCORRECT";
             return;
         }
     // Если это Url - конвертируем в IP
@@ -121,7 +121,7 @@ void serverEdit::on_save_clicked() {
             server.serverIP = info.addresses()[0].toString();
         } else {
             QMessageBox::warning(this,tr("Внимание!"), tr("Некорректный адресс сервера.\nВведите правильный IP сервера или его Url.\nПример: \"127.0.0.1\", \"example.server.com\"\nТип ошибки: ")+info.errorString(), QMessageBox::Ok);
-            qDebug() << "serverEdit::on_save_clicked: " << info.errorString();
+            qInfo() << "serverEdit::on_save_clicked: " << info.errorString();
             return;
         }
     }

@@ -4,7 +4,7 @@
 repoEdit::repoEdit(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::repoEdit) {
-    qDebug() << "repoEdit::repoEdit: constructor";
+    qInfo() << "repoEdit::repoEdit: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
 }
@@ -17,7 +17,7 @@ repoEdit::~repoEdit()
 // Получение данных из главного окна
 // и заполнение виджетов новой информацией
 void repoEdit::recieveData(Repository repo, int currentRow, bool newRepo) {
-    qDebug() << "repoEdit::recieveData: start";
+    qInfo() << "repoEdit::recieveData: start";
 
     // Применение полученной информации
     newR = newRepo;
@@ -36,7 +36,7 @@ void repoEdit::recieveData(Repository repo, int currentRow, bool newRepo) {
 
 // Изменение типа репозитория
 void repoEdit::on_repoType_currentIndexChanged(int index) {
-    qDebug() << "repoEdit::on_repoType_currentIndexChanged: index " << index;
+    qInfo() << "repoEdit::on_repoType_currentIndexChanged: index " << index;
 
     if(index == 0)
         ui->label->setText(tr("Url сервера Yoma Addon Sync должен заканчиваться на .7z и начинаться с http:// или ftp://"));
@@ -46,7 +46,7 @@ void repoEdit::on_repoType_currentIndexChanged(int index) {
 
 // Отправка измененных данных в главное окно
 void repoEdit::on_saveButton_clicked() {
-    qDebug() << "repoEdit::on_saveButton_clicked: start";
+    qInfo() << "repoEdit::on_saveButton_clicked: start";
 
     QString url = ui->repoUrl->text();
     if(ui->repoType->currentIndex() == 0) {
@@ -60,7 +60,7 @@ void repoEdit::on_saveButton_clicked() {
             return;
         }
     }
-    qDebug() << "repoEdit::repoEdit: Send start";
+    qInfo() << "repoEdit::repoEdit: Send start";
     Repository repo;
     repo.name = ui->repoName->text();
     repo.type = ui->repoType->currentIndex();

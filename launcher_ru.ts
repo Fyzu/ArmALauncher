@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="eu_ES">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>QObject</name>
     <message>
         <location filename="addonssettings.cpp" line="96"/>
         <source>Укажите путь к директории аддонов</source>
-        <translation>Locate the path to the directory add-ons</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14,27 +14,27 @@
     <message>
         <location filename="addonssettings.ui" line="20"/>
         <source>Настройки аддонов</source>
-        <translation>Settings add-ons</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addonssettings.ui" line="29"/>
         <source>Список директорий для поиска аддонов</source>
-        <translation>List of directories to search for add-ons</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addonssettings.ui" line="98"/>
         <source>Приоритет запуска аддонов</source>
-        <translation>Priority launch add-ons</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addonssettings.cpp" line="102"/>
         <source>Ошибка!</source>
-        <translation>Error!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="addonssettings.cpp" line="102"/>
         <source>Такая директория уже существует.</source>
-        <translation>This directory already exists.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42,22 +42,22 @@
     <message>
         <location filename="deleteotherfiles.ui" line="14"/>
         <source>Удалить лишние файлы</source>
-        <translation>Delete unnecessary files</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="deleteotherfiles.ui" line="30"/>
         <source>Список лишних файлов</source>
-        <translation>List of unnecessary files</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="deleteotherfiles.ui" line="40"/>
         <source>Файл</source>
-        <translation>File</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="deleteotherfiles.ui" line="66"/>
         <source>Удалить выбранные файлы</source>
-        <translation>Delete selected files</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -70,13 +70,13 @@
     <message>
         <location filename="launcher.ui" line="76"/>
         <source>Запуск</source>
-        <translation>Launch</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="89"/>
         <location filename="launcher.ui" line="1105"/>
         <source>IP</source>
-        <translation>IP</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="113"/>
@@ -98,7 +98,7 @@
         <location filename="launcher.ui" line="141"/>
         <location filename="launcher.ui" line="1110"/>
         <source>Port</source>
-        <translation>Port</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="159"/>
@@ -114,7 +114,7 @@
     <message>
         <location filename="launcher.ui" line="181"/>
         <source>Password</source>
-        <translation>Password</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="199"/>
@@ -667,7 +667,7 @@
     <message>
         <location filename="launcher.ui" line="1460"/>
         <source>Удалить лишние файлы</source>
-        <translation type="unfinished">Delete unnecessary files</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="1474"/>
@@ -736,7 +736,7 @@
     <message>
         <location filename="launcher.ui" line="1753"/>
         <source>Файл</source>
-        <translation type="unfinished">File</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="1758"/>
@@ -847,7 +847,7 @@ http://launcher.our-army.su</source>
     <message>
         <location filename="launcher.cpp" line="606"/>
         <source>Ошибка!</source>
-        <translation type="unfinished">Error!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.cpp" line="606"/>
@@ -1010,7 +1010,7 @@ http://launcher.our-army.su</source>
     <message>
         <location filename="launchersettings.ui" line="41"/>
         <source>Запуск</source>
-        <translation type="unfinished">Launch</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launchersettings.ui" line="47"/>
@@ -1063,22 +1063,22 @@ http://launcher.our-army.su</source>
     <message>
         <location filename="launcherupdate.ui" line="26"/>
         <source>Обновление</source>
-        <translation>Update</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcherupdate.ui" line="32"/>
         <source>Изменения в новой версии</source>
-        <translation>Changes in new version</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcherupdate.ui" line="42"/>
         <source>Решение</source>
-        <translation>Solution</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcherupdate.ui" line="54"/>
         <source>   Обновится сейчас       </source>
-        <translation>Update Now</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcherupdate.ui" line="77"/>
@@ -1088,7 +1088,7 @@ http://launcher.our-army.su</source>
     <message>
         <location filename="launcherupdate.ui" line="100"/>
         <source>  Предложить позже       </source>
-        <translation>Later</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1200,7 +1200,7 @@ Url сервера ArmA3Sync должен заканчиваться
     <message>
         <location filename="serveredit.ui" line="115"/>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="serveredit.ui" line="122"/>
@@ -1210,7 +1210,7 @@ Url сервера ArmA3Sync должен заканчиваться
     <message>
         <location filename="serveredit.ui" line="139"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="serveredit.ui" line="165"/>

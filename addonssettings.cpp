@@ -4,7 +4,7 @@
 addonsSettings::addonsSettings(QWidget *parent) :
     QDialog(parent), ui(new Ui::addonsSettings) {
 
-    qDebug() << "addonsSettings::addonsSettings: constructor";
+    qInfo() << "addonsSettings::addonsSettings: constructor";
     ui->setupUi(this);
     this->setWindowFlags((this->windowFlags()^Qt::WindowContextHelpButtonHint));
 }
@@ -17,7 +17,7 @@ addonsSettings::~addonsSettings() {
 // Получение данных из главного окна
 void addonsSettings::receiveData(Settings settings, QStringList listD, QStringList listPriorityAddonsD, QStringList addons) {
 
-    qDebug() << "addonsSettings::receiveData: show";
+    qInfo() << "addonsSettings::receiveData: show";
     // Применение стиля
     if(settings.style == 0) {
 
@@ -90,7 +90,7 @@ bool addonsSettings::ListWidgetContains(QListWidget * widget, QString str) {
 // Добавление и удаление директорий
 void addonsSettings::on_addonSearchDirectories_add_clicked() {
 
-    qDebug() << "addonsSettings::on_addonSearchDirectories_add_clicked: Browse path addon";
+    qInfo() << "addonsSettings::on_addonSearchDirectories_add_clicked: Browse path addon";
 
     // Запрос директории
     QString tempPathAddons = QFileDialog::getExistingDirectory (0,QObject::tr("Укажите путь к директории аддонов"), QDir::homePath(), QFileDialog::ShowDirsOnly );
@@ -104,7 +104,7 @@ void addonsSettings::on_addonSearchDirectories_add_clicked() {
             return;
         }
 
-        qDebug() << "addonsSettings::on_addonSearchDirectories_add_clicked: " << tempPathAddons << "- add in list";
+        qInfo() << "addonsSettings::on_addonSearchDirectories_add_clicked: " << tempPathAddons << "- add in list";
 
         // Добавление в список виджета
         ui->addonSearchDirectories->addItem(tempPathAddons);
@@ -114,7 +114,7 @@ void addonsSettings::on_addonSearchDirectories_add_clicked() {
 //..удаление выбранной директории
 void addonsSettings::on_addonSearchDirectories_del_clicked() {
 
-    qDebug() << "addonsSettings::on_addonSearchDirectories_del_clicked: del Directories";
+    qInfo() << "addonsSettings::on_addonSearchDirectories_del_clicked: del Directories";
 
     // Получаем текущение положение row
     int row = ui->addonSearchDirectories->currentRow();
@@ -129,7 +129,7 @@ void addonsSettings::on_addonSearchDirectories_del_clicked() {
 //..передвинуть выбранный итем вверх
 void addonsSettings::on_addonsPriorities_up_clicked() {
 
-    qDebug() << "addonsSettings::on_addonsPriorities_up_clicked: move addon UP";
+    qInfo() << "addonsSettings::on_addonsPriorities_up_clicked: move addon UP";
 
     // Получаем текущение положение row
     int row = ui->addonsPriorities->currentRow();
@@ -146,7 +146,7 @@ void addonsSettings::on_addonsPriorities_up_clicked() {
 //..передвинуть выбранный итем вниз
 void addonsSettings::on_addonsPriorities_down_clicked() {
 
-    qDebug() << "addonsSettings::on_addonsPriorities_down_clicked: move addon Down";
+    qInfo() << "addonsSettings::on_addonsPriorities_down_clicked: move addon Down";
 
     // Получаем текущение положение row
     int row = ui->addonsPriorities->currentRow();
@@ -163,7 +163,7 @@ void addonsSettings::on_addonsPriorities_down_clicked() {
 // Применение изменений, отправка изменений в главное окно
 void addonsSettings::on_buttonBox_accepted() {
 
-    qDebug() << "addonsSettings::on_buttonBox_accepted: accpeted - send data";
+    qInfo() << "addonsSettings::on_buttonBox_accepted: accpeted - send data";
 
     // Обнуляем переменные перед дополнением данными
     listDirs.clear();

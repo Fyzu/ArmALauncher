@@ -4,14 +4,23 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-QT       += network
+QT       += core gui widgets network
 
+#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+#QMAKE_CXXFLAGS += -std=c++1y
+
+CONFIG += c++14
 TARGET = ArmALauncher
 TEMPLATE = app
 RC_FILE += resources.rc
 OTHER_FILES += resources.rc \ $$basename(TARGET).manifest \
+
+# Удаляем существующие флаги оптимизиации
+QMAKE_CXXFLAGS_RELEASE -= -O
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+# Добавляем флаг если его нет
+QMAKE_CXXFLAGS_RELEASE *= -O3
 
 # Для релиза
 CONFIG(release, debug|release) {

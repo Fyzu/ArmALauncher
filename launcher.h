@@ -80,6 +80,8 @@ private slots:
     void on_repoList_currentRowChanged(int currentRow);
 
     // Слоты интерфейса апдейтера
+    //..слот ошибок
+    void errorUI(int type, QString msg);
     //..слоты основных функций апдейтера
     void updaterStarted(const Repository repository, const QList< QMap<QString, QString> > addonsList, const QStringList modsList, bool success, QString defaultAddonsPath);
     void updaterFinished();
@@ -156,6 +158,7 @@ private:
     bool dxDiagIsRunning;           // Тригер запущенного dxdiag'а
     int selectServer;               // Выбранный сервер в списке
     int addonTreeRow;
+    qlonglong totalSize;
 
     // Пременные для контроля апдейтера
     bool updaterIsRunning;

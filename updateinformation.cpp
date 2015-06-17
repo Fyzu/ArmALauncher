@@ -8,15 +8,12 @@
 //...в списке аддонов
 void launcher::updateInformationInAddonList() {
 
-    qDebug() << "launcher::updateInformationInAddonList: start";
+    qInfo() << "launcher::updateInformationInAddonList: start";
 
-    int addonIndex = 0;                                 // Объявляем счетчик аддонов
-    QList<QStringList> listDir;                         // Объявляем 2мерный массив папок аддонов
+    QStringList listDir;                         // Объявляем 2мерный массив папок аддонов
     QString fileName;                                   // Объявляем путь к информации аддонов
-    QStringList addonsNames;                            // Объявляем список имен аддонов
-    QList<QTreeWidgetItem *> Items;                     // Объявляем список итемов TreeWidget
     QFile file;                                         // Объвление ссылки на файл
-    QString temp;
+    QString addonName;
 
     //Очищаем виджет, для обновления информации в нем
     ui->addonTree->clear();
@@ -29,19 +26,24 @@ void launcher::updateInformationInAddonList() {
     }
 
     // Получения информации о аддонах и добавление её в виджет
-    for (int i = 0; i < listDirs.size(); i++) {
+    auto end = listDirs.constEnd();
+    for (auto it = listDirs.constBegin(); it != end; ++it) {
         // Получаем список папко по i директории
-        listDir.append(QDir(listDirs[i]).entryList(QDir::Dirs));
-        for(int j=0;j<listDir[i].size();j++)
-            if(listDir[i].at(j) == "." || listDir[i].at(j) == ".." || listDir[i].at(j)[0] != '@' || listDir[i].at(j).size() == 1)
-                listDir[i].removeAt(j--);
+        listDir = QDir((*it)).entryList(QDir::Dirs);
+        //..удаляем лишние папки
+        for(auto itDir = listDir.begin(); itDir != listDir.end();) {
+            if((*itDir) == "." || (*itDir) == ".." || (*itDir)[0] != '@' || (*itDir).size() == 1)
+                itDir = listDir.erase(itDir);
+            else ++itDir;
+        }
 
         // Получаем имя аддона
-        for(int j=0; j<listDir[i].size();j++) {
+        auto endDir = listDir.constEnd();
+        for(auto itDir = listDir.constBegin();itDir != endDir;++itDir) {
 
-            temp.clear();
+            addonName.clear();
             // Получаем путь к информации
-            fileName = listDirs[i] + "/" + listDir[i][j]+"/mod.cpp";
+            fileName = (*it) + "/" + (*itDir)+"/mod.cpp";
             file.setFileName(fileName);
             // Открываем файл и получаем информацию
             if (file.open(QFile::ReadOnly | QFile::Text)) {
@@ -50,23 +52,21 @@ void launcher::updateInformationInAddonList() {
                 QString str = decoder->toUnicode(file.readAll());
                 int index = str.indexOf(QString("name = "));
                 for (index = index+8;str[index] != '"';index++)
-                    temp.append(str[index]);
+                    addonName.append(str[index]);
                 file.close();
             }
-            addonsNames.append(temp);
 
             // Добавление информации в виджет
-            Items.append( new QTreeWidgetItem(ui->addonTree));
-            Items.at(addonIndex)->setCheckState(0, Qt::Unchecked);
-            Items.at(addonIndex)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-            Items.at(addonIndex)->setText(0, addonsNames[addonIndex]);
-            Items.at(addonIndex)->setText(1, listDir[i][j]);
-            Items.at(addonIndex)->setText(2,listDirs[i]);
+            QTreeWidgetItem *item = new QTreeWidgetItem(ui->addonTree);
+            item->setCheckState(0, Qt::Unchecked);
+            item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+            item->setText(0, addonName);
+            item->setText(1, (*itDir));
+            item->setText(2, (*it));
             // Добавляем dir аддона, если его ещё нет в списке приоритетов
-            if(!listPriorityAddonsDirs.contains(listDir[i][j])) {
-                listPriorityAddonsDirs.append(listDir[i][j]);
+            if(!listPriorityAddonsDirs.contains((*itDir))) {
+                listPriorityAddonsDirs.append((*itDir));
             }
-            addonIndex++;
          }
     }
 }
@@ -77,7 +77,7 @@ void launcher::updateInformationInAddonList() {
 //.. | список активированных аддонов ;
 void launcher::updateInformationInMem() {
 
-    qDebug() << "launcher::updateInformationInMem: start";
+    qInfo() << "launcher::updateInformationInMem: start";
     // Получаем путь исполняемого файла
     pathFolder = ui->pathFolder->text();
 
@@ -85,9 +85,9 @@ void launcher::updateInformationInMem() {
     checkAddons.clear();
 
     // Получаем список активированных адонов
-    for(int i=0; i <ui->addonTree->topLevelItemCount();i++) {
-        if(ui->addonTree->topLevelItem(i)->checkState(0) == Qt::Checked)
-            checkAddons.append(ui->addonTree->topLevelItem(i)->text(2)+"/"+ui->addonTree->topLevelItem(i)->text(1));
+    for(QTreeWidgetItemIterator it(ui->addonTree); (*it); ++it) {
+        if((*it)->checkState(0) == Qt::Checked)
+            checkAddons.append((*it)->text(2)+"/"+(*it)->text(1));
     }
 }
 
@@ -101,7 +101,7 @@ void launcher::updateInformationInCfg() {
     QFile file(DocumentsLocation + "/Arma 3 - Other Profiles/armalauncher.cfg");
     if(file.open(QIODevice::WriteOnly))     //Если файл открыт успешно
     {
-        qDebug() << "launcher::updateInformationInCfg: save inf. in cfg -" << file.fileName();
+        qInfo() << "launcher::updateInformationInCfg: save inf. in cfg -" << file.fileName();
         QDataStream out(&file);             //Создаем поток для записи данных в файл
 
         //В поток
@@ -110,15 +110,16 @@ void launcher::updateInformationInCfg() {
             << checkAddons << this->size() << repositories << settings;
 
     } else {
-        qDebug() << "launcher::updateInformationInCfg: save inf. in cfg - fail";
+        qInfo() << "launcher::updateInformationInCfg: save inf. in cfg - fail";
     }
+    file.close();
 }
 
 // Обновление информации в виджете
 // Перенос имеющийся информации в памяти, заполняем виджеты, без дополнений
 void launcher::updateInformationInWidget() {
 
-    qDebug() << "launcher::updateInformationInWidget: start";
+    qInfo() << "launcher::updateInformationInWidget: start";
 
     // Тригер, что обновление информции в процессе
     // (нужно что бы не срабатывали ненужные сигналы)
@@ -139,28 +140,32 @@ void launcher::updateInformationInWidget() {
 
     // Заполняем информацией виджет..
     //..список путей скачивания\обновления аддонов
-    for(int i = 0; i<listDirs.count();i++)
-        ui->addonsFolders->addItem(listDirs[i]);
+    ui->addonsFolders->addItems(listDirs);
 
-    //...дерева избранных серверов
-    for(int i = 0; i<favServers.count();i++) {
+    //...дерева избранных серверов комбо-бокса выбранного сервера
+    // Нулевой элемент, означает не выбранность сервера
+    ui->selectServer->addItem(QString(tr("- Сервер не выбран -")),-1);
+    ui->selectServer->setCurrentIndex(0);
+    // Добавление сервера
+    auto end = favServers.constEnd();
+    for(auto itServer = favServers.constBegin(); itServer != end; ++itServer) {
         item = new QTreeWidgetItem(ui->serversTree);
         item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-        item->setText(1, favServers.at(i).serverIP);
-        item->setText(2, favServers.at(i).serverPort);
-        item->setText(3, favServers.at(i).serverPass);
+        item->setText(1, (*itServer).serverIP);
+        item->setText(2, (*itServer).serverPort);
+        item->setText(3, (*itServer).serverPass);
 
         // Добавление онлайн информации
         QIcon icon;
-        if(!favServers.at(i).ping.isEmpty()) { // Если есть пинг у сервера, то заполняем онлайн информацией
-            item->setText(0, favServers.at(i).HostName);
-            item->setText(4, favServers.at(i).NumPlayers + "/" + favServers.at(i).MaxPlayers);
-            item->setText(5, favServers.at(i).ping);
+        if(!(*itServer).ping.isEmpty()) { // Если есть пинг у сервера, то заполняем онлайн информацией
+            item->setText(0, (*itServer).HostName);
+            item->setText(4, (*itServer).NumPlayers + "/" + (*itServer).MaxPlayers);
+            item->setText(5, (*itServer).ping);
             icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
             item->setIcon(5, icon);
         }
         else { // Если не пингуется, то заполняем стандартной информацией
-            item->setText(0, favServers.at(i).serverName);
+            item->setText(0, (*itServer).serverName);
             item->setText(4, "-/-");
             item->setText(5, " - ");
             icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -169,47 +174,42 @@ void launcher::updateInformationInWidget() {
         }
         // Даем элементу индекс, который соответствует индуксу в памяти
         // (для более простой работы)
-        item->setData(0, Qt::UserRole, i);
-    }
-    //..комбо-бокса, избранными серверами
-    // Нулевой элемент, означает не выбранность сервера
-    ui->selectServer->addItem(QString(tr("- Сервер не выбран -")),-1);
-    //Заполняем комбо-бокс вариантами серверов
-    for (int i = 0;i<favServers.count();i++) {
-        // Заполняем по возможности онлайн информацией
-        QIcon icon;
-        if(!favServers.at(i).ping.isEmpty()) { // Если есть пинг у сервера, то заполняем онлайн информацией
-            ui->selectServer->addItem(favServers.at(i).HostName);
+        int index = itServer-favServers.constBegin();
+        item->setData(0, Qt::UserRole, index);
+
+        // Заполняем комбобокс серверов
+        if(!(*itServer).ping.isEmpty()) { // Если есть пинг у сервера, то заполняем онлайн информацией
+            ui->selectServer->addItem((*itServer).HostName);
             icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
-            ui->selectServer->setItemIcon(i+1, icon);
+            ui->selectServer->setItemIcon(index+1, icon);
         }
         else {  // Если не пингуется, то заполняем стандартной информацией
-            ui->selectServer->addItem(favServers.at(i).serverName);
+            ui->selectServer->addItem((*itServer).serverName);
             icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
-            ui->selectServer->setItemIcon(i+1, icon);
+            ui->selectServer->setItemIcon(index+1, icon);
         }
     }
-    ui->selectServer->setCurrentIndex(0);
 
     //Проверка, все ли аддоны в списке приоритетов
-    for(int i = 0;i<ui->addonTree->topLevelItemCount();i++) {
-        if(!listPriorityAddonsDirs.contains(ui->addonTree->topLevelItem(i)->text(1))) {
-           listPriorityAddonsDirs.append(ui->addonTree->topLevelItem(i)->text(1));
+    for(QTreeWidgetItemIterator it(ui->addonTree); (*it); ++it) {
+        if(!listPriorityAddonsDirs.contains((*it)->text(1))) {
+           listPriorityAddonsDirs.append((*it)->text(1));
         }
     }
 
     // Обновление списка репозиториев
     int repoListRow = ui->repoList->currentRow();
     ui->repoList->clear();
-    for(int i = 0;i<repositories.size();i++) {
-        ui->repoList->addItem(repositories[i].name);
+    auto endRepo = repositories.constEnd();
+    for(auto itRepo = repositories.constBegin(); itRepo != endRepo; ++itRepo) {
+        ui->repoList->addItem((*itRepo).name);
         QIcon icon;
-        if(repositories[i].type == 0)
+        if((*itRepo).type == 0)
             icon.addFile(QStringLiteral(":/repositories/IMG/yoma2009.ico"), QSize(), QIcon::Normal, QIcon::Off);
         else
             icon.addFile(QStringLiteral(":/repositories/IMG/arma3sync.ico"), QSize(), QIcon::Normal, QIcon::Off);
 
-        ui->repoList->item(i)->setIcon(icon);
+        ui->repoList->item(itRepo-repositories.constBegin())->setIcon(icon);
     }
     ui->repoList->setCurrentRow(repoListRow);
 
@@ -220,7 +220,7 @@ void launcher::updateInformationInWidget() {
 // Обновление информации параметров в памяти
 void launcher::updateInfoParametersInMem() {
 
-    qDebug() << "launcher::updateInfoParametersInMem: start";
+    qInfo() << "launcher::updateInfoParametersInMem: start";
 
     // Получаем информацию с бокса  - Настройки игры
     parameters.check_name = ui->check_name->isChecked();
@@ -260,7 +260,7 @@ void launcher::updateInfoParametersInMem() {
 // Заполняем виджеты параметров информацие из памяти
 void launcher::updateInfoParametersInWidget() {
 
-    qDebug() << "launcher::updateInfoParametersInWidget: start";
+    qInfo() << "launcher::updateInfoParametersInWidget: start";
 
     // Заполняем информацией блок - Настроек игры
     ui->check_name->setChecked(parameters.check_name);
@@ -299,13 +299,9 @@ void launcher::updateInfoParametersInWidget() {
 // Обновление информации запускаемых параметров в виджете
 void launcher::updateInfoInRunParametersWidget() {
 
-    qDebug() << "launcher::updateInfoInRunParametersWidget: start";
+    qInfo() << "launcher::updateInfoInRunParametersWidget: start";
 
-    // Получения списка параметров запуска
-    QStringList args = getLaunchParam();
-    // Очищаем виджет
-    ui->runParameters->clear();
     // Заполняем виджет
-    for(int i = 0; i<args.count();i++)
-      ui->runParameters->append(args[i]);
+    ui->runParameters->clear();
+    ui->runParameters->append(getLaunchParam().join('\n'));
 }
