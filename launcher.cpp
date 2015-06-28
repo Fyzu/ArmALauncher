@@ -231,8 +231,11 @@ launcher::launcher(QWidget *parent) :
         //Из потока
         in >> pathFolder >> listDirs >> listPriorityAddonsDirs
            >> favServers >> parameters
-           >> checkAddons >> widgetSize >> repositories >> settings;
+           >> checkAddons >> widgetSize >> repositories;
         file.close();
+
+    } else {
+        qInfo() << "launcher::launcher: launcher config - read fail";
 
         // Заполняем дефолтной информацией, если слоты пустые
         //..репозитории
@@ -249,12 +252,6 @@ launcher::launcher(QWidget *parent) :
             rep2.type = 0;
             rep2.url = "http://arma3.bayonetdiv.com/Tushino.7z";
             repositories.append(rep2);
-            //..репозиторий Нашей Армии
-            Repository rep3;
-            rep3.name = "Our-Army.su [USSR] Server";
-            rep3.type = 1;
-            rep3.url = "http://addons.our-army.su/main/.a3s/autoconfig";
-            repositories.append(rep3);
         }
         //..сервера
         if(favServers.isEmpty()) {
@@ -265,16 +262,27 @@ launcher::launcher(QWidget *parent) :
             favServ1.serverPort = "2102";
             favServ1.serverPass = "2010";
             favServers.append(favServ1);
-            //..игровой сервер Нашей Армии
-            favServer favServ2;
-            favServ2.serverName = "Our-Army.su [USSR] Server";
-            favServ2.serverIP = "144.76.82.2";
-            favServ2.serverPort = "2302";
-            favServers.append(favServ2);
         }
+    }
 
-    } else
-        qInfo() << "launcher::launcher: launcher config - read fail";
+    // Получаем настройки
+    QSettings a_settings("Fyzu", "ArmALauncher");
+    a_settings.beginGroup("/Settings");
+    if(a_settings.value("/documentMode").isValid()) {
+        settings.documentMode = a_settings.value("/documentMode").toBool();
+    } else {
+        settings.documentMode = true;
+    }
+    if(a_settings.value("/launch").isValid()) {
+        settings.launch = a_settings.value("/launch").toInt();
+    } else {
+        settings.launch = 0;
+    }
+    if(a_settings.value("/style").isValid()) {
+        settings.style = a_settings.value("/style").toInt();
+    } else {
+        settings.style = 1;
+    }
 
     // Установить главному окну Size
     if (!widgetSize.isEmpty()) {
@@ -295,14 +303,16 @@ launcher::launcher(QWidget *parent) :
     ui->name->addItems(names);
 
     // Добавление доступных распределителей памяти в настройки (храняться там же где и исполняемый файл игры)
-    QString temp = pathFolder;
-    QStringList mallocs = QDir(temp.replace("arma3.exe","Dll")).entryList(QDir::Files);
-    for(int j=0;j<mallocs.size();j++)
-        if(mallocs[j].contains(".dll"))
-            mallocs[j].remove(".dll");
-        else
-            mallocs.removeAt(j--);
-    ui->malloc->addItems(mallocs);
+    if(!pathFolder.isEmpty()) {
+        QString temp = pathFolder;
+        QStringList mallocs = QDir(temp.replace("arma3.exe","Dll")).entryList(QDir::Files);
+        for(int j=0;j<mallocs.size();j++)
+            if(mallocs[j].contains(".dll"))
+                mallocs[j].remove(".dll");
+            else
+                mallocs.removeAt(j--);
+        ui->malloc->addItems(mallocs);
+    }
 
     // Отмечаю включенные аддоны с последнего запуска
     for(int i = 0; i<checkAddons.count();i++)
@@ -325,8 +335,6 @@ launcher::launcher(QWidget *parent) :
 
     // Проверка на обновления
     checkForUpdates();
-
-    // Для тестов
 }
 
 // Дистркутор окна
@@ -639,9 +647,9 @@ QStringList launcher::getLaunchParam() {
     if(parameters.window)
         launchParam.append("-window");
     if(parameters.check_maxMem)
-        launchParam.append("-maxMem="+parameters.maxMem);
+        launchParam.append("-maxMem="+QString::number(parameters.maxMem.toInt()-1));
     if(parameters.check_maxVRAM)
-        launchParam.append("-maxVRAM="+parameters.maxVRAM);
+        launchParam.append("-maxVRAM="+QString::number(parameters.maxVRAM.toInt()-1));
     if(parameters.check_cpuCount)
         launchParam.append("-cpuCount="+parameters.cpuCount);
     if(parameters.check_exThreads)
@@ -885,9 +893,9 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon7;
         icon7.addFile(QStringLiteral(":/myresources/IMG/delete85.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_del->setIcon(icon7);
-        QIcon icon8;
+        /*QIcon icon8;
         icon8.addFile(QStringLiteral(":/myresources/IMG/statistics13.png"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->serversTree_about->setIcon(icon8);
+        ui->serversTree_about->setIcon(icon8);*/
         QIcon icon9;
         icon9.addFile(QStringLiteral(":/myresources/IMG/refresh57.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_update->setIcon(icon9);
@@ -968,9 +976,9 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon7;
         icon7.addFile(QStringLiteral(":/myresources/IMG/darkstyle/delete85.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_del->setIcon(icon7);
-        QIcon icon8;
+        /*QIcon icon8;
         icon8.addFile(QStringLiteral(":/myresources/IMG/darkstyle/statistics13.png"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->serversTree_about->setIcon(icon8);
+        ui->serversTree_about->setIcon(icon8);*/
         QIcon icon9;
         icon9.addFile(QStringLiteral(":/myresources/IMG/darkstyle/refresh57.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_update->setIcon(icon9);

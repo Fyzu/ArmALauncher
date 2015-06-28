@@ -28,6 +28,7 @@ void launcher::updateInformationInAddonList() {
     // Получения информации о аддонах и добавление её в виджет
     auto end = listDirs.constEnd();
     for (auto it = listDirs.constBegin(); it != end; ++it) {
+        if((*it).isEmpty()) continue;
         // Получаем список папко по i директории
         listDir = QDir((*it)).entryList(QDir::Dirs);
         //..удаляем лишние папки
@@ -107,12 +108,19 @@ void launcher::updateInformationInCfg() {
         //В поток
         out << pathFolder << listDirs << listPriorityAddonsDirs
             << favServers << parameters
-            << checkAddons << this->size() << repositories << settings;
+            << checkAddons << this->size() << repositories;
 
     } else {
         qInfo() << "launcher::updateInformationInCfg: save inf. in cfg - fail";
     }
     file.close();
+
+    // Устанавливаем настройки лаунчера
+    QSettings a_settings("Fyzu", "ArmALauncher");
+    a_settings.beginGroup("/Settings");
+    a_settings.setValue("/documentMode", settings.documentMode);
+    a_settings.setValue("/launch", settings.launch);
+    a_settings.setValue("/style", settings.style);
 }
 
 // Обновление информации в виджете

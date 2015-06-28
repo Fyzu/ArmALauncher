@@ -22,6 +22,30 @@ updateAddons::~updateAddons() {
     emit finished();
 }
 
+// Загрузка временных данных о файлах
+void updateAddons::loadTempFileInfo() {
+
+    // Считываем список файлов
+    //..считывание
+    QFile file(QCoreApplication::applicationDirPath()+"/temp/fileList.temp");
+    if(file.open(QIODevice::ReadOnly)) {
+
+        //открываем поток ввода
+        QDataStream in(&file);
+
+        //Из потока
+        in >> yomaFileInfo >> syncFileInfo >> defaultAddonsPath;
+        file.close();
+
+        qInfo() << "updateAddons::setRepository: load file info - succ";
+    } else {
+        yomaFileInfo.clear();
+        syncFileInfo.clear();
+        qInfo() << "updateAddons::setRepository: load file info - fail";
+    }
+    file.close();
+}
+
 // Сохранение временных данных о файлах
 void updateAddons::saveTempFileInfo() {
 
@@ -78,25 +102,7 @@ void updateAddons::setRepository(Repository repo) {
     downloadAddonsAbort = false;
     downloadFilesIndex = 0;
 
-    // Считываем список файлов
-    //..считывание
-    QFile file(QCoreApplication::applicationDirPath()+"/temp/fileList.temp");
-    if(file.open(QIODevice::ReadOnly)) {
-
-        //открываем поток ввода
-        QDataStream in(&file);
-
-        //Из потока
-        in >> yomaFileInfo >> syncFileInfo >> defaultAddonsPath;
-        file.close();
-
-        qInfo() << "updateAddons::setRepository: load file info - succ";
-    } else {
-        yomaFileInfo.clear();
-        syncFileInfo.clear();
-        qInfo() << "updateAddons::setRepository: load file info - fail";
-    }
-    file.close();
+    loadTempFileInfo();
 }
 
 // Старт класса updateAddons
@@ -354,6 +360,9 @@ void updateAddons::checkAddons(QString path) {
         newFiles.removeAll(*itNewFile);
     }
 
+    // Получаем информацию о уже проверенных файлах
+    loadTempFileInfo();
+
     // Получаем списки корректных файлов и нет
     if(repository.type == 0) {
     // Yoma Addon Sync 2009
@@ -451,6 +460,8 @@ void updateAddons::checkAddons(QString path) {
 
     // Сохраняем информацию о файлах
     saveTempFileInfo();
+    yomaFileInfo.clear();
+    syncFileInfo.clear();
 }
 
 // Рекурсивный метод, получения списка всех файлов в папке и подпапках

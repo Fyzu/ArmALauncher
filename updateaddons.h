@@ -148,8 +148,9 @@ private:
     // Список собранной информации
     QList<YomaFileInfo> yomaFileInfo;
     QList<SyncFileInfo> syncFileInfo;
-    // сохранить данные о файлах в файл
+    // файловые операции
     void saveTempFileInfo();
+    void loadTempFileInfo();
 };
 
 #endif // UPDATEADDONS_H

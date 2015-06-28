@@ -16,6 +16,7 @@
 #include <QLibrary>
 #include <QDebug>
 #include <QThread>
+#include <QSettings>
 
 #include <windows.h>
 #include <tchar.h>
@@ -122,6 +123,9 @@ private slots:
     // Слот активирования аддона по клику
     void on_addonTree_itemClicked(QTreeWidgetItem *item);
 
+
+    void updateInfoParametersInMem();       // Обновление информации параметров в памяти
+
 private:
     Ui::launcher *ui;
     // Указатели на классы доп. форм
@@ -170,7 +174,6 @@ private:
     void updateInformationInMem();          // Обновление информации в памяти
     void updateInformationInCfg();          // Обновление информации в конфиге
     void updateInformationInAddonList();    // Обновление информации в списке аддонов
-    void updateInfoParametersInMem();       // Обновление информации параметров в памяти
     void updateInfoParametersInWidget();    // Обновление информации параметров в виджете
     void updateInfoInRunParametersWidget(); // Обновениие информации в виджете запускаемых параметров
 

@@ -95,7 +95,7 @@ void launcher::on_repoConnect_clicked() {
     if(!updaterIsRunning && currentRow != -1 && !repositories[currentRow].url.isEmpty() && ui->repositoryList->tabText(1) == tr("Не подключен")) {
 
         // Проверяем, есть директории для поиска аддонов
-        if(ui->addonsFolders->count() == 0) {
+        if(pathFolder.isEmpty()) {
             QMessageBox::warning(this,tr("Внимание!"), tr("Не найдены директории для поиска аддонов.\nДобавьте директории для поиска аддонов или укажите исполняемый файлы Arma 3."), QMessageBox::Ok);
             qWarning() << "launcher::on_repoConnect_clicked: connect fail - addons folders - empty";
             return;
@@ -413,7 +413,7 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
         item->setBackground(1, QBrush(Qt::yellow));
         item->setBackground(2, QBrush(Qt::yellow));
         // Создаем список корректных аддонов
-        for(auto itMod = modsList.constBegin(); itMod != modsList.constEnd(); ++itMod) {
+        for(auto itMod = modsList.begin(); itMod != modsList.end(); ++itMod) {
             if((*itFile)["Path"].contains((*itMod))
               && !(*itFile)["Path"].contains('\\' + (*itMod) +'\\') && !(*itFile)["Path"].contains('\\' + (*itMod))) {
                 modsList.erase(itMod);
@@ -432,7 +432,7 @@ void launcher::checkAddonsFinishedUI(int type, const QList< QMap<QString, QStrin
         item->setBackground(1, QBrush(Qt::cyan));
         item->setBackground(2, QBrush(Qt::cyan));
         // Создаем список корректных аддонов
-        for(auto itMod = modsList.constBegin(); itMod != modsList.constEnd(); ++itMod) {
+        for(auto itMod = modsList.begin(); itMod != modsList.end(); ++itMod) {
             if((*itFile)["Path"].contains((*itMod))
               && !(*itFile)["Path"].contains('\\' + (*itMod) +'\\') && !(*itFile)["Path"].contains('\\' + (*itMod))) {
                 modsList.erase(itMod);
@@ -483,6 +483,13 @@ void launcher::checkAddonsProgressUI(int index, const QList< QMap<QString, QStri
 
 // Начата загрузка обновления - оповещаем UI
 void launcher::downloadUpdateStartUI() {
+
+    // Проверяем, запущена ли арма, если да, сообщить об этом
+    if(getHandle("Arma 3", false)) {
+        QMessageBox::warning(this,tr("Внимание!"), tr("Невозможно начать обновление аддонов, т.к. Arma 3 запущена.\nЗакройте Arma 3, для безопасного обновления аддонов."), QMessageBox::Ok);
+        qWarning() << "launcher::on_repoConnect_clicked: download fail - arma3 is running";
+        return;
+    }
 
     // Получаем список ID файлов которые выбраны для скачивания
     QList<int> fileID;

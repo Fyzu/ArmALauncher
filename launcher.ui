@@ -56,13 +56,13 @@
          <locale language="Russian" country="Russia"/>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <property name="documentMode">
          <bool>true</bool>
         </property>
         <property name="movable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -391,39 +391,39 @@
          <attribute name="title">
           <string>Параметры</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_34">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_44">
+             <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_35">
-                <item>
-                 <widget class="QGroupBox" name="settingsBox">
-                  <property name="title">
-                   <string>Настройки игры</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_46">
-                   <item row="0" column="0">
-                    <layout class="QVBoxLayout" name="verticalLayout_36">
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_45">
-                       <item>
-                        <widget class="QCheckBox" name="check_name">
-                         <property name="toolTip">
-                          <string>Профиль, который будет,
+               <widget class="QGroupBox" name="settingsBox">
+                <property name="title">
+                 <string>Настройки игры</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_45">
+                   <item>
+                    <widget class="QCheckBox" name="check_name">
+                     <property name="toolTip">
+                      <string>Профиль, который будет,
 выбран при запуске игры.</string>
-                         </property>
-                         <property name="text">
-                          <string>Профиль</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="name"/>
-                       </item>
-                      </layout>
-                     </item>
+                     </property>
+                     <property name="text">
+                      <string>Профиль</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="name"/>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_4">
                      <item>
                       <widget class="QCheckBox" name="window">
                        <property name="toolTip">
@@ -446,6 +446,28 @@
                        </property>
                       </widget>
                      </item>
+                     <item>
+                      <widget class="QCheckBox" name="noLogs">
+                       <property name="toolTip">
+                        <string>Игра не будет сохранять логи работы,
+увеличивает производительность.</string>
+                       </property>
+                       <property name="text">
+                        <string>Без логов</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_3">
                      <item>
                       <widget class="QCheckBox" name="showScriptErrors">
                        <property name="toolTip">
@@ -481,502 +503,600 @@
                     </layout>
                    </item>
                   </layout>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="performanceBox">
-                  <property name="title">
-                   <string>Производительность</string>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_46">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_37">
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_47">
-                       <item>
-                        <widget class="QLabel" name="label_priorityLaunch">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>Приоритет</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="priorityLaunch">
-                         <property name="toolTip">
-                          <string>Приоритет работы в ОС.</string>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>Реального времени</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Высокий</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Выше среднего</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Обычный</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Ниже среднего</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Низкий</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_48">
-                       <item>
-                        <widget class="QCheckBox" name="check_maxMem">
-                         <property name="toolTip">
-                          <string>Максимальное кол-во памяти ОЗУ
-которые будет использовать игра.
-Из-за того что игра 32-битная
-игра использует максимум 2048.</string>
-                         </property>
-                         <property name="text">
-                          <string>Макс. памяти</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="maxMem">
-                         <item>
-                          <property name="text">
-                           <string>256</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>512</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>1024</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>1536</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>2048</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_49">
-                       <item>
-                        <widget class="QCheckBox" name="check_maxVRAM">
-                         <property name="toolTip">
-                          <string>Максимальное кол-во видео памяти 
-которые будет использовать игра.
-Из-за того что игра 32-битная
-игра использует максимум 2048.</string>
-                         </property>
-                         <property name="text">
-                          <string>Макс. видео</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="maxVRAM">
-                         <item>
-                          <property name="text">
-                           <string>256</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>512</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>1024</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>1536</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>2048</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_50">
-                       <item>
-                        <widget class="QCheckBox" name="check_cpuCount">
-                         <property name="toolTip">
-                          <string>Кол-во CPU, которые будет использовать игра.</string>
-                         </property>
-                         <property name="text">
-                          <string>Кол-во CPU</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="cpuCount">
-                         <item>
-                          <property name="text">
-                           <string>1</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>2</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>3</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>4</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>5</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>6</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>7</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>8</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_51">
-                       <item>
-                        <widget class="QCheckBox" name="check_exThreads">
-                         <property name="toolTip">
-                          <string>Кол-во потоков, которые игра будет использовать.</string>
-                         </property>
-                         <property name="text">
-                          <string>Кол-во потоков</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="exThreads">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>1</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>3</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>5</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>7</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_52">
-                       <item>
-                        <widget class="QCheckBox" name="check_malloc">
-                         <property name="toolTip">
-                          <string>Тип выделения памяти,
-Стандартный tbb4_malloc.</string>
-                         </property>
-                         <property name="text">
-                          <string>Выделение памяти</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="malloc"/>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_6">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_38">
-                     <item>
-                      <widget class="QCheckBox" name="enableHT">
-                       <property name="toolTip">
-                        <string>Многопоточность, 
-используется в основном на процессорах Intel.</string>
-                       </property>
-                       <property name="text">
-                        <string>Включить Hyper-threading</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="winxp">
-                       <property name="toolTip">
-                        <string>Использование DX9, 
-применяется для ОС WinXP.</string>
-                       </property>
-                       <property name="text">
-                        <string>Использовать только Direct3D 9</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="noCB">
-                       <property name="toolTip">
-                        <string>Используется лишь 1 ядро процессора.</string>
-                       </property>
-                       <property name="text">
-                        <string>Отключиить мульти-ядра</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="nosplash">
-                       <property name="toolTip">
-                        <string>Отключить заставку при запуске,
-уменьшает время запуска игры.</string>
-                       </property>
-                       <property name="text">
-                        <string>Отключить заставку</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="skipIntro">
-                       <property name="toolTip">
-                        <string>Отключить логотипы игры при запуске,
-уменьшает время запуска игры.</string>
-                       </property>
-                       <property name="text">
-                        <string>Отключить стартовый логотип</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="worldEmpty">
-                       <property name="toolTip">
-                        <string>В меню загружается пустой мир,
-ускоряет время запуска игры.</string>
-                       </property>
-                       <property name="text">
-                        <string>Загружать в меню пустой мир</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="noLogs">
-                       <property name="toolTip">
-                        <string>Игра не будет сохранять логи работы,
-увеличивает производительность.</string>
-                       </property>
-                       <property name="text">
-                        <string>Без логов</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="verticalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="optimizeBox">
-                  <property name="title">
-                   <string>Лаунчер</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_4">
-                   <item row="0" column="0">
-                    <layout class="QVBoxLayout" name="verticalLayout_2">
-                     <item>
-                      <widget class="QLabel" name="launcherSettings_label">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="font">
-                        <font>
-                         <pointsize>8</pointsize>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>Настройки Arma лаунчера</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_optimize">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Оптимизация настроек Arma 3</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item row="0" column="1">
-                    <layout class="QVBoxLayout" name="verticalLayout">
-                     <item>
-                      <widget class="QPushButton" name="launcherSettings">
-                       <property name="toolTip">
-                        <string>Настройки лаунчера</string>
-                       </property>
-                       <property name="text">
-                        <string>   Настроить       </string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="pictures.qrc">
-                         <normaloff>:/myresources/IMG/wrench10.png</normaloff>:/myresources/IMG/wrench10.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="optimize">
-                       <property name="toolTip">
-                        <string>Оптимизация настроек игры</string>
-                       </property>
-                       <property name="text">
-                        <string>Оптимизировать</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="pictures.qrc">
-                         <normaloff>:/myresources/IMG/computer monitor1.png</normaloff>:/myresources/IMG/computer monitor1.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
+                 </item>
+                </layout>
+               </widget>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_40">
-                <item>
-                 <widget class="QGroupBox" name="runParametersBox">
-                  <property name="title">
-                   <string>Параметры запуска</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_48">
-                   <item row="0" column="0">
-                    <widget class="QTextBrowser" name="runParameters">
-                     <property name="font">
-                      <font>
-                       <pointsize>7</pointsize>
-                      </font>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="performanceBox">
+                <property name="title">
+                 <string>Производительность</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_46">
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_37">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_47">
+                     <item>
+                      <widget class="QLabel" name="label_priorityLaunch">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Приоритет</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="priorityLaunch">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Приоритет работы в ОС.</string>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Реального времени</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Высокий</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Выше среднего</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Обычный</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Ниже среднего</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Низкий</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_48">
+                     <item>
+                      <widget class="QCheckBox" name="check_maxMem">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Максимальное кол-во памяти ОЗУ
+которые будет использовать игра.
+Из-за того что игра 32-битная
+игра использует максимум 2048.</string>
+                       </property>
+                       <property name="text">
+                        <string>Макс. памяти</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="maxMem">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>256</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>512</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1024</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1536</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2048</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_49">
+                     <item>
+                      <widget class="QCheckBox" name="check_maxVRAM">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Максимальное кол-во видео памяти 
+которые будет использовать игра.
+Из-за того что игра 32-битная
+игра использует максимум 2048.</string>
+                       </property>
+                       <property name="text">
+                        <string>Макс. видео</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="maxVRAM">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>256</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>512</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1024</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>1536</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2048</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_50">
+                     <item>
+                      <widget class="QCheckBox" name="check_cpuCount">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Кол-во CPU, которые будет использовать игра.</string>
+                       </property>
+                       <property name="text">
+                        <string>Кол-во CPU</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="cpuCount">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>2</height>
+                        </size>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>1</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>3</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>4</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>5</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>6</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>7</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>8</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_51">
+                     <item>
+                      <widget class="QCheckBox" name="check_exThreads">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Кол-во потоков, которые игра будет использовать.</string>
+                       </property>
+                       <property name="text">
+                        <string>Кол-во потоков</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="exThreads">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>1</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>3</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>5</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>7</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_52">
+                     <item>
+                      <widget class="QCheckBox" name="check_malloc">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Тип выделения памяти,
+Стандартный tbb4_malloc.</string>
+                       </property>
+                       <property name="text">
+                        <string>Выделение памяти</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="malloc">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line_6">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_38">
+                   <item>
+                    <widget class="QCheckBox" name="enableHT">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Многопоточность, 
+используется в основном на процессорах Intel.</string>
+                     </property>
+                     <property name="text">
+                      <string>Включить Hyper-threading</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="winxp">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Использование DX9, 
+применяется для ОС WinXP.</string>
+                     </property>
+                     <property name="text">
+                      <string>Использовать только Direct3D 9</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="noCB">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Используется лишь 1 ядро процессора.</string>
+                     </property>
+                     <property name="text">
+                      <string>Отключиить мульти-ядра</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="nosplash">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Отключить заставку при запуске,
+уменьшает время запуска игры.</string>
+                     </property>
+                     <property name="text">
+                      <string>Отключить заставку</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="skipIntro">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Отключить логотипы игры при запуске,
+уменьшает время запуска игры.</string>
+                     </property>
+                     <property name="text">
+                      <string>Отключить стартовый логотип</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="worldEmpty">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>В меню загружается пустой мир,
+ускоряет время запуска игры.</string>
+                     </property>
+                     <property name="text">
+                      <string>Загружать в меню пустой мир</string>
                      </property>
                     </widget>
                    </item>
                   </layout>
-                 </widget>
-                </item>
-               </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="optimizeBox">
+                <property name="title">
+                 <string>Лаунчер</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <layout class="QVBoxLayout" name="verticalLayout_2">
+                   <item>
+                    <widget class="QLabel" name="launcherSettings_label">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>8</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Настройки Arma лаунчера</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_optimize">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Оптимизация параметров Arma 3</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="1">
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <item>
+                    <widget class="QPushButton" name="launcherSettings">
+                     <property name="toolTip">
+                      <string>Настройки лаунчера</string>
+                     </property>
+                     <property name="text">
+                      <string>   Настроить       </string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="pictures.qrc">
+                       <normaloff>:/myresources/IMG/wrench10.png</normaloff>:/myresources/IMG/wrench10.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="optimize">
+                     <property name="toolTip">
+                      <string>Оптимизация параметров игры</string>
+                     </property>
+                     <property name="text">
+                      <string>Оптимизировать</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="pictures.qrc">
+                       <normaloff>:/myresources/IMG/computer monitor1.png</normaloff>:/myresources/IMG/computer monitor1.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </item>
+            <item>
+             <widget class="QGroupBox" name="runParametersBox">
+              <property name="title">
+               <string>Параметры запуска</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="0" column="0">
+                <widget class="QTextBrowser" name="runParameters">
+                 <property name="font">
+                  <font>
+                   <pointsize>7</pointsize>
+                  </font>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QGroupBox" name="label_addParameters">
               <property name="sizePolicy">
@@ -1196,36 +1316,19 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="serversTree_about">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
+             <widget class="QPushButton" name="serversTree_update">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="toolTip">
-               <string>Подробная информация о сервере</string>
-              </property>
-              <property name="text">
-               <string>О сервере</string>
-              </property>
-              <property name="icon">
-               <iconset resource="pictures.qrc">
-                <normaloff>:/myresources/IMG/statistics13.png</normaloff>:/myresources/IMG/statistics13.png</iconset>
-              </property>
-              <property name="iconSize">
+              <property name="minimumSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>0</width>
+                <height>33</height>
                </size>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="serversTree_update">
               <property name="toolTip">
                <string>Обновить сервера</string>
               </property>
@@ -1238,8 +1341,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>20</width>
-                <height>20</height>
+                <width>24</width>
+                <height>24</height>
                </size>
               </property>
              </widget>

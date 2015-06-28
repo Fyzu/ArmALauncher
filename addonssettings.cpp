@@ -57,7 +57,8 @@ void addonsSettings::receiveData(Settings settings, QStringList listD, QStringLi
 
     //...списка путей для поиска аддонов
     for(int i = 0; i<listDirs.size();i++)
-        ui->addonSearchDirectories->addItem(listDirs[i]);
+        if(!listDirs[i].isEmpty())
+            ui->addonSearchDirectories->addItem(listDirs[i]);
 
     //...списка аддонов в сорт. по приоритету
     for(int i = 0; i <listPriorityAddonsDirs.size();i++)
