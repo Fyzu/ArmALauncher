@@ -23,9 +23,10 @@ using namespace System::IO;
 *---------------------------------------------------------------------------------------------
 * out:	unsigned char*				- Принятая строка от сервера
 *		int &ping					- Время ответа от сервера
+*       int &rLen					- Длина возращаемого байтового массива
 */
 extern "C" __declspec(dllexport)
-unsigned char* exchangeDataWithServer(const char* host, int port, const int timeout, const unsigned char* str, const int len, int &ping) {
+unsigned char* exchangeDataWithServer(const char* host, int port, const int timeout, const unsigned char* str, const int len, int &ping, int &rLen) {
 	// Масив выходных данных
 	unsigned char* data;
 	// Даем понять что сервер ещё не пинговался, дабы можно было отследить, потеряно ли соеденение с сервером
@@ -74,6 +75,7 @@ unsigned char* exchangeDataWithServer(const char* host, int port, const int time
 		data=ptr;
 		//..и отправляем результат
 		ping=(int)stopwatch->ElapsedMilliseconds;
+		rLen=(int)response->Length;
 		delete client;
 		return data;
 	} catch (Exception^ e) {

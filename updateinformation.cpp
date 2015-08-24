@@ -64,6 +64,7 @@ void launcher::updateInformationInAddonList() {
             item->setText(0, addonName);
             item->setText(1, (*itDir));
             item->setText(2, (*it));
+            item->setToolTip(0, (*itDir));
             // Добавляем dir аддона, если его ещё нет в списке приоритетов
             if(!listPriorityAddonsDirs.contains((*itDir))) {
                 listPriorityAddonsDirs.append((*itDir));
@@ -121,6 +122,10 @@ void launcher::updateInformationInCfg() {
     a_settings.setValue("/documentMode", settings.documentMode);
     a_settings.setValue("/launch", settings.launch);
     a_settings.setValue("/style", settings.style);
+    a_settings.setValue("/updateTime", settings.updateTime);
+    a_settings.setValue("/state", settings.state);
+    a_settings.setValue("/checkUpdateAfterStart", settings.checkUpdateAfterStart);
+    a_settings.setValue("/notification", settings.notification);
 }
 
 // Обновление информации в виджете
@@ -168,17 +173,26 @@ void launcher::updateInformationInWidget() {
         if(!(*itServer).ping.isEmpty()) { // Если есть пинг у сервера, то заполняем онлайн информацией
             item->setText(0, (*itServer).HostName);
             item->setText(4, (*itServer).NumPlayers + "/" + (*itServer).MaxPlayers);
-            item->setText(5, (*itServer).ping);
+            QString serverState;
+            switch((*itServer).State) {
+                case 7: serverState = tr("Игра"); break;
+                case 6: serverState = tr("Брифинг"); break;
+                case 3: serverState = tr("Лобби"); break;
+                case 1: serverState = tr("Создание"); break;
+                default: serverState = " - ";
+            }
+            item->setText(5, serverState);
+            item->setText(6, (*itServer).ping);
             icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
-            item->setIcon(5, icon);
+            item->setIcon(6, icon);
         }
         else { // Если не пингуется, то заполняем стандартной информацией
             item->setText(0, (*itServer).serverName);
             item->setText(4, "-/-");
             item->setText(5, " - ");
+            item->setText(6, " - ");
             icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
-            item->setIcon(5, icon);
-            item->setIcon(5, icon);
+            item->setIcon(6, icon);
         }
         // Даем элементу индекс, который соответствует индуксу в памяти
         // (для более простой работы)

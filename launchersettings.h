@@ -18,11 +18,13 @@ public:
 signals:
 
     void sendData(Settings launcherS);
-
+    void checkUpdate();
 private slots:
     void on_buttonBox_accepted();
 
     void reciveData(Settings launcherS);
+
+    void on_launchCheckUpdate_clicked();
 
 private:
     Ui::launcherSettings *ui;

@@ -30,14 +30,15 @@ int main(int argc, char *argv[]) {
             if (!qstrcmp(argv[i], "-log"))
                 qInstallMessageHandler(messageOutput);
 
+    QApplication a(argc, argv);
+
     qInfo() << "Launcher [" << VER_FILEVERSION_STR << "] - start";
 
-    QApplication a(argc, argv);
     /*
     QTranslator translator;
     // Применение перевода UI
     if(!QLocale::system().name().contains("ru")) { // Если система не русская
-        qInfo() << "Launcher - change lang - eu";
+        qInfo() << "Launcher lang - eu";
         translator.load(QString(":/eu/launcher_eu.qm"));
         a.installTranslator(&translator);
     }*/

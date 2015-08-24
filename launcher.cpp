@@ -15,7 +15,7 @@ launcher::launcher(QWidget *parent) :
     library.setFileName("ArmaLauncher.dll");
     //..проверяем, загрузилась ли длл
     if(!library.load()) {
-        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Библиотека \"ArmaLauncher.dll\" не найдена или повреждена.\nПереустановите программу с официального сайта.\nError:#0001"), QMessageBox::Ok);
         qCritical() << "launcher::launcher: Dll initialization fail - load error or ArmaLauncher.dll not found";
         parent->close();
         return;
@@ -24,28 +24,28 @@ launcher::launcher(QWidget *parent) :
     exchangeDataWithServer = (ExchangeDataWithServer)library.resolve("exchangeDataWithServer");
     //..проверяем инцилизированы ли функции
     if(!exchangeDataWithServer) {
-        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найдена библиотека \"ArmaLauncher.dll\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Библиотека \"ArmaLauncher.dll\" не найдена или повреждена.\nПереустановите программу с официального сайта.\nError:#0002"), QMessageBox::Ok);
         qCritical() << "launcher::launcher: Dll initialization fail - load error or ArmaLauncher.dll not found";
         parent->close();
         return;
     }
     //..проверяем, есть ли 7z.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/7z.exe")){
-        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"7z.exe\"\nПереустановите программу с официального сайта."), QMessageBox::Ok);
         qCritical() << "launcher::launcher: 7z initialization fail - 7z.exe not found";
         parent->close();
         return;
     }
     //..проверяем, есть ли ArmALauncher-SyncParser.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-SyncParser.exe")){
-        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-SyncParser.exe\"\nПереустановите программу с официального сайта."), QMessageBox::Ok);
         qCritical() << "launcher::launcher: SyncParser initialization fail - ArmALauncher-SyncParser.exe not found";
         parent->close();
         return;
     }
     //..проверяем, есть ли ArmALauncher-Updater.exe в папке с программой
     if(!QFile::exists(QCoreApplication::applicationDirPath() + "/ArmALauncher-Updater.exe")){
-        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта.\nhttp://launcher.our-army.su"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Критическая ошибка"), tr("Не найден исполняемый файл \"ArmALauncher-Updater.exe\"\nПереустановите программу с официального сайта."), QMessageBox::Ok);
         qCritical() << "launcher::launcher: Updater initialization fail - ArmALauncher-Updater.exe not found";
         parent->close();
         return;
@@ -67,12 +67,13 @@ launcher::launcher(QWidget *parent) :
     ui->addonTree->header()->resizeSection(0, 220);
     ui->addonTree->header()->resizeSection(1, 150);
     //..размеры секций списка серверов
-    ui->serversTree->header()->resizeSection(0, 250);
+    ui->serversTree->header()->resizeSection(0, 220);
     ui->serversTree->header()->resizeSection(1, 100);
     ui->serversTree->header()->resizeSection(2, 50);
     ui->serversTree->header()->resizeSection(3, 70);
     ui->serversTree->header()->resizeSection(4, 70);
-    ui->serversTree->header()->resizeSection(5, 50);
+    ui->serversTree->header()->resizeSection(5, 60);
+    ui->serversTree->header()->resizeSection(6, 50);
     //..размер секций filesTree
     ui->filesTree->header()->resizeSection(0, 200);
     ui->filesTree->header()->resizeSection(1, 90);
@@ -105,6 +106,12 @@ launcher::launcher(QWidget *parent) :
     thread = new QThread;
     updater->moveToThread(thread);
 
+    // Иницилизируем окнов в трее
+    trayIcon = new QSystemTrayIcon(this);
+
+    // Иницилизируем таймер проверки статуса
+    timerCheckServerStatus = new QTimer(this);
+
     qInfo() << "launcher::launcher: Updater move to " << thread;
 
     //..связываем updater с потоком
@@ -121,6 +128,9 @@ launcher::launcher(QWidget *parent) :
     //..подключения репозитория
     connect(updater, SIGNAL(started(const Repository, const QList< QMap<QString, QString> >, const QStringList, bool, QString)),
             this,    SLOT(updaterStarted(const Repository, const QList< QMap<QString, QString> >, const QStringList, bool, QString)));
+
+    //..связываем таймер проверки состояния сервера с функцией проверки
+    connect(timerCheckServerStatus, SIGNAL(timeout()), this, SLOT(checkServerStatus()));
 
     //..связываем updater с кнопками UI
     //..связь кнопки дисконетка репозитория с апдейтером
@@ -206,6 +216,8 @@ launcher::launcher(QWidget *parent) :
             LauncherSettings,       SLOT(reciveData(Settings)));
     connect(LauncherSettings,       SIGNAL(sendData(Settings)),
             this,                   SLOT(launcherSettingsFinish(Settings)));
+    connect(LauncherSettings,       SIGNAL(checkUpdate()),
+            this,                   SLOT(checkUpdate()));
     //..Изменения настроек репозитория
     connect(this,                   SIGNAL(repoEditStart(Repository,int,bool)),
             repositoryEdit,         SLOT(recieveData(Repository,int,bool)));
@@ -237,6 +249,7 @@ launcher::launcher(QWidget *parent) :
     } else {
         qInfo() << "launcher::launcher: launcher config - read fail";
 
+        QDir().mkpath(DocumentsLocation + "/Arma 3 - Other Profiles/");
         // Заполняем дефолтной информацией, если слоты пустые
         //..репозитории
         if(repositories.isEmpty()) {
@@ -250,7 +263,7 @@ launcher::launcher(QWidget *parent) :
             Repository rep2;
             rep2.name = "Tushino Arma3 Mirror";
             rep2.type = 0;
-            rep2.url = "http://arma3.bayonetdiv.com/Tushino.7z";
+            rep2.url = "http://repo.armaserver.ru/A3/Tushino.7z";
             repositories.append(rep2);
         }
         //..сервера
@@ -268,21 +281,34 @@ launcher::launcher(QWidget *parent) :
     // Получаем настройки
     QSettings a_settings("Fyzu", "ArmALauncher");
     a_settings.beginGroup("/Settings");
-    if(a_settings.value("/documentMode").isValid()) {
+    if(a_settings.value("/documentMode").isValid())
         settings.documentMode = a_settings.value("/documentMode").toBool();
-    } else {
+    else
         settings.documentMode = true;
-    }
-    if(a_settings.value("/launch").isValid()) {
+    if(a_settings.value("/launch").isValid())
         settings.launch = a_settings.value("/launch").toInt();
-    } else {
+    else
         settings.launch = 0;
-    }
-    if(a_settings.value("/style").isValid()) {
+    if(a_settings.value("/style").isValid())
         settings.style = a_settings.value("/style").toInt();
-    } else {
+    else
         settings.style = 1;
-    }
+    if(a_settings.value("/updateTime").isValid())
+        settings.updateTime = a_settings.value("/updateTime").toInt();
+    else
+        settings.updateTime = 3000;
+    if(a_settings.value("/state").isValid())
+        settings.state = a_settings.value("/state").toInt();
+    else
+        settings.state = 0;
+    if(a_settings.value("/checkUpdateAfterStart").isValid())
+        settings.checkUpdateAfterStart = a_settings.value("/checkUpdateAfterStart").toBool();
+    else
+        settings.checkUpdateAfterStart = true;
+    if(a_settings.value("/notification").isValid())
+        settings.notification = a_settings.value("/notification").toBool();
+    else
+        settings.notification = true;
 
     // Установить главному окну Size
     if (!widgetSize.isEmpty()) {
@@ -334,7 +360,9 @@ launcher::launcher(QWidget *parent) :
     on_serversTree_update_clicked();
 
     // Проверка на обновления
-    checkForUpdates();
+    if(settings.checkUpdateAfterStart)
+        checkUpdate();
+
 }
 
 // Дистркутор окна
@@ -343,6 +371,9 @@ launcher::~launcher() {
     // Сохранение настроек перед закрытием программы
     updateInformationInCfg();
 
+    if(timerCheckServerStatus->isActive())
+        timerCheckServerStatus->stop();
+    timerCheckServerStatus->deleteLater();
     thread->quit();
     thread->deleteLater();
     delete updater;
@@ -406,9 +437,9 @@ QString launcher::getFileVersion(QString path) {
 }
 
 // Проверяем версию программы
-void launcher::checkForUpdates() {
+void launcher::checkUpdate() {
 
-    qInfo() << "launcher::checkForUpdates: start download version";
+    qInfo() << "launcher::checkUpdate: start download version";
 
     manager = new QNetworkAccessManager(this);
 
@@ -882,7 +913,7 @@ void launcher::changeStyleSheet(int style) {
         icon3.addFile(QStringLiteral(":/myresources/IMG/computer monitor1.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->optimize->setIcon(icon3);
         QIcon icon4;
-        icon4.addFile(QStringLiteral(":/myresources/IMG/file99.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QStringLiteral(":/myresources/IMG/folder63.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->pathBrowse->setIcon(icon4);
         QIcon icon5;
         icon5.addFile(QStringLiteral(":/myresources/IMG/settings59.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -941,6 +972,10 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon23;
         icon23.addFile(QStringLiteral(":/myresources/IMG/settings59.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_edit->setIcon(icon23);
+        QIcon icon24;
+        icon24.addFile(QStringLiteral(":/myresources/IMG/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->serversTree_monitoring->setIcon(icon24);
+
         ui->play->setStyleSheet(QLatin1String("QPushButton { border-image: url(:/myresources/arma3.png); }\n"
         "QPushButton::pressed { border-image: url(:/myresources/arma3down.png); }"));
 
@@ -965,7 +1000,7 @@ void launcher::changeStyleSheet(int style) {
         icon3.addFile(QStringLiteral(":/myresources/IMG/darkstyle/computer monitor1.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->optimize->setIcon(icon3);
         QIcon icon4;
-        icon4.addFile(QStringLiteral(":/myresources/IMG/darkstyle/file99.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QStringLiteral(":/myresources/IMG/darkstyle/folder63.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->pathBrowse->setIcon(icon4);
         QIcon icon5;
         icon5.addFile(QStringLiteral(":/myresources/IMG/darkstyle/settings59.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -1024,6 +1059,10 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon23;
         icon23.addFile(QStringLiteral(":/myresources/IMG/darkstyle/settings59.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_edit->setIcon(icon23);
+        QIcon icon24;
+        icon24.addFile(QStringLiteral(":/myresources/IMG/darkstyle/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->serversTree_monitoring->setIcon(icon24);
+
         ui->play->setStyleSheet(QLatin1String("QPushButton { border-image: url(:/myresources/IMG/darkstyle/arma3.png); }\n"
         "QPushButton::pressed { border-image: url(:/myresources/IMG/darkstyle/arma3down.png); }"));
         ui->filesTree->setStyleSheet("color: rgb(0, 0, 0);");
@@ -1052,4 +1091,12 @@ void launcher::on_addonTree_itemClicked(QTreeWidgetItem *item) {
         }
     }
     addonTreeRow = ui->addonTree->currentIndex().row();
+}
+
+void launcher::popupMessage(QString title, QString message, bool necessarily) {
+    if(settings.notification || necessarily) {
+        trayIcon->show();
+        trayIcon->showMessage(title, message);
+        trayIcon->hide();
+    }
 }

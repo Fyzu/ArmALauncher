@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>720</width>
-    <height>800</height>
+    <height>702</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -267,6 +267,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Настройки аддонов</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="AddonsSettings">
@@ -1106,7 +1113,7 @@
                </sizepolicy>
               </property>
               <property name="title">
-               <string>Дополнительныельные параметры запуска</string>
+               <string>Дополнительные параметры запуска</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
                <item>
@@ -1130,7 +1137,7 @@
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Путь к испольняемому файлу Arma 3</string>
+                 <string>Путь к исполняемому файлу Arma 3</string>
                 </property>
                </widget>
               </item>
@@ -1242,6 +1249,11 @@
             </column>
             <column>
              <property name="text">
+              <string>Статус</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
               <string>Пинг</string>
              </property>
             </column>
@@ -1316,6 +1328,26 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="serversTree_monitoring">
+              <property name="toolTip">
+               <string>Следить за статусом сервера</string>
+              </property>
+              <property name="text">
+               <string>Следить</string>
+              </property>
+              <property name="icon">
+               <iconset resource="pictures.qrc">
+                <normaloff>:/myresources/IMG/eye106.png</normaloff>:/myresources/IMG/eye106.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="serversTree_update">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1366,7 +1398,7 @@
              <bool>true</bool>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="iconSize">
              <size>
@@ -1588,7 +1620,7 @@
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>       Отключится         </string>
+                    <string>       Отключиться         </string>
                    </property>
                    <property name="icon">
                     <iconset resource="pictures.qrc">

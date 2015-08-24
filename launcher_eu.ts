@@ -4,7 +4,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="addonssettings.cpp" line="96"/>
+        <location filename="addonssettings.cpp" line="97"/>
         <source>Укажите путь к директории аддонов</source>
         <translation>Locate the path to the directory add-ons</translation>
     </message>
@@ -27,12 +27,12 @@
         <translation>Priority launch add-ons</translation>
     </message>
     <message>
-        <location filename="addonssettings.cpp" line="102"/>
+        <location filename="addonssettings.cpp" line="103"/>
         <source>Ошибка!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="addonssettings.cpp" line="102"/>
+        <location filename="addonssettings.cpp" line="103"/>
         <source>Такая директория уже существует.</source>
         <translation>This directory already exists.</translation>
     </message>
@@ -74,7 +74,7 @@
     </message>
     <message>
         <location filename="launcher.ui" line="89"/>
-        <location filename="launcher.ui" line="1105"/>
+        <location filename="launcher.ui" line="1232"/>
         <source>IP</source>
         <translation>IP</translation>
     </message>
@@ -96,7 +96,7 @@
     </message>
     <message>
         <location filename="launcher.ui" line="141"/>
-        <location filename="launcher.ui" line="1110"/>
+        <location filename="launcher.ui" line="1237"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
@@ -138,148 +138,153 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="289"/>
+        <location filename="launcher.ui" line="274"/>
+        <source>Настройки аддонов</source>
+        <translation type="unfinished">Settings add-ons</translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="296"/>
         <source>Параметры аддонов</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="369"/>
-        <location filename="launcher.ui" line="1100"/>
+        <location filename="launcher.ui" line="376"/>
+        <location filename="launcher.ui" line="1227"/>
         <source>Название</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="374"/>
+        <location filename="launcher.ui" line="381"/>
         <source>Директория</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="379"/>
+        <location filename="launcher.ui" line="386"/>
         <source>Путь</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="392"/>
+        <location filename="launcher.ui" line="399"/>
         <source>Параметры</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="404"/>
+        <location filename="launcher.ui" line="409"/>
         <source>Настройки игры</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="414"/>
+        <location filename="launcher.ui" line="417"/>
         <source>Профиль, который будет,
 выбран при запуске игры.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="418"/>
+        <location filename="launcher.ui" line="421"/>
         <source>Профиль</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="430"/>
+        <location filename="launcher.ui" line="437"/>
         <source>Запуск игры,
 в оконном режиме.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="434"/>
+        <location filename="launcher.ui" line="441"/>
         <source>Оконный режим</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="441"/>
+        <location filename="launcher.ui" line="448"/>
         <source>При альтабе, игра будет
 продолжать расчитывать сцену.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="445"/>
+        <location filename="launcher.ui" line="452"/>
         <source>Без паузы</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="452"/>
+        <location filename="launcher.ui" line="481"/>
         <source>Отображение ошибок
 аддонов и миссий.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="456"/>
+        <location filename="launcher.ui" line="485"/>
         <source>Отображать ошибки скриптов</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="463"/>
+        <location filename="launcher.ui" line="492"/>
         <source>Запрет на считывание данных, вне .pbo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="466"/>
+        <location filename="launcher.ui" line="495"/>
         <source>Читать только .pbo файлы</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="473"/>
+        <location filename="launcher.ui" line="502"/>
         <source>Автоматически при запуске,
 включать сервис BattlEye.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="477"/>
+        <location filename="launcher.ui" line="506"/>
         <source>Включить BattlEye</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="502"/>
+        <location filename="launcher.ui" line="533"/>
         <source>Производительность</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="518"/>
+        <location filename="launcher.ui" line="555"/>
         <source>Приоритет</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="525"/>
+        <location filename="launcher.ui" line="568"/>
         <source>Приоритет работы в ОС.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="529"/>
+        <location filename="launcher.ui" line="572"/>
         <source>Реального времени</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="534"/>
+        <location filename="launcher.ui" line="577"/>
         <source>Высокий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="539"/>
+        <location filename="launcher.ui" line="582"/>
         <source>Выше среднего</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="544"/>
+        <location filename="launcher.ui" line="587"/>
         <source>Обычный</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="549"/>
+        <location filename="launcher.ui" line="592"/>
         <source>Ниже среднего</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="554"/>
+        <location filename="launcher.ui" line="597"/>
         <source>Низкий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="566"/>
+        <location filename="launcher.ui" line="615"/>
         <source>Максимальное кол-во памяти ОЗУ
 которые будет использовать игра.
 Из-за того что игра 32-битная
@@ -287,42 +292,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="572"/>
+        <location filename="launcher.ui" line="621"/>
         <source>Макс. памяти</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="580"/>
-        <location filename="launcher.ui" line="626"/>
+        <location filename="launcher.ui" line="635"/>
+        <location filename="launcher.ui" line="693"/>
         <source>256</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="585"/>
-        <location filename="launcher.ui" line="631"/>
+        <location filename="launcher.ui" line="640"/>
+        <location filename="launcher.ui" line="698"/>
         <source>512</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="590"/>
-        <location filename="launcher.ui" line="636"/>
+        <location filename="launcher.ui" line="645"/>
+        <location filename="launcher.ui" line="703"/>
         <source>1024</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="595"/>
-        <location filename="launcher.ui" line="641"/>
+        <location filename="launcher.ui" line="650"/>
+        <location filename="launcher.ui" line="708"/>
         <source>1536</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="600"/>
-        <location filename="launcher.ui" line="646"/>
+        <location filename="launcher.ui" line="655"/>
+        <location filename="launcher.ui" line="713"/>
         <source>2048</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="612"/>
+        <location filename="launcher.ui" line="673"/>
         <source>Максимальное кол-во видео памяти 
 которые будет использовать игра.
 Из-за того что игра 32-битная
@@ -330,527 +335,532 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="618"/>
+        <location filename="launcher.ui" line="679"/>
         <source>Макс. видео</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="658"/>
+        <location filename="launcher.ui" line="731"/>
         <source>Кол-во CPU, которые будет использовать игра.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="661"/>
+        <location filename="launcher.ui" line="734"/>
         <source>Кол-во CPU</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="669"/>
-        <location filename="launcher.ui" line="733"/>
+        <location filename="launcher.ui" line="748"/>
+        <location filename="launcher.ui" line="824"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="674"/>
+        <location filename="launcher.ui" line="753"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="679"/>
-        <location filename="launcher.ui" line="738"/>
+        <location filename="launcher.ui" line="758"/>
+        <location filename="launcher.ui" line="829"/>
         <source>3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="684"/>
+        <location filename="launcher.ui" line="763"/>
         <source>4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="689"/>
-        <location filename="launcher.ui" line="743"/>
+        <location filename="launcher.ui" line="768"/>
+        <location filename="launcher.ui" line="834"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="694"/>
+        <location filename="launcher.ui" line="773"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="699"/>
-        <location filename="launcher.ui" line="748"/>
+        <location filename="launcher.ui" line="778"/>
+        <location filename="launcher.ui" line="839"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="704"/>
+        <location filename="launcher.ui" line="783"/>
         <source>8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="716"/>
+        <location filename="launcher.ui" line="801"/>
         <source>Кол-во потоков, которые игра будет использовать.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="719"/>
+        <location filename="launcher.ui" line="804"/>
         <source>Кол-во потоков</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="760"/>
+        <location filename="launcher.ui" line="857"/>
         <source>Тип выделения памяти,
 Стандартный tbb4_malloc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="764"/>
+        <location filename="launcher.ui" line="861"/>
         <source>Выделение памяти</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="787"/>
+        <location filename="launcher.ui" line="897"/>
         <source>Многопоточность, 
 используется в основном на процессорах Intel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="791"/>
+        <location filename="launcher.ui" line="901"/>
         <source>Включить Hyper-threading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="798"/>
+        <location filename="launcher.ui" line="914"/>
         <source>Использование DX9, 
 применяется для ОС WinXP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="802"/>
+        <location filename="launcher.ui" line="918"/>
         <source>Использовать только Direct3D 9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="809"/>
+        <location filename="launcher.ui" line="931"/>
         <source>Используется лишь 1 ядро процессора.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="812"/>
+        <location filename="launcher.ui" line="934"/>
         <source>Отключиить мульти-ядра</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="819"/>
+        <location filename="launcher.ui" line="947"/>
         <source>Отключить заставку при запуске,
 уменьшает время запуска игры.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="823"/>
+        <location filename="launcher.ui" line="951"/>
         <source>Отключить заставку</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="830"/>
+        <location filename="launcher.ui" line="964"/>
         <source>Отключить логотипы игры при запуске,
 уменьшает время запуска игры.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="834"/>
+        <location filename="launcher.ui" line="968"/>
         <source>Отключить стартовый логотип</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="841"/>
+        <location filename="launcher.ui" line="981"/>
         <source>В меню загружается пустой мир,
 ускоряет время запуска игры.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="845"/>
+        <location filename="launcher.ui" line="985"/>
         <source>Загружать в меню пустой мир</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="852"/>
+        <location filename="launcher.ui" line="1042"/>
+        <source>Оптимизация параметров Arma 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1067"/>
+        <source>Оптимизация параметров игры</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1116"/>
+        <source>Дополнительные параметры запуска</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1140"/>
+        <source>Путь к исполняемому файлу Arma 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1333"/>
+        <source>Следить за статусом сервера</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1336"/>
+        <source>Следить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1623"/>
+        <source>       Отключиться         </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="459"/>
         <source>Игра не будет сохранять логи работы,
 увеличивает производительность.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="856"/>
+        <location filename="launcher.ui" line="463"/>
         <source>Без логов</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="881"/>
+        <location filename="launcher.ui" line="1010"/>
         <source>Лаунчер</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="900"/>
+        <location filename="launcher.ui" line="1029"/>
         <source>Настройки Arma лаунчера</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="913"/>
-        <source>Оптимизация настроек Arma 3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="924"/>
+        <location filename="launcher.ui" line="1053"/>
         <source>Настройки лаунчера</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="927"/>
+        <location filename="launcher.ui" line="1056"/>
         <source>   Настроить       </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="938"/>
-        <source>Оптимизация настроек игры</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="941"/>
+        <location filename="launcher.ui" line="1070"/>
         <source>Оптимизировать</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="961"/>
+        <location filename="launcher.ui" line="1088"/>
         <source>Параметры запуска</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="989"/>
-        <source>Дополнительныельные параметры запуска</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1013"/>
-        <source>Путь к испольняемому файлу Arma 3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1032"/>
+        <location filename="launcher.ui" line="1159"/>
         <source>Обзор пути к исполняемому файлу</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1063"/>
+        <location filename="launcher.ui" line="1190"/>
         <source>Избранные сервера</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1115"/>
+        <location filename="launcher.ui" line="1242"/>
         <source>Пароль</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1120"/>
+        <location filename="launcher.ui" line="1247"/>
         <source>Онлайн</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1125"/>
-        <source>Пинг</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1135"/>
-        <source>Добавить сервер</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1141"/>
-        <source>Добавить</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1158"/>
-        <source>Удалить сервер</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1164"/>
-        <source>Удалить</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1181"/>
-        <source>Изменить сервер</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1184"/>
-        <source>Изменить</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1210"/>
-        <source>Подробная информация о сервере</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1213"/>
-        <source>О сервере</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1230"/>
-        <location filename="launcher.ui" line="1233"/>
-        <source>Обновить сервера</source>
+        <location filename="launcher.ui" line="1252"/>
+        <source>Статус</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.ui" line="1257"/>
+        <source>Пинг</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1267"/>
+        <source>Добавить сервер</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1273"/>
+        <source>Добавить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1290"/>
+        <source>Удалить сервер</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1296"/>
+        <source>Удалить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1313"/>
+        <source>Изменить сервер</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1316"/>
+        <source>Изменить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1365"/>
+        <location filename="launcher.ui" line="1368"/>
+        <source>Обновить сервера</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launcher.ui" line="1392"/>
         <source>Апдейтер</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1280"/>
+        <location filename="launcher.ui" line="1415"/>
         <source>Репозитории</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1286"/>
+        <location filename="launcher.ui" line="1421"/>
         <source>Список репозиториев</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1306"/>
+        <location filename="launcher.ui" line="1441"/>
         <source>Добавить репозиторий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1323"/>
+        <location filename="launcher.ui" line="1458"/>
         <source>Удалить репозиторий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1340"/>
+        <location filename="launcher.ui" line="1475"/>
         <source>Изменить репозиторий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1357"/>
+        <location filename="launcher.ui" line="1492"/>
         <source>Подключится к репозиторию</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1396"/>
+        <location filename="launcher.ui" line="1531"/>
         <location filename="updateaddons_ui.cpp" line="12"/>
         <location filename="updateaddons_ui.cpp" line="95"/>
-        <location filename="updateaddons_ui.cpp" line="273"/>
+        <location filename="updateaddons_ui.cpp" line="281"/>
         <source>Не подключен</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1414"/>
+        <location filename="launcher.ui" line="1549"/>
         <source>Управление</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1423"/>
+        <location filename="launcher.ui" line="1558"/>
         <source>  Проверить аддоны     </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1437"/>
+        <location filename="launcher.ui" line="1572"/>
         <source>       Остановить          </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1460"/>
+        <location filename="launcher.ui" line="1595"/>
         <source>Удалить лишние файлы</source>
         <translation type="unfinished">Delete unnecessary files</translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1474"/>
+        <location filename="launcher.ui" line="1609"/>
         <source>    Скачать аддоны       </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1488"/>
-        <source>       Отключится         </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="launcher.ui" line="1511"/>
+        <location filename="launcher.ui" line="1646"/>
         <source>Прогресс</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1527"/>
+        <location filename="launcher.ui" line="1662"/>
         <source>Всего:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1547"/>
-        <location filename="launcher.ui" line="1611"/>
+        <location filename="launcher.ui" line="1682"/>
+        <location filename="launcher.ui" line="1746"/>
         <source>0/0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1585"/>
+        <location filename="launcher.ui" line="1720"/>
         <source>Текущий:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1645"/>
+        <location filename="launcher.ui" line="1780"/>
         <source>Скачать в</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1679"/>
+        <location filename="launcher.ui" line="1814"/>
         <source>Информация</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1685"/>
-        <location filename="updateaddons_ui.cpp" line="274"/>
+        <location filename="launcher.ui" line="1820"/>
+        <location filename="updateaddons_ui.cpp" line="282"/>
         <source> - Репозиторий не подключен -</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1692"/>
-        <location filename="updateaddons_ui.cpp" line="275"/>
+        <location filename="launcher.ui" line="1827"/>
+        <location filename="updateaddons_ui.cpp" line="283"/>
         <source>Для подключения, зайдийте во</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1699"/>
-        <location filename="updateaddons_ui.cpp" line="276"/>
+        <location filename="launcher.ui" line="1834"/>
+        <location filename="updateaddons_ui.cpp" line="284"/>
         <source>вкладку репозитории.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1712"/>
+        <location filename="launcher.ui" line="1847"/>
         <source>Показывать проверочную сумму файлов</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1753"/>
+        <location filename="launcher.ui" line="1888"/>
         <source>Файл</source>
         <translation type="unfinished">File</translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1758"/>
+        <location filename="launcher.ui" line="1893"/>
         <source>Sum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1763"/>
+        <location filename="launcher.ui" line="1898"/>
         <source>Sum Local</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1817"/>
+        <location filename="launcher.ui" line="1952"/>
         <source>Скачиваемые аддоны</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.ui" line="1861"/>
-        <location filename="launcher.ui" line="1868"/>
-        <location filename="updateinformation.cpp" line="176"/>
+        <location filename="launcher.ui" line="1996"/>
+        <location filename="launcher.ui" line="2003"/>
+        <location filename="updateinformation.cpp" line="156"/>
         <source>- Сервер не выбран -</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.cpp" line="18"/>
-        <location filename="launcher.cpp" line="26"/>
-        <location filename="launcher.cpp" line="32"/>
-        <location filename="launcher.cpp" line="38"/>
-        <location filename="launcher.cpp" line="44"/>
+        <location filename="launcher.cpp" line="27"/>
+        <location filename="launcher.cpp" line="34"/>
+        <location filename="launcher.cpp" line="41"/>
+        <location filename="launcher.cpp" line="48"/>
         <source>Критическая ошибка</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="launcher.cpp" line="18"/>
-        <location filename="launcher.cpp" line="26"/>
+        <location filename="launcher.cpp" line="27"/>
         <source>Не найдена библиотека &quot;ArmaLauncher.dll&quot;
-Переустановите программу с официального сайта.
-http://launcher.our-army.su</source>
+Переустановите программу с официального сайта.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="32"/>
+        <location filename="launcher.cpp" line="34"/>
         <source>Не найден исполняемый файл &quot;7z.exe&quot;
-Переустановите программу с официального сайта.
-http://launcher.our-army.su</source>
+Переустановите программу с официального сайта.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="38"/>
+        <location filename="launcher.cpp" line="41"/>
         <source>Не найден исполняемый файл &quot;ArmALauncher-SyncParser.exe&quot;
-Переустановите программу с официального сайта.
-http://launcher.our-army.su</source>
+Переустановите программу с официального сайта.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="44"/>
+        <location filename="launcher.cpp" line="48"/>
         <source>Не найден исполняемый файл &quot;ArmALauncher-Updater.exe&quot;
-Переустановите программу с официального сайта.
-http://launcher.our-army.su</source>
+Переустановите программу с официального сайта.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="52"/>
-        <source>ArmA 3 Launcher by Fyzu | ver. </source>
+        <location filename="launcher.cpp" line="57"/>
+        <source>ArmA 3 Launcher - Fyzu [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="309"/>
-        <location filename="launcher.cpp" line="600"/>
+        <location filename="launcher.cpp" line="331"/>
+        <location filename="launcher.cpp" line="635"/>
         <source>Версия игры: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="356"/>
-        <location filename="launcher.cpp" line="365"/>
+        <location filename="launcher.cpp" line="391"/>
+        <location filename="launcher.cpp" line="400"/>
         <source>неизвестно</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="386"/>
+        <location filename="launcher.cpp" line="421"/>
         <source>Неизвестно</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="476"/>
+        <location filename="launcher.cpp" line="511"/>
         <location filename="updateaddons_ui.cpp" line="99"/>
-        <location filename="updateaddons_ui.cpp" line="251"/>
-        <location filename="updateaddons_ui.cpp" line="508"/>
+        <location filename="updateaddons_ui.cpp" line="260"/>
+        <location filename="updateaddons_ui.cpp" line="489"/>
+        <location filename="updateaddons_ui.cpp" line="529"/>
+        <location filename="updateaddons_ui.cpp" line="749"/>
+        <location filename="updateaddons_ui.cpp" line="751"/>
+        <location filename="updateaddons_ui.cpp" line="753"/>
         <source>Внимание!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="476"/>
+        <location filename="launcher.cpp" line="511"/>
         <source>Игра требует запустить Steam.
 Запустить Steam?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="560"/>
+        <location filename="launcher.cpp" line="595"/>
         <source>Открыть исполняемый файл ArmA 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="560"/>
+        <location filename="launcher.cpp" line="595"/>
         <source>arma3.exe;;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="606"/>
+        <location filename="launcher.cpp" line="641"/>
         <source>Ошибка!</source>
         <translation type="unfinished">Error!</translation>
     </message>
     <message>
-        <location filename="launcher.cpp" line="606"/>
+        <location filename="launcher.cpp" line="641"/>
         <source>Указан неверный путь к исполняемому файлу arma3.exe</source>
         <translation type="unfinished"></translation>
     </message>
@@ -862,141 +872,227 @@ http://launcher.our-army.su</source>
     </message>
     <message>
         <location filename="updateaddons_ui.cpp" line="122"/>
-        <location filename="updateaddons_ui.cpp" line="281"/>
+        <location filename="updateaddons_ui.cpp" line="289"/>
         <source>Всего: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="updateaddons_ui.cpp" line="124"/>
-        <location filename="updateaddons_ui.cpp" line="283"/>
+        <location filename="updateaddons_ui.cpp" line="291"/>
         <source>Текущий: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="174"/>
+        <location filename="updateaddons_ui.cpp" line="182"/>
         <source>Подключение прошло успешно!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="175"/>
+        <location filename="updateaddons_ui.cpp" line="183"/>
         <source>Всего    файлов: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="176"/>
+        <location filename="updateaddons_ui.cpp" line="184"/>
         <source>Нужных файлов: -</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="251"/>
+        <location filename="updateaddons_ui.cpp" line="260"/>
         <source>Неудалось подключится к репозиторию,
 в процессе возникли ошибки.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="317"/>
+        <location filename="updateaddons_ui.cpp" line="323"/>
         <source>Всего: Проверка файлов начата</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="365"/>
+        <location filename="updateaddons_ui.cpp" line="371"/>
         <source>Проверка прошла успешно!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="366"/>
+        <location filename="updateaddons_ui.cpp" line="372"/>
         <source>Нужных файлов: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="367"/>
+        <location filename="updateaddons_ui.cpp" line="373"/>
         <source>Всего: Проверка файлов прошла успешно</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="468"/>
+        <location filename="updateaddons_ui.cpp" line="481"/>
         <source>Текущий: Проверяем </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="498"/>
+        <location filename="updateaddons_ui.cpp" line="489"/>
+        <source>Невозможно начать обновление аддонов, т.к. Arma 3 запущена.
+Закройте Arma 3, для безопасного обновления аддонов.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="updateaddons_ui.cpp" line="518"/>
         <source>Всего: Скачиваем аддоны</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="508"/>
+        <location filename="updateaddons_ui.cpp" line="529"/>
         <source>Нет файлов для загрузки с репозитория.
 Вы ничего не выбрали для загрузки или все файлы скачены.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="538"/>
-        <location filename="updateaddons_ui.cpp" line="666"/>
+        <location filename="updateaddons_ui.cpp" line="558"/>
+        <location filename="updateaddons_ui.cpp" line="686"/>
         <source> байт</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="542"/>
-        <location filename="updateaddons_ui.cpp" line="670"/>
+        <location filename="updateaddons_ui.cpp" line="562"/>
+        <location filename="updateaddons_ui.cpp" line="690"/>
         <source> КБ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="546"/>
-        <location filename="updateaddons_ui.cpp" line="674"/>
+        <location filename="updateaddons_ui.cpp" line="566"/>
+        <location filename="updateaddons_ui.cpp" line="694"/>
         <source> МБ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="549"/>
-        <location filename="updateaddons_ui.cpp" line="677"/>
+        <location filename="updateaddons_ui.cpp" line="569"/>
+        <location filename="updateaddons_ui.cpp" line="697"/>
         <source> МБ/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="550"/>
-        <location filename="updateaddons_ui.cpp" line="678"/>
+        <location filename="updateaddons_ui.cpp" line="570"/>
+        <location filename="updateaddons_ui.cpp" line="698"/>
         <source> ГБ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="563"/>
+        <location filename="updateaddons_ui.cpp" line="583"/>
         <source>Всего: Загрузка аддонов не закончена</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="566"/>
+        <location filename="updateaddons_ui.cpp" line="586"/>
         <source>Всего: Загрузка аддонов прошла успешно</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="643"/>
+        <location filename="updateaddons_ui.cpp" line="663"/>
         <source>Текущий: Скачиваем </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="692"/>
+        <location filename="updateaddons_ui.cpp" line="712"/>
         <source>Скачиваем</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="692"/>
+        <location filename="updateaddons_ui.cpp" line="712"/>
         <source>Скачен</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="697"/>
+        <location filename="updateaddons_ui.cpp" line="717"/>
         <source>Текущий: Скачивание остановлено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="710"/>
+        <location filename="updateaddons_ui.cpp" line="730"/>
         <source>Текущий: Распаковываем </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="updateaddons_ui.cpp" line="721"/>
+        <location filename="updateaddons_ui.cpp" line="741"/>
         <source>Текущий: Распаковали </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="updateaddons_ui.cpp" line="749"/>
+        <source>Во время загрузки файла возникли ошибки.
+Ошибка: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="updateaddons_ui.cpp" line="751"/>
+        <source>Во время получения информации от репозитория возникли ошибки.
+Ошибка: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="updateaddons_ui.cpp" line="753"/>
+        <source>Во время распаковки архива возникли ошибки.
+7z output: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="231"/>
+        <location filename="favoriteservers.cpp" line="297"/>
+        <source>Игра</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="232"/>
+        <location filename="favoriteservers.cpp" line="298"/>
+        <source>Брифинг</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="233"/>
+        <location filename="favoriteservers.cpp" line="299"/>
+        <source>Лобби</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="234"/>
+        <location filename="favoriteservers.cpp" line="300"/>
+        <source>Создание</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="270"/>
+        <location filename="favoriteservers.cpp" line="276"/>
+        <source>Слежение за серверов</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="270"/>
+        <location filename="favoriteservers.cpp" line="276"/>
+        <source>Слежение за сервером </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="270"/>
+        <source> остановлено</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="276"/>
+        <source> началось</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="303"/>
+        <source>Изменение статуса сервера</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="303"/>
+        <source>Сервер </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="favoriteservers.cpp" line="303"/>
+        <source>
+изменил статус на &quot;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1008,52 +1104,97 @@ http://launcher.our-army.su</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="41"/>
+        <location filename="launchersettings.ui" line="82"/>
         <source>Запуск</source>
         <translation type="unfinished">Launch</translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="47"/>
+        <location filename="launchersettings.ui" line="88"/>
         <source>Действие после запуска игры</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="55"/>
+        <location filename="launchersettings.ui" line="96"/>
         <source>Ничего</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="60"/>
+        <location filename="launchersettings.ui" line="101"/>
         <source>Свернуть лаунчер</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="65"/>
+        <location filename="launchersettings.ui" line="106"/>
         <source>Закрыть лаунчер</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="76"/>
+        <location filename="launchersettings.ui" line="117"/>
+        <source>Слежение за серверов</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="125"/>
+        <source>Обновление каждые</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="145"/>
+        <source>мсек</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="156"/>
+        <source>Уведомлять если статус</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="164"/>
+        <source>Любой</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="169"/>
+        <source>Игра</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="174"/>
+        <source>Брифинг</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="179"/>
+        <source>Лобби</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="184"/>
+        <source>Создание</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="launchersettings.ui" line="38"/>
         <source>Стиль</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="84"/>
+        <location filename="launchersettings.ui" line="46"/>
         <source>Цвет интерфейса</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="92"/>
+        <location filename="launchersettings.ui" line="54"/>
         <source>Стандартный</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="97"/>
+        <location filename="launchersettings.ui" line="59"/>
         <source>Темный</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="launchersettings.ui" line="107"/>
+        <location filename="launchersettings.ui" line="69"/>
         <source>Фон и контур во вкладках</source>
         <translation type="unfinished"></translation>
     </message>

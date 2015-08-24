@@ -17,6 +17,8 @@
 #include <QDebug>
 #include <QThread>
 #include <QSettings>
+#include <QSystemTrayIcon>
+#include <QTimer>
 
 #include <windows.h>
 #include <tchar.h>
@@ -118,6 +120,7 @@ private slots:
     void on_launcherSettings_clicked();
     void launcherSettingsFinish(Settings launcherS);
     //..слоты обновления версии
+    void checkUpdate();
     void downloadVersionFinished(QNetworkReply *reply);
     void launcherUpdateResult(int result);
     // Слот активирования аддона по клику
@@ -125,9 +128,15 @@ private slots:
 
 
     void updateInfoParametersInMem();       // Обновление информации параметров в памяти
+\
+    // TEST
+    void on_serversTree_monitoring_clicked();
+    void checkServerStatus();
 
 private:
     Ui::launcher *ui;
+    QSystemTrayIcon *trayIcon;
+
     // Указатели на классы доп. форм
     serverEdit *edit;
     addonsSettings *AddonsSettings;
@@ -151,7 +160,7 @@ private:
     //..получение длл
     QLibrary library;
     //..объявление функции dll
-    typedef unsigned char* (*ExchangeDataWithServer)(const char* host, int port, const int timeout, const unsigned char* str, const int len, int &ping);
+    typedef unsigned char* (*ExchangeDataWithServer)(const char* host, int port, const int timeout, const unsigned char* str, const int len, int &ping, int &rLen);
     ExchangeDataWithServer exchangeDataWithServer;
 
     // Временные переменные
@@ -168,6 +177,12 @@ private:
     bool updaterIsRunning;
     bool checkAddonsIsRunning;
     bool downloadAddonsIsRunning;
+
+    // TEST
+    QTimer *timerCheckServerStatus;
+    QTreeWidgetItem *monitoringServerItem;
+    int oldServerState;
+    bool updateServerInformation(int serverIndex, int itemIndex);
 
     // Функции обновления данных
     void updateInformationInWidget();       // Обновление информации в виджете
@@ -186,24 +201,24 @@ private:
     // Получение версии файла
     QString getFileVersion(QString path);
     // Выделение подстрок в байтовом массиве
-    QByteArray GetNextPart(int &pos, BYTE* response);
+    QByteArray GetNextPart(int &pos, BYTE* response, int rLen);
     // Применение другого стиля
     void changeStyleSheet(int style);
-    // Проверка версий лаунчера
-    void checkForUpdates();
     // Запуск обновления лаунчера
     void UpdateLauncher();
+    // Вызов Popup сообщение
+    void popupMessage(QString title, QString message, bool necessarily = false);
 
     // Переменные конфига
-    QString     pathFolder;                     // Путь к исполняемому файлу игры
+    QString     pathFolder;                      // Путь к исполняемому файлу игры
     QStringList listDirs;                       // Список путей к аддонам
     QStringList listPriorityAddonsDirs;         // Список папок приоритетных аддонов
-    QString DocumentsLocation;                  // Путь к документам системы
+    QString DocumentsLocation;                   // Путь к документам системы
     QList<addon> addonsList;                    // Списон структуры с параметрами аддона
     QList<favServer> favServers;                // Список избранных серверов
-    param parameters;                           // Настройки параметров
+    param parameters;                            // Настройки параметров
     QStringList checkAddons;                    // Список активированных аддонов
-    QSize widgetSize;                           // Size главного окна
+    QSize widgetSize;                            // Size главного окна
     QList<Repository> repositories;
     Settings settings;
 

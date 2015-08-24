@@ -40,6 +40,7 @@ struct favServer{
     QString Longitude;
     QString Latitude;
     QString Mission;
+    int State;
 
     // Конструктор сервера
     favServer() {
@@ -82,6 +83,7 @@ struct favServer{
         Longitude.clear();
         Latitude.clear();
         Mission.clear();
+        State = -1;
     }
 };
 
@@ -169,10 +171,24 @@ struct Settings {
     // Запуск
     int launch;
 
+    // Слежение за сервером
+    int updateTime;
+    int state;
+
+    // Обновления
+    bool checkUpdateAfterStart;
+
+    // Уведомления
+    bool notification;
+
     Settings() {
         style = 0;
         documentMode = false;
         launch = 0;
+        updateTime = 3000;
+        state = 0;
+        checkUpdateAfterStart = true;
+        notification = true;
     }
 };
 

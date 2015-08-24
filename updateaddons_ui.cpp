@@ -598,6 +598,8 @@ void launcher::downloadAddonsFinishUI(bool success) {
         ui->delOtherFiles->setEnabled(true);
 
     downloadAddonsIsRunning = false;
+
+    popupMessage("Обновление аддонов завершено", "Все выбранные аддоны успешно обновлены." + (otherFiles.size() > 0)? "\nНо остались лишние файлы, которых нет в данном репозитории.":"\nЛишних файлов не обнаружено.");
 }
 
 // Слот завершения удаления лишних файлов

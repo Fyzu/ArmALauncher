@@ -24,7 +24,7 @@ QMAKE_CXXFLAGS_RELEASE *= -O3
 
 # Для релиза
 CONFIG(release, debug|release) {
-    WINSDK_DIR = C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.0A\\Bin # путь к исполняемым файлам Windows SDK (с mt.exe)
+    WINSDK_DIR = C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin # путь к исполняемым файлам Windows SDK (с mt.exe)
     WIN_PWD = $$replace(PWD, /, \\) # заменить все '/' на '\\' в строке пути к исполняемому файлу программы
     OUT_PWD_WIN = $$replace(OUT_PWD, /, \\)
     QMAKE_POST_LINK = \"$$WINSDK_DIR\\mt.exe\" -manifest \"$$WIN_PWD\\$$basename(TARGET).manifest\" -outputresource:\"$$OUT_PWD_WIN\\${DESTDIR_TARGET}\"\;1 # вызов программы mt.exe после компиляции приложения

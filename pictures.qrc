@@ -66,6 +66,10 @@
         <file>IMG/darkstyle/update8.png</file>
         <file>IMG/warning37.png</file>
         <file>IMG/checked21.png</file>
+        <file>IMG/folder63.png</file>
+        <file>IMG/darkstyle/folder63.png</file>
+        <file>IMG/eye106.png</file>
+        <file>IMG/darkstyle/eye106.png</file>
     </qresource>
     <qresource prefix="/repositories">
         <file>IMG/yoma2009.ico</file>
