@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     addonssettings.cpp \
     launchersettings.cpp \
     repoedit.cpp \
-    launcherupdate.cpp
+    launcherupdate.cpp \
+    chat.cpp
 
 HEADERS  += launcher.h \
     cfg.h \
@@ -56,7 +57,8 @@ HEADERS  += launcher.h \
     addonssettings.h \
     launchersettings.h \
     repoedit.h \
-    launcherupdate.h
+    launcherupdate.h \
+    AsyncTask/async.h
 
 FORMS    += launcher.ui \
     serveredit.ui \
@@ -67,8 +69,9 @@ FORMS    += launcher.ui \
     launcherupdate.ui
 
 RESOURCES += pictures.qrc \
-	     style.qrc \
-	     lang.qrc
+              style.qrc \
+              lang.qrc \
+              sounds.qrc
 
 LIBS +=libversion
 

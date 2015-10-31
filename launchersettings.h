@@ -2,6 +2,10 @@
 #define LAUNCHERSETTINGS_H
 
 #include <QDialog>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include "repoedit.h"
 
 namespace Ui {
@@ -26,10 +30,16 @@ private slots:
 
     void on_launchCheckUpdate_clicked();
 
+    void on_genApiKey_button_clicked();
+
+    void genApiKey(QNetworkReply * reply);
+
 private:
     Ui::launcherSettings *ui;
 
     Settings settings;
+
+    QNetworkAccessManager *mgr;
 };
 
 #endif // LAUNCHERSETTINGS_H

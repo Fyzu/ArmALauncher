@@ -181,6 +181,9 @@ struct Settings {
     // Уведомления
     bool notification;
 
+    // API Key Чат клиента Тушино
+    QString tushinoApiKey;
+
     Settings() {
         style = 0;
         documentMode = false;

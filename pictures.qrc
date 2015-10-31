@@ -70,6 +70,12 @@
         <file>IMG/darkstyle/folder63.png</file>
         <file>IMG/eye106.png</file>
         <file>IMG/darkstyle/eye106.png</file>
+        <file>IMG/arrow647.png</file>
+        <file>IMG/key182.png</file>
+        <file>IMG/user167.png</file>
+        <file>IMG/darkstyle/arrow647.png</file>
+        <file>IMG/darkstyle/key182.png</file>
+        <file>IMG/darkstyle/user167.png</file>
     </qresource>
     <qresource prefix="/repositories">
         <file>IMG/yoma2009.ico</file>

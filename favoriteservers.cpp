@@ -175,88 +175,100 @@ void launcher::on_serversTree_update_clicked() {
     ui->serversTree->setSortingEnabled(true);
 }
 
-bool launcher::updateServerInformation(int serverIndex, int itemIndex) {
+struct Response {
+    unsigned char *data;
+    int ping;
+    int lenght;
+};
 
+bool launcher::updateServerInformation(int serverIndex, int itemIndex) {
     qInfo() << "launcher::updateServerInformation: Upd. Online server Infomation - " << favServers[serverIndex].serverName;
 
-                                // Сообщение "TSource query"
+    // Сообщение "TSource query"
     unsigned char message[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 0x75, 0x72, 0x63, 0x65, 0x20, 0x45,
-                                0x6E, 0x67, 0x69, 0x6E, 0x65, 0x20, 0x51, 0x75, 0x65, 0x72, 0x79, 0x00};
+            0x6E, 0x67, 0x69, 0x6E, 0x65, 0x20, 0x51, 0x75, 0x65, 0x72, 0x79, 0x00};
     int length = 25;            // Длина отправляемой строки
     int ping;                   // Переменная для хранения значения пинга сервера
     int rLen;                   // Длина строки ответа
 
-    // Запуск инструмента получения информации о сервере
-    BYTE* response = exchangeDataWithServer(favServers[serverIndex].serverIP.toLatin1().data(), favServers[serverIndex].serverPort.toInt()+1, 400, message, length, ping, rLen);
+    Async<unsigned char *>(
+        [&]() {
+            // Запуск инструмента получения информации о сервере
+            return exchangeDataWithServer(
+                        favServers[serverIndex].serverIP.toLatin1().data(),
+                        favServers[serverIndex].serverPort.toInt()+1,
+                        400, message, length, ping, rLen
+            );
+        },
+        [&](unsigned char *response) {
+        // Парсим ответ сервера
+        if(ping>0) {                // Если получен ответ от сервера
 
-
-    // Парсим ответ сервера
-    if(ping>0) {                // Если получен ответ от сервера
-
-        int pos = 6;                                                                   // Позиция начала строки
-        favServers[serverIndex].ping = QString::number(ping);                              // Прописываем пинг
-        favServers[serverIndex].HostName = QString(GetNextPart(pos, response, rLen));      // Прописываем имя сервера
-        favServers[serverIndex].MapName = QString(GetNextPart(pos, response, rLen));       // Прописываем название карты
-        favServers[serverIndex].GameType = QString(GetNextPart(pos, response, rLen));      // Прописываем тип игры
-        favServers[serverIndex].GameMode = QString(GetNextPart(pos, response, rLen));      // Прописываем мод игры
-        GetNextPart(pos, response, rLen);                                              // Пустая строка
-        GetNextPart(pos, response, rLen);                                              // Пустая строка
-        QByteArray pInfo = GetNextPart(pos, response, rLen);                          // Получаем кол-во игроков
-        if((int)pInfo[0] >= 0 && (int)pInfo[1] >= 0) {
-            if(pInfo.length()>0) {
-                favServers[serverIndex].NumPlayers=QString::number((int)pInfo[0]);
-                favServers[serverIndex].MaxPlayers=QString::number((int)pInfo[1]);
+            int pos = 6;                                                                   // Позиция начала строки
+            favServers[serverIndex].ping = QString::number(ping);                              // Прописываем пинг
+            favServers[serverIndex].HostName = QString(GetNextPart(pos, response, rLen));      // Прописываем имя сервера
+            favServers[serverIndex].MapName = QString(GetNextPart(pos, response, rLen));       // Прописываем название карты
+            favServers[serverIndex].GameType = QString(GetNextPart(pos, response, rLen));      // Прописываем тип игры
+            favServers[serverIndex].GameMode = QString(GetNextPart(pos, response, rLen));      // Прописываем мод игры
+            GetNextPart(pos, response, rLen);                                              // Пустая строка
+            GetNextPart(pos, response, rLen);                                              // Пустая строка
+            QByteArray pInfo = GetNextPart(pos, response, rLen);                          // Получаем кол-во игроков
+            if((int)pInfo[0] >= 0 && (int)pInfo[1] >= 0) {
+                if(pInfo.length()>0) {
+                    favServers[serverIndex].NumPlayers=QString::number((int)pInfo[0]);
+                    favServers[serverIndex].MaxPlayers=QString::number((int)pInfo[1]);
+                } else {
+                    favServers[serverIndex].NumPlayers="0";
+                    favServers[serverIndex].MaxPlayers=QString::number((int)GetNextPart(pos, response, rLen)[0]);
+                }
             } else {
-                favServers[serverIndex].NumPlayers="0";
-                favServers[serverIndex].MaxPlayers=QString::number((int)GetNextPart(pos, response, rLen)[0]);
+                favServers[serverIndex].NumPlayers="-";
+                favServers[serverIndex].MaxPlayers="-";
             }
-        } else {
-            favServers[serverIndex].NumPlayers="-";
-            favServers[serverIndex].MaxPlayers="-";
+            GetNextPart(pos, response, rLen);                                              // Enviroment. dw?? Visibility & vac?
+            favServers[serverIndex].RequiredVersion = GetNextPart(pos, response, rLen);
+            // Получение информации из GameTags
+            QString GameTags = GetNextPart(pos, response, rLen);
+            if(!GameTags.contains(",s",Qt::CaseInsensitive))
+                 GameTags = GetNextPart(pos, response, rLen);
+            favServers[serverIndex].State = QString(GameTags[GameTags.indexOf(",s", Qt::CaseInsensitive)+2]).toInt();
+        } else {                    // Если не получен ответ от сервера
+            favServers[serverIndex].noResponse();
         }
-        GetNextPart(pos, response, rLen);                                              // Enviroment. dw?? Visibility & vac?
-        favServers[serverIndex].RequiredVersion = GetNextPart(pos, response, rLen);
-        // Получение информации из GameTags
-        QString GameTags = GetNextPart(pos, response, rLen);
-        if(!GameTags.contains(",s",Qt::CaseInsensitive))
-             GameTags = GetNextPart(pos, response, rLen);
-        favServers[serverIndex].State = QString(GameTags[GameTags.indexOf(",s", Qt::CaseInsensitive)+2]).toInt();
-    } else {                    // Если не получен ответ от сервера
-        favServers[serverIndex].noResponse();
-    }
 
-    // Устанавливаем обновленную онлайн информацию о серверах
-    QIcon icon;
-    if(!favServers.at(serverIndex).ping.isEmpty()) {     // Если пинг есть, то присваиваем онлайн информацию
-        ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[serverIndex].HostName);
-        ui->selectServer->setItemText(serverIndex+1, favServers[serverIndex].HostName);
-        ui->serversTree->topLevelItem(itemIndex)->setText(4, favServers[serverIndex].NumPlayers + "/" + favServers[serverIndex].MaxPlayers);
-        QString serverState;
-        switch(favServers[serverIndex].State) {
-            case 7: serverState = tr("Игра"); break;
-            case 6: serverState = tr("Брифинг"); break;
-            case 3: serverState = tr("Лобби"); break;
-            case 1: serverState = tr("Создание"); break;
-            default: serverState = " - ";
+        // Устанавливаем обновленную онлайн информацию о серверах
+        QIcon icon;
+        if(!favServers.at(serverIndex).ping.isEmpty()) {     // Если пинг есть, то присваиваем онлайн информацию
+            //ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[serverIndex].HostName);
+            //ui->selectServer->setItemText(serverIndex+1, favServers[serverIndex].HostName);
+            ui->serversTree->topLevelItem(itemIndex)->setText(4, favServers[serverIndex].NumPlayers + "/" + favServers[serverIndex].MaxPlayers);
+            QString serverState;
+            switch(favServers[serverIndex].State) {
+                case 7: serverState = tr("Игра"); break;
+                case 6: serverState = tr("Брифинг"); break;
+                case 3: serverState = tr("Лобби"); break;
+                case 1: serverState = tr("Создание"); break;
+                default: serverState = " - ";
+            }
+            ui->serversTree->topLevelItem(itemIndex)->setText(5, serverState);
+            ui->serversTree->topLevelItem(itemIndex)->setText(6, favServers[serverIndex].ping);
+            icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
+            ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
+            ui->selectServer->setItemIcon(serverIndex+1, icon);
         }
-        ui->serversTree->topLevelItem(itemIndex)->setText(5, serverState);
-        ui->serversTree->topLevelItem(itemIndex)->setText(6, favServers[serverIndex].ping);
-        icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
-        ui->selectServer->setItemIcon(serverIndex+1, icon);
-    }
-    else { // Если не пингуется, то присваиваем стандартную информацию
-        ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[serverIndex].serverName);
-        ui->selectServer->setItemText(serverIndex+1, favServers[serverIndex].serverName);
-        ui->serversTree->topLevelItem(itemIndex)->setText(4, "-/-");
-        ui->serversTree->topLevelItem(itemIndex)->setText(5, " - ");
-        ui->serversTree->topLevelItem(itemIndex)->setText(6, " - ");
-        icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
-        ui->selectServer->setItemIcon(serverIndex+1, icon);
-    }
+        else { // Если не пингуется, то присваиваем стандартную информацию
+            //ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[serverIndex].serverName);
+            //ui->selectServer->setItemText(serverIndex+1, favServers[serverIndex].serverName);
+            ui->serversTree->topLevelItem(itemIndex)->setText(4, "-/-");
+            ui->serversTree->topLevelItem(itemIndex)->setText(5, " - ");
+            ui->serversTree->topLevelItem(itemIndex)->setText(6, " - ");
+            icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
+            ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
+            ui->selectServer->setItemIcon(serverIndex+1, icon);
+        }
+    });
 
-    return (ping>0)?true:false;
+    return false;
 }
 
 // Выделение подстрок в байтовом массиве
@@ -276,6 +288,7 @@ void launcher::on_serversTree_monitoring_clicked() {
         qInfo() << "launcher::on_serversTree_follow_clicked: Unfollow server - " << favServers[monitoringServerItem->data(0, Qt::UserRole).toUInt()].HostName;
         popupMessage(tr("Слежение за серверов"), tr("Слежение за сервером ") + favServers[monitoringServerItem->data(0, Qt::UserRole).toUInt()].serverName + tr(" остановлено"));
         timerCheckServerStatus->stop();
+        monitoringServerItem->setIcon(0, QIcon());
     } else {    // Если слежение не запущено, начинаем следить за выбранным сервером
         if(ui->serversTree->currentIndex().row() != -1) { // Проверяем, выбран ли элемент
             monitoringServerItem = ui->serversTree->currentItem();
@@ -283,6 +296,13 @@ void launcher::on_serversTree_monitoring_clicked() {
             popupMessage(tr("Слежение за серверов"), tr("Слежение за сервером ") + favServers[monitoringServerItem->data(0, Qt::UserRole).toUInt()].serverName + tr(" началось"));
             checkServerStatus();
             timerCheckServerStatus->start(settings.updateTime);
+            QIcon icon;
+            if(settings.style == 0) {
+                icon.addFile(QStringLiteral(":/myresources/IMG/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
+            } else {
+                icon.addFile(QStringLiteral(":/myresources/IMG/darkstyle/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
+            }
+            monitoringServerItem->setIcon(0, icon);
 
             qInfo() << "launcher::on_serversTree_follow_clicked: Follow server - " << favServers[monitoringServerItem->data(0, Qt::UserRole).toUInt()].HostName;
         }
@@ -291,11 +311,94 @@ void launcher::on_serversTree_monitoring_clicked() {
 
 // Проверка изменений состояния сервера
 void launcher::checkServerStatus() {
+
     int monitoringServerIndex = monitoringServerItem->data(0, Qt::UserRole).toUInt();
+    int itemIndex = ui->serversTree->indexOfTopLevelItem(monitoringServerItem);
+
     qInfo() << "launcher::checkServerStatus: Check server status - " << favServers[monitoringServerIndex].serverName;
 
-    // Обновляем информацию о сервере и проверяем изменение статуса
-    if(updateServerInformation(monitoringServerIndex, ui->serversTree->indexOfTopLevelItem(monitoringServerItem))) {
+    // Сообщение "TSource query"
+    unsigned char message[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 0x75, 0x72, 0x63, 0x65, 0x20, 0x45,
+            0x6E, 0x67, 0x69, 0x6E, 0x65, 0x20, 0x51, 0x75, 0x65, 0x72, 0x79, 0x00};
+    int length = 25;            // Длина отправляемой строки
+    int ping;                   // Переменная для хранения значения пинга сервера
+    int rLen;                   // Длина строки ответа
+
+    Async<unsigned char *>(
+        [&]() {
+            // Запуск инструмента получения информации о сервере
+            return exchangeDataWithServer(
+                        favServers[monitoringServerIndex].serverIP.toLatin1().data(),
+                        favServers[monitoringServerIndex].serverPort.toInt()+1,
+                        400, message, length, ping, rLen
+            );
+        },
+        [&](unsigned char *response) {
+        // Парсим ответ сервера
+        if(ping>0) {                // Если получен ответ от сервера
+
+            int pos = 6;                                                                   // Позиция начала строки
+            favServers[monitoringServerIndex].ping = QString::number(ping);                              // Прописываем пинг
+            favServers[monitoringServerIndex].HostName = QString(GetNextPart(pos, response, rLen));      // Прописываем имя сервера
+            favServers[monitoringServerIndex].MapName = QString(GetNextPart(pos, response, rLen));       // Прописываем название карты
+            favServers[monitoringServerIndex].GameType = QString(GetNextPart(pos, response, rLen));      // Прописываем тип игры
+            favServers[monitoringServerIndex].GameMode = QString(GetNextPart(pos, response, rLen));      // Прописываем мод игры
+            GetNextPart(pos, response, rLen);                                              // Пустая строка
+            GetNextPart(pos, response, rLen);                                              // Пустая строка
+            QByteArray pInfo = GetNextPart(pos, response, rLen);                          // Получаем кол-во игроков
+            if((int)pInfo[0] >= 0 && (int)pInfo[1] >= 0) {
+                if(pInfo.length()>0) {
+                    favServers[monitoringServerIndex].NumPlayers=QString::number((int)pInfo[0]);
+                    favServers[monitoringServerIndex].MaxPlayers=QString::number((int)pInfo[1]);
+                } else {
+                    favServers[monitoringServerIndex].NumPlayers="0";
+                    favServers[monitoringServerIndex].MaxPlayers=QString::number((int)GetNextPart(pos, response, rLen)[0]);
+                }
+            } else {
+                favServers[monitoringServerIndex].NumPlayers="-";
+                favServers[monitoringServerIndex].MaxPlayers="-";
+            }
+            GetNextPart(pos, response, rLen);                                              // Enviroment. dw?? Visibility & vac?
+            favServers[monitoringServerIndex].RequiredVersion = GetNextPart(pos, response, rLen);
+            // Получение информации из GameTags
+            QString GameTags = GetNextPart(pos, response, rLen);
+            if(!GameTags.contains(",s",Qt::CaseInsensitive))
+                 GameTags = GetNextPart(pos, response, rLen);
+            favServers[monitoringServerIndex].State = QString(GameTags[GameTags.indexOf(",s", Qt::CaseInsensitive)+2]).toInt();
+        } else {                    // Если не получен ответ от сервера
+            favServers[monitoringServerIndex].noResponse();
+        }
+
+        // Устанавливаем обновленную онлайн информацию о серверах
+        QIcon icon;
+        if(!favServers.at(monitoringServerIndex).ping.isEmpty()) {     // Если пинг есть, то присваиваем онлайн информацию
+            //ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[monitoringServerIndex].HostName);
+            //ui->selectServer->setItemText(monitoringServerIndex+1, favServers[monitoringServerIndex].HostName);
+            ui->serversTree->topLevelItem(itemIndex)->setText(4, favServers[monitoringServerIndex].NumPlayers + "/" + favServers[monitoringServerIndex].MaxPlayers);
+            QString serverState;
+            switch(favServers[monitoringServerIndex].State) {
+                case 7: serverState = tr("Игра"); break;
+                case 6: serverState = tr("Брифинг"); break;
+                case 3: serverState = tr("Лобби"); break;
+                case 1: serverState = tr("Создание"); break;
+                default: serverState = " - ";
+            }
+            ui->serversTree->topLevelItem(itemIndex)->setText(5, serverState);
+            ui->serversTree->topLevelItem(itemIndex)->setText(6, favServers[monitoringServerIndex].ping);
+            icon.addFile(QStringLiteral(":/myresources/serverOn.png"), QSize(), QIcon::Normal, QIcon::Off);
+            ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
+            ui->selectServer->setItemIcon(monitoringServerIndex+1, icon);
+        }
+        else { // Если не пингуется, то присваиваем стандартную информацию
+            //ui->serversTree->topLevelItem(itemIndex)->setText(0, favServers[monitoringServerIndex].serverName);
+            //ui->selectServer->setItemText(monitoringServerIndex+1, favServers[monitoringServerIndex].serverName);
+            ui->serversTree->topLevelItem(itemIndex)->setText(4, "-/-");
+            ui->serversTree->topLevelItem(itemIndex)->setText(5, " - ");
+            ui->serversTree->topLevelItem(itemIndex)->setText(6, " - ");
+            icon.addFile(QStringLiteral(":/myresources/serverOff.png"), QSize(), QIcon::Normal, QIcon::Off);
+            ui->serversTree->topLevelItem(itemIndex)->setIcon(6, icon);
+            ui->selectServer->setItemIcon(monitoringServerIndex+1, icon);
+        }
 
         // Проверяем, изменен ли статус сервера
         int currentState = favServers[monitoringServerIndex].State;
@@ -323,5 +426,5 @@ void launcher::checkServerStatus() {
             // Передаем текущий статус сервера
             oldServerState = favServers[monitoringServerIndex].State;
         }
-    }
+    });
 }

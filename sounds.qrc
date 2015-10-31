@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sounds">
+        <file>sounds/notify1.wav</file>
+    </qresource>
+</RCC>

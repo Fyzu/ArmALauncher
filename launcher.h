@@ -19,6 +19,8 @@
 #include <QSettings>
 #include <QSystemTrayIcon>
 #include <QTimer>
+//#include <QSound>
+#include <QJsonArray>
 
 #include <windows.h>
 #include <tchar.h>
@@ -26,6 +28,7 @@
 #include "launchersettings.h"
 #include "addonssettings.h"
 #include "version.h"
+#include "AsyncTask/async.h"
 
 class launcher : public QMainWindow
 {
@@ -133,6 +136,14 @@ private slots:
     void on_serversTree_monitoring_clicked();
     void checkServerStatus();
 
+    //..слоты чат клиента "Тушино"
+    void on_sendButton_clicked();
+    void finishUpdateChat(QNetworkReply *reply);
+    void finishSendMsgChat(QNetworkReply *reply);
+    void finishChatAuth(QNetworkReply *reply);
+    void updateChat();
+    void chatAuth();
+
 private:
     Ui::launcher *ui;
     QSystemTrayIcon *trayIcon;
@@ -183,6 +194,16 @@ private:
     QTreeWidgetItem *monitoringServerItem;
     int oldServerState;
     bool updateServerInformation(int serverIndex, int itemIndex);
+    //QSound * notifySound;
+    QString decodeData(QString str);
+
+    // Чат клиент "Тушино"
+    // манагеры доступов
+    QNetworkAccessManager *authChatMgr;
+    QNetworkAccessManager *senderChatMgr;
+    QNetworkAccessManager *updateChatMgr;
+    QTimer *updateChatTimer;
+    bool chatConnected;
 
     // Функции обновления данных
     void updateInformationInWidget();       // Обновление информации в виджете

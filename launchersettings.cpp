@@ -8,7 +8,8 @@ launcherSettings::launcherSettings(QWidget *parent) :
     qInfo() << "launcherSettings::launcherSettings: constructor";
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags().operator ^=(Qt::WindowContextHelpButtonHint));
-
+    mgr = new QNetworkAccessManager(this);
+    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(genApiKey(QNetworkReply*)));
 }
 
 launcherSettings::~launcherSettings()
@@ -27,6 +28,7 @@ void launcherSettings::on_buttonBox_accepted() {
     settings.updateTime = ui->updateTimeSpin->value();
     settings.state = ui->stateBox->currentIndex();
     settings.checkUpdateAfterStart = ui->checkUpdateAfterStart->isChecked();
+    settings.tushinoApiKey = ui->tushinoApiKey->text();
 
     // Отправляем данные
     emit sendData(settings);
@@ -44,6 +46,7 @@ void launcherSettings::reciveData(Settings launcherS) {
     ui->updateTimeSpin->setValue(settings.updateTime);
     ui->stateBox->setCurrentIndex(settings.state);
     ui->checkUpdateAfterStart->setChecked(settings.checkUpdateAfterStart);
+    ui->tushinoApiKey->setText(settings.tushinoApiKey);
     this->open();
 }
 
@@ -52,4 +55,21 @@ void launcherSettings::on_launchCheckUpdate_clicked() {
     qInfo() << "launcherSettings::on_launchCheckUpdate_clicked: Check update clicked";
 
     emit checkUpdate();
+}
+
+// Нажата кнопка генерации ID
+void launcherSettings::on_genApiKey_button_clicked()
+{
+    qDebug() << "launcherSettings::on_genApiKey_button_clicked: called";
+
+    mgr->get(QNetworkRequest(QUrl(QString("http://bystolen.ru/tsgames_ex/getid.php"))));
+}
+
+void launcherSettings::genApiKey(QNetworkReply * reply) {
+    if (reply->error() == QNetworkReply::NoError) {
+        ui->tushinoApiKey->setText(QJsonDocument::fromJson(reply->readAll()).object().value("id").toString());
+    } else {
+        qDebug() << "launcherSettings::on_genApiKey_button_clicked: Failure" <<reply->errorString();
+    }
+    delete reply;
 }

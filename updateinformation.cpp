@@ -126,6 +126,7 @@ void launcher::updateInformationInCfg() {
     a_settings.setValue("/state", settings.state);
     a_settings.setValue("/checkUpdateAfterStart", settings.checkUpdateAfterStart);
     a_settings.setValue("/notification", settings.notification);
+    a_settings.setValue("/tushinoapikey", settings.tushinoApiKey);
 }
 
 // Обновление информации в виджете

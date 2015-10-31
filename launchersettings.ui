@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>402</width>
-    <height>400</height>
+    <height>526</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>402</width>
-    <height>400</height>
+    <height>526</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>402</width>
-    <height>400</height>
+    <height>526</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -31,100 +31,34 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
-   <item row="6" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="7" column="0">
+    <spacer name="verticalSpacer_3">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
-    </widget>
+    </spacer>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="enabled">
-      <bool>true</bool>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="title">
-      <string>Запуск</string>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="launch_label">
-        <property name="text">
-         <string>Действие после запуска игры</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="launchBox">
-        <item>
-         <property name="text">
-          <string>Ничего</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Свернуть лаунчер</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Закрыть лаунчер</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    </spacer>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Стиль</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="style_label">
-          <property name="text">
-           <string>Цвет интерфейса</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="styleBox">
-          <item>
-           <property name="text">
-            <string>Стандартный</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Темный</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="documentMode">
-        <property name="text">
-         <string>Фон и контур во вкладках</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
+   <item row="4" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Слежение за серверов</string>
@@ -204,7 +138,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="6" column="0">
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
       <string>Обновления</string>
@@ -228,7 +162,142 @@
     </widget>
    </item>
    <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Запуск</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="launch_label">
+        <property name="text">
+         <string>Действие после запуска игры</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="launchBox">
+        <item>
+         <property name="text">
+          <string>Ничего</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Свернуть лаунчер</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Закрыть лаунчер</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Стиль</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="style_label">
+          <property name="text">
+           <string>Цвет интерфейса</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="styleBox">
+          <item>
+           <property name="text">
+            <string>Стандартный</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Темный</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="documentMode">
+        <property name="text">
+         <string>Фон и контур во вкладках</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="title">
+      <string>Настройки чат клиента &quot;Тушино&quot;</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>API ID</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="tushinoApiKey"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="genApiKey_button">
+          <property name="text">
+           <string>Сгенерировать</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <spacer name="verticalSpacer_4">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

@@ -58,6 +58,7 @@ launcher::launcher(QWidget *parent) :
     dxDiagIsRunning = false;
     updateAfterClose = false;
     updater = 0;
+    chatConnected=false;
 
     // Стартовые параметры виджетов..
     //..начальная вкладка
@@ -98,6 +99,9 @@ launcher::launcher(QWidget *parent) :
     // Инициализируем launcherUpdate
     LauncherUpdate = new launcherUpdate(this);
 
+    // Инициализируем звук уведомления
+    //notifySound = new QSound(":/sounds/sounds/notify1.wav");
+
     // Иницилизируем updater
     qInfo() << "launcher::launcher: updater initialization";
     updater = new updateAddons;
@@ -112,7 +116,21 @@ launcher::launcher(QWidget *parent) :
     // Иницилизируем таймер проверки статуса
     timerCheckServerStatus = new QTimer(this);
 
+    // Инициализация объектов чата Тушино
+    authChatMgr = new QNetworkAccessManager(this);
+    senderChatMgr = new QNetworkAccessManager(this);
+    updateChatMgr = new QNetworkAccessManager(this);
+    updateChatTimer = new QTimer(this);
+    updateChatTimer->start(50000);
+
     qInfo() << "launcher::launcher: Updater move to " << thread;
+
+    //..связываем манагеров чата с обработчиками ответов
+    connect(updateChatMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(finishUpdateChat(QNetworkReply*)));
+    connect(updateChatTimer, SIGNAL(timeout()), this, SLOT(updateChat()));
+
+    connect(authChatMgr,   SIGNAL(finished(QNetworkReply*)), this, SLOT(finishChatAuth(QNetworkReply*)));
+    connect(senderChatMgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(finishSendMsgChat(QNetworkReply*)));
 
     //..связываем updater с потоком
     connect(updater, SIGNAL(finished()),      thread,  SLOT(quit()));
@@ -218,6 +236,8 @@ launcher::launcher(QWidget *parent) :
             this,                   SLOT(launcherSettingsFinish(Settings)));
     connect(LauncherSettings,       SIGNAL(checkUpdate()),
             this,                   SLOT(checkUpdate()));
+    connect(ui->chatSettings,       SIGNAL(clicked(bool)),
+            this,                   SLOT(on_launcherSettings_clicked()));
     //..Изменения настроек репозитория
     connect(this,                   SIGNAL(repoEditStart(Repository,int,bool)),
             repositoryEdit,         SLOT(recieveData(Repository,int,bool)));
@@ -309,6 +329,10 @@ launcher::launcher(QWidget *parent) :
         settings.notification = a_settings.value("/notification").toBool();
     else
         settings.notification = true;
+    if(a_settings.value("/tushinoapikey").isValid())
+        settings.tushinoApiKey = a_settings.value("/tushinoapikey").toString();
+    else
+        settings.tushinoApiKey.clear();
 
     // Установить главному окну Size
     if (!widgetSize.isEmpty()) {
@@ -363,6 +387,9 @@ launcher::launcher(QWidget *parent) :
     if(settings.checkUpdateAfterStart)
         checkUpdate();
 
+    // Обновление информации чата
+    chatAuth();
+    updateChat();
 }
 
 // Дистркутор окна
@@ -603,7 +630,7 @@ HANDLE launcher::getHandle (QString titleName, bool wait) {
 // Обзор исполняемого файла игры Arma 3
 void launcher::on_pathBrowse_clicked() {
 
-    qInfo() << "launcher::on_pathBrowse_clicked: Start";
+    qInfo() << "launcher::on_pathBrowse_clicked: called";
 
     // Получение нового path исполняемого файла игры
     QString tempPathGame = QFileDialog::getOpenFileName(this, QString(tr("Открыть исполняемый файл ArmA 3")), QString(), QString(tr("arma3.exe;;")));
@@ -658,7 +685,7 @@ void launcher::on_pathBrowse_clicked() {
 // Получение параметров запуска игры
 QStringList launcher::getLaunchParam() {
 
-    qInfo() << "launcher::getLaunchParam: start";
+    qInfo() << "launcher::getLaunchParam: called";
 
     // Объявляем возвращаемый список строк
     QStringList launchParam;
@@ -674,7 +701,7 @@ QStringList launcher::getLaunchParam() {
     if(parameters.noPause)
         launchParam.append("-noPause");
     if(parameters.noFilePatching)
-        launchParam.append("-noFilePathcing");
+        launchParam.append("-filePathcing");
     if(parameters.window)
         launchParam.append("-window");
     if(parameters.check_maxMem)
@@ -850,7 +877,7 @@ void launcher::optimizeSettings() {
 
 // Кнопка настроек аддонов
 void launcher::on_AddonsSettings_clicked() {
-    qInfo() << "launcher::on_AddonsSettings_clicked: start";
+    qInfo() << "launcher::on_AddonsSettings_clicked: called";
 
     // Сбор данных о аддонах
     QStringList addons;
@@ -877,7 +904,7 @@ void launcher::addonsSettingsFinish(QStringList listD, QStringList listPriorityA
 
 // Кнопка настроек лаунчера
 void launcher::on_launcherSettings_clicked() {
-    qInfo() << "launcher::on_launcherSettings_clicked: start";
+    qInfo() << "launcher::on_launcherSettings_clicked: called";
 
     // Отправляем данные в форму
     emit launcherSettingsStart(settings);
@@ -891,6 +918,7 @@ void launcher::launcherSettingsFinish(Settings launcherS) {
     settings = launcherS;
     changeStyleSheet(settings.style);
     ui->tabWidget->setDocumentMode(!settings.documentMode);
+    chatAuth();
 }
 
 // Установка стиля форме launcher
@@ -975,6 +1003,13 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon24;
         icon24.addFile(QStringLiteral(":/myresources/IMG/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_monitoring->setIcon(icon24);
+        QIcon icon25;
+        icon25.addFile(QStringLiteral(":/myresources/IMG/user167.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->tabWidget->setTabIcon(4, icon25);
+        QIcon icon26;
+        icon26.addFile(QStringLiteral(":/myresources/IMG/arrow647.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->sendButton->setIcon(icon26);
+        ui->chatSettings->setIcon(icon2);
 
         ui->play->setStyleSheet(QLatin1String("QPushButton { border-image: url(:/myresources/arma3.png); }\n"
         "QPushButton::pressed { border-image: url(:/myresources/arma3down.png); }"));
@@ -1062,6 +1097,13 @@ void launcher::changeStyleSheet(int style) {
         QIcon icon24;
         icon24.addFile(QStringLiteral(":/myresources/IMG/darkstyle/eye106.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->serversTree_monitoring->setIcon(icon24);
+        QIcon icon25;
+        icon25.addFile(QStringLiteral(":/myresources/IMG/darkstyle/user167.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->tabWidget->setTabIcon(4, icon25);
+        QIcon icon26;
+        icon26.addFile(QStringLiteral(":/myresources/IMG/darkstyle/arrow647.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->sendButton->setIcon(icon26);
+        ui->chatSettings->setIcon(icon2);
 
         ui->play->setStyleSheet(QLatin1String("QPushButton { border-image: url(:/myresources/IMG/darkstyle/arma3.png); }\n"
         "QPushButton::pressed { border-image: url(:/myresources/IMG/darkstyle/arma3down.png); }"));
@@ -1093,10 +1135,12 @@ void launcher::on_addonTree_itemClicked(QTreeWidgetItem *item) {
     addonTreeRow = ui->addonTree->currentIndex().row();
 }
 
+// Отправить сообщение системе
 void launcher::popupMessage(QString title, QString message, bool necessarily) {
     if(settings.notification || necessarily) {
         trayIcon->show();
         trayIcon->showMessage(title, message);
         trayIcon->hide();
+        //notifySound->play();
     }
 }
